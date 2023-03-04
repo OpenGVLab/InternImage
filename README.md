@@ -19,6 +19,8 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 ADE20K, outperforming previous models by a large margin.
 
 ## Coming soon
+- [ ] TensorRT inference. 
+- [ ] Other downstream tasks. 
 - [ ] Classification code of the InternImage series.
 - [x] InternImage-T/S/B/L/XL ImageNet-1k pretrained model.
 - [x] InternImage-L/XL ImageNet-22k pretrained model.
