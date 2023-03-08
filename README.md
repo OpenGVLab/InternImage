@@ -30,9 +30,9 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 ADE20K, outperforming previous models by a large margin.
 
 ## Coming soon
-- [ ] TensorRT inference. 
 - [ ] Other downstream tasks. 
-- [ ] Classification code of the InternImage series.
+- [x] TensorRT inference. 
+- [x] Classification code of the InternImage series.
 - [x] InternImage-T/S/B/L/XL ImageNet-1k pretrained model.
 - [x] InternImage-L/XL ImageNet-22k pretrained model.
 - [x] InternImage-T/S/B/L/XL detection and instance segmentation model.
@@ -89,13 +89,13 @@ to reduces the strict inductive bias. Our model makes it possible to learn more 
 
 ## Main Results of FPS
 
-|      name      | resolution | #params | FLOPs | Batch 1 FPS(PyTorch) | Batch 1 FPS(TensorRT) |
-| :------------: | :--------: | :-----: | :---: | :------------------: | :-------------------: |
-| InternImage-T  |  224x224   |   30M   |  5G   |          44          |          156          |
-| InternImage-S  |  224x224   |   50M   |  8G   |          40          |          129          |
-| InternImage-B  |  224x224   |   97M   |  16G  |          40          |          116          |
-| InternImage-L  |  384x384   |  223M   | 108G  |          40          |          56           |
-| InternImage-XL |  384x384   |  335M   | 163G  |          32          |          47           |
+|      name      | resolution | #params | FLOPs | Batch 1 FPS(TensorRT) |
+| :------------: | :--------: | :-----: | :---: | :-------------------: |
+| InternImage-T  |  224x224   |   30M   |  5G   |          156          |
+| InternImage-S  |  224x224   |   50M   |  8G   |          129          |
+| InternImage-B  |  224x224   |   97M   |  16G  |          116          |
+| InternImage-L  |  384x384   |  223M   | 108G  |          56           |
+| InternImage-XL |  384x384   |  335M   | 163G  |          47           |
 
 ## Citation
 
