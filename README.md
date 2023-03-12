@@ -30,6 +30,7 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 ADE20K, outperforming previous models by a large margin.
 
 ## Coming soon
+- [ ] InternImage-H(1B)/G(3B)
 - [ ] Other downstream tasks. 
 - [x] TensorRT inference. 
 - [x] Classification code of the InternImage series.
