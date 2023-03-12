@@ -25,7 +25,7 @@ conda activate internimage
 
 - Install `CUDA>=10.2` with `cudnn>=7` following
   the [official installation instructions](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
-- Install `PyTorch>=1.8.0` and `torchvision>=0.9.0` with `CUDA>=10.2`:
+- Install `PyTorch>=1.10.0` and `torchvision>=0.9.0` with `CUDA>=10.2`:
 
 For examples, to install torch==1.11 with CUDA==11.3:
 ```bash
