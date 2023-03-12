@@ -53,7 +53,7 @@ to reduces the strict inductive bias. Our model makes it possible to learn more 
 
 **ImageNet-1K and ImageNet-22K Pretrained InternImage Models**
 
-|      name      |   pretrain   | resolution | acc@1 | #params | FLOPs |      22K model      |      1K model       |
+|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |      22K model      |      1K model       |
 | :------------: | :----------: | :--------: | :---: | :-----: | :---: | :-----------------: | :-----------------: |
 | InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |   30M   |  5G   |          -          | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_t_1k_224.pth) \| [cfg](classification/configs/internimage_t_1k_224.yaml) |
 | InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |   50M   |  8G   |          -          | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_s_1k_224.pth) \| [cfg](classification/configs/internimage_s_1k_224.yaml) |
@@ -65,7 +65,7 @@ to reduces the strict inductive bias. Our model makes it possible to learn more 
 
 **COCO Object Detection**
 
-|    backbone    |       method       | schd | box mAP | mask mAP | #params | FLOPs | Download | 
+|    backbone    |       method       | schd | box mAP | mask mAP | #param | FLOPs | Download | 
 | :------------: | :----------------: | :---------: | :-----: | :------: | :-----: | :---: | :---: | 
 | InternImage-T  |     Mask R-CNN     |     1x      |  47.2   |   42.5   |   49M   | 270G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_t_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_t_fpn_1x_coco.py) |
 | InternImage-T  |     Mask R-CNN     |     3x      |  49.1   |   43.7   |   49M   | 270G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_t_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_t_fpn_3x_coco.py) |
@@ -80,7 +80,7 @@ to reduces the strict inductive bias. Our model makes it possible to learn more 
 
 **ADE20K Semantic Segmentation**
 
-|    backbone    | resolution | single scale | multi scale | #params | FLOPs | Download | 
+|    backbone    | resolution | single scale | multi scale | #param | FLOPs | Download | 
 | :------------: | :--------: | :----------: | :---------: | :-----: | :---: |   :---:  |
 | InternImage-T  |  512x512   |     47.9     |    48.1     |   59M   | 944G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_t_512_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_t_512_160k_ade20k.py) |
 | InternImage-S  |  512x512   |     50.1     |    50.9     |   80M   | 1017G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_s_512_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_s_512_160k_ade20k.py) |

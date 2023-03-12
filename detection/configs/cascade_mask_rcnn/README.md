@@ -12,11 +12,16 @@ In object detection, the intersection over union (IoU) threshold is frequently u
 <img src="https://user-images.githubusercontent.com/40661020/143872197-d99b90e4-4f05-4329-80a4-327ac862a051.png"/>
 </div>
 
-## Results and Models
+## Model Zoo
 
-|    backbone    |       method       | schd | box mAP | mask mAP | #params | FLOPs | Download | 
-| :------------: | :----------------: | :---------: | :-----: | :------: | :-----: | :---: | :---: | 
-| InternImage-L  |     Cascade        |     1x      |  54.9   |   47.7   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_1x_coco.pth) \| [cfg](./cascade_internimage_l_fpn_1x_coco.py) |
-| InternImage-L  |     Cascade        |     3x      |  56.1   |   48.5   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_3x_coco.pth) \| [cfg](./cascade_internimage_l_fpn_3x_coco.py) |
-| InternImage-XL |     Cascade        |     1x      |  55.3   |   48.1   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](./cascade_internimage_xl_fpn_1x_coco.py) |
-| InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](./cascade_internimage_xl_fpn_3x_coco.py) |
+|    backbone    |         schd | box mAP | mask mAP | train speed |	train time | #param | FLOPs | Config | Download | 
+| :------------: |  :---------: | :-----: | :------: | :-----: | :---: | :-----: | :---: | :---: | :---: | 
+| InternImage-L  |        1x      |  54.9   |   47.7   | 0.73s / iter | 18h |  277M   | 1399G | [config](./cascade_internimage_l_fpn_1x_coco.py) | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_1x_coco.pth)  |
+| InternImage-L  |        3x      |  56.1   |   48.5   | 0.79s / iter | 15h (n4) |  277M   | 1399G | [config](./cascade_internimage_l_fpn_3x_coco.py) | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_3x_coco.pth) \| [log](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_3x_coco.log.json) |
+| InternImage-XL |        1x      |  55.3   |   48.1   | 0.82s / iter | 21h |  387M   | 1782G | [config](./cascade_internimage_xl_fpn_1x_coco.py) | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [log](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.log.json) |
+| InternImage-XL |        3x      |  56.2   |   48.8   | 0.91s / iter | 17h (n4) |  387M   | 1782G | [config](./cascade_internimage_xl_fpn_3x_coco.py) | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [log](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_3x_coco.log.json) |
+
+- Training speed is measured with A100 GPUs using current code and may be faster than the speed in logs.
+- Some logs are our recent newly trained ones. There might be slight differences between the results in logs and our paper.
+- Please set `with_cp=True` to save memory if you meet `out-of-memory` issues.
+
