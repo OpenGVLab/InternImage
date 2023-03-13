@@ -87,28 +87,28 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 - 2023年3月14日: 🚀 书生2.5发布！
 - 2023年2月28日: 🚀 InternImage被CVPR 2023接收!
 - 2022年11月18日: 🚀 基于InternImage-XL主干网络，[BEVFormer v2](https://arxiv.org/abs/2211.10439) 在nuScenes的纯视觉3D检测任务上取得了最佳性能63.4NDS！
-- 2022年11月10日: 🚀 InternImage-H在COCO目标检测任务上以65.4mAP斩获冠军，是唯一突破`65.4 mAP`的超强物体检测模型。
-- 2022年11月10日: 🚀 InternImage-H在ADE20k语义分割数据集上取得`62.9 mIoU`的性能，大幅领先同期模型！
+- 2022年11月10日: 🚀 InternImage-H在COCO目标检测任务上以 65.4mAP 斩获冠军，是唯一突破 65mAP 的超强物体检测模型。
+- 2022年11月10日: 🚀 InternImage-H在ADE20k语义分割数据集上取得62.9 mIoU的性能，大幅领先同期模型！
 
 
 ## 开源功能
 - [Coming] InternImage-H(1B)/G(3B)
-- [Coming] 各类downstream tasks. 
-- TensorRT 推理.
+- [Coming] 各类downstream tasks
+- TensorRT 推理
 - InternImage系列分类代码
 - InternImage-T/S/B/L/XL ImageNet-1k 预训练模型
-- InternImage-L/XL ImageNet-22k 预训练模型.
+- InternImage-L/XL ImageNet-22k 预训练模型
 - InternImage-T/S/B/L/XL 检测和实例分割模型
-- InternImage-T/S/B/L/XL语义分割模型.
+- InternImage-T/S/B/L/XL语义分割模型
 
 
 ## InterImage介绍
 InterImage网络采用可变形卷积作为核心算子，可以自适应地调整卷积的位置和组合方式，从而为多功能视觉感知提供强大的表示。我们的模型使得从海量数据中学习更强大和鲁棒的大规模参数模型成为可能，其可以作为计算机视觉任务的通用主干网络，从而可以支撑各类计算机视觉任务。
 
 
-## ImageNet分类任务结果
+## 视觉任务性能
 
-**ImageNet-1K和ImageNet-22K预训练模型**
+**ImageNet图像分类**
 
 |      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |      22K model      |      1K model       |
 | :------------: | :----------: | :--------: | :---: | :-----: | :---: | :-----------------: | :-----------------: |
@@ -119,9 +119,7 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
 | InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
 | InternImage-H | ImageNet-22K |  224x224   | 88.9  |  1.08B   | 188G  | -         | - |
 | InternImage-H | ImageNet-22K |  640x640   | 89.6  |  1.08B   | 1478G  |-           | - |
-| InternImage-H | ImageNet-22K |  640x640   | 90.1  |  3B   | -  |  -       | -|
-
-## 下游任务应用
+| InternImage-G | ImageNet-22K |  640x640   | 90.1  |  3B   | -  |  -       | -|
 
 **COCO目标检测和实例分割**
 
