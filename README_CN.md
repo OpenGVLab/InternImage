@@ -103,12 +103,12 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 
 
 ## InterImage介绍
-[InterImage](https://arxiv.org/abs/2211.05778)可以作为计算机视觉任务的通用主干网络。网络采用可变形卷积作为核心算子，可以自适应地调整卷积的位置和组合方式，从而为多功能视觉感知提供强大的表示。我们的模型使得从海量数据中学习更强大和鲁棒的大规模参数模型成为可能，从而可以支撑各类计算机视觉任务。
+InterImage网络采用可变形卷积作为核心算子，可以自适应地调整卷积的位置和组合方式，从而为多功能视觉感知提供强大的表示。我们的模型使得从海量数据中学习更强大和鲁棒的大规模参数模型成为可能，其可以作为计算机视觉任务的通用主干网络，从而可以支撑各类计算机视觉任务。
 
 
 ## ImageNet分类任务结果
 
-**ImageNet-1K and ImageNet-22K Pretrained InternImage Models**
+**ImageNet-1K和ImageNet-22K预训练模型**
 
 |      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |      22K model      |      1K model       |
 | :------------: | :----------: | :--------: | :---: | :-----: | :---: | :-----------------: | :-----------------: |
@@ -123,7 +123,7 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 
 ## 下游任务应用
 
-**COCO目标检测**
+**COCO目标检测和实例分割**
 
 |    backbone    |       method       | schd | box mAP | mask mAP | #param | FLOPs | Download | 
 | :------------: | :----------------: | :---------: | :-----: | :------: | :-----: | :---: | :---: | 
