@@ -72,7 +72,8 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 <img src='./figs/image_text_retrieval.png' width=600>
 </div>
 
-### 核心技术
+
+## 核心技术
 “书生2.5”在图文跨模态领域卓越的性能表现，源自于在多模态多任务通用模型技术核心方面的多项创新，实现了视觉核心视觉感知大模型主干网络（InternImage）、用于文本核心的超大规模文本预训练网络（LLM）和用于多任务的兼容解码建模（Uni-Perceiver）的创新组合。
 
 视觉主干网络InternImage参数量高达30亿，能够基于动态稀疏卷积算子自适应地调整卷积的位置和组合方式，从而为多功能视觉感知提供强大的表示。Uni-Perceiver通才任务解码建模通过将不同模态的数据编码到统一的表示空间，并将不同任务统一为相同的任务范式，从而能够以相同的任务架构和共享的模型参数同时处理各种模态和任务。
@@ -82,34 +83,30 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 <img src='./figs/network.png' width=600>
 </div>
 
-## News
-- `Mar 14, 2023`: InternImage 2.5 is released
-- `Feb 28, 2023`: InternImage is accepted to CVPR 2023!
-- `Nov 18, 2022`: 🚀 InternImage-XL merged into [BEVFormer v2](https://arxiv.org/abs/2211.10439) achieves state-of-the-art performance of `63.4 NDS` on nuScenes Camera Only.
-- `Nov 10, 2022`: 🚀🚀 InternImage-H achieves a new record `65.4 mAP` on COCO detection test-dev and `62.9 mIoU` on
-ADE20K, outperforming previous models by a large margin.
+## 最新进展
+- 2023年3月14日: 🚀 书生2.5发布！
+- 2023年2月28日: 🚀 InternImage被CVPR 2023接收!
+- 2022年11月18日: 🚀 基于InternImage-XL主干网络，[BEVFormer v2](https://arxiv.org/abs/2211.10439) 在nuScenes的纯视觉3D检测任务上取得了最佳性能63.4NDS！
+- 2022年11月10日: 🚀 InternImage-H在COCO目标检测任务上以65.4mAP斩获冠军，是唯一突破`65.4 mAP`的超强物体检测模型。
+- 2022年11月10日: 🚀 InternImage-H在ADE20k语义分割数据集上取得`62.9 mIoU`的性能，大幅领先同期模型！
 
-## Coming soon
-- [ ] InternImage-H(1B)/G(3B)
-- [ ] Other downstream tasks. 
-- [x] TensorRT inference. 
-- [x] Classification code of the InternImage series.
-- [x] InternImage-T/S/B/L/XL ImageNet-1k pretrained model.
-- [x] InternImage-L/XL ImageNet-22k pretrained model.
-- [x] InternImage-T/S/B/L/XL detection and instance segmentation model.
-- [x] InternImage-T/S/B/L/XL semantic segmentation model.
 
-## Introduction
+## 开源功能
+- [Coming] InternImage-H(1B)/G(3B)
+- [Coming] 各类downstream tasks. 
+- TensorRT 推理.
+- InternImage系列分类代码
+- InternImage-T/S/B/L/XL ImageNet-1k 预训练模型
+- InternImage-L/XL ImageNet-22k 预训练模型.
+- InternImage-T/S/B/L/XL 检测和实例分割模型
+- InternImage-T/S/B/L/XL语义分割模型.
 
-**InternImage**, initially described in [arxiv](https://arxiv.org/abs/2211.05778), can be a general backbone for computer vision.
-It takes deformable convolution as the core operator to obtain large effective receptive fields, and introducing adaptive spatial aggregation
-to reduces the strict inductive bias. Our model makes it possible to learn more stronger and robust models with large-scale parameters from massive data.
 
-<div align=center>
-<img src='./figs/arch.png' width=400>
-</div>
+## InterImage介绍
+[InterImage](https://arxiv.org/abs/2211.05778)可以作为计算机视觉任务的通用主干网络。网络采用可变形卷积作为核心算子，可以自适应地调整卷积的位置和组合方式，从而为多功能视觉感知提供强大的表示。我们的模型使得从海量数据中学习更强大和鲁棒的大规模参数模型成为可能，从而可以支撑各类计算机视觉任务。
 
-## Main Results on ImageNet with Pretrained Models
+
+## ImageNet分类任务结果
 
 **ImageNet-1K and ImageNet-22K Pretrained InternImage Models**
 
@@ -120,10 +117,13 @@ to reduces the strict inductive bias. Our model makes it possible to learn more 
 | InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |   97M   |  16G  |          -          | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_b_1k_224.pth) \| [cfg](classification/configs/internimage_b_1k_224.yaml) |
 | InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M   | 108G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22kto1k_384.pth) \| [cfg](classification/configs/internimage_l_22kto1k_384.yaml) |
 | InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
+| InternImage-H | ImageNet-22K |  224x224   | 88.9  |  1.08B   | 188G  | -         | - |
+| InternImage-H | ImageNet-22K |  640x640   | 89.6  |  1.08B   | 1478G  |-           | - |
+| InternImage-H | ImageNet-22K |  640x640   | 90.1  |  3B   | -  |  -       | -|
 
-## Main Results on Downstream Tasks
+## 下游任务应用
 
-**COCO Object Detection**
+**COCO目标检测**
 
 |    backbone    |       method       | schd | box mAP | mask mAP | #param | FLOPs | Download | 
 | :------------: | :----------------: | :---------: | :-----: | :------: | :-----: | :---: | :---: | 
@@ -137,8 +137,9 @@ to reduces the strict inductive bias. Our model makes it possible to learn more 
 | InternImage-L  |     Cascade        |     3x      |  56.1   |   48.5   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_3x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_l_fpn_3x_coco.py) |
 | InternImage-XL |     Cascade        |     1x      |  55.3   |   48.1   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_1x_coco.py) |
 | InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_3x_coco.py) |
+| InternImage-H |     DINO        |     3x      |  65.0   |   -   |  2.18B   | - |  - |
 
-**ADE20K Semantic Segmentation**
+**ADE20K语义分割**
 
 |    backbone    | resolution | single scale | multi scale | #param | FLOPs | Download | 
 | :------------: | :--------: | :----------: | :---------: | :-----: | :---: |   :---:  |
@@ -147,8 +148,8 @@ to reduces the strict inductive bias. Our model makes it possible to learn more 
 | InternImage-B  |  512x512   |     50.8     |    51.3     |  128M   | 1185G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_b_512_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_b_512_160k_ade20k.py) |
 | InternImage-L  |  640x640   |     53.9     |    54.1     |  256M   | 2526G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_l_640_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_l_640_160k_ade20k.py) |
 | InternImage-XL |  640x640   |     55.0     |    55.3     |  368M   | 3142G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_xl_640_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_xl_640_160k_ade20k.py) |
-
-## Main Results of FPS
+| InternImage-H |  896x896   |     59.9     |    60.3     |  1.12B   | 3566G | - |
+## 模型推理速度
 
 |      name      | resolution | #params | FLOPs | Batch 1 FPS(TensorRT) |
 | :------------: | :--------: | :-----: | :---: | :-------------------: |
@@ -158,9 +159,10 @@ to reduces the strict inductive bias. Our model makes it possible to learn more 
 | InternImage-L  |  384x384   |  223M   | 108G  |          56           |
 | InternImage-XL |  384x384   |  335M   | 163G  |          47           |
 
-## Citation
 
-If this work is helpful for your research, please consider citing the following BibTeX entry.
+## 引用
+
+若你在研究中使用了“书生2.5”，请参考如下bibtex对我们的工作进行引用。
 
 ```
 @article{wang2022internimage,
