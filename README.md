@@ -1,4 +1,7 @@
-# InternImage
+# 书生
+<div align=center>
+<img src='./figs/log.png' width=400>
+</div>
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-coco)](https://paperswithcode.com/sota/object-detection-on-coco?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-coco-minival)](https://paperswithcode.com/sota/object-detection-on-coco-minival?p=internimage-exploring-large-scale-vision)
@@ -24,25 +27,39 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 [Paper](https://arxiv.org/abs/2211.05778) \| [Blog in Chinese](https://zhuanlan.zhihu.com/p/610772005)
 
 
-## 书生2.5
+## 书生2.5-30亿参数视觉通用主干模型
 ### 简介
-商汤科技与上海实验室在2023年3月14日联合发布多模态多任务通用模型“书生2.5”，在多模态多任务处理能力中斩获多项全新突破，其卓越的图文跨模态任务处理能力可为自动驾驶等通用场景任务提供高效精准的感知和理解能力支持。
+商汤科技与上海人工智能实验室在2023年3月14日联合发布多模态多任务通用模型“书生2.5”，在多模态多任务处理能力中斩获多项全新突破，其卓越的图文跨模态任务处理能力可为自动驾驶等通用场景任务提供高效精准的感知和理解能力支持。
 
 ### 亮点
-“书生2.5”包含拥有高达30亿参数的最强视觉通用主干模型，不仅是世界上开源模型中ImageNet准确度最高、规模最大的模型，也是物体检测标杆数据集COCO中唯一超过65.0 mAP的模型。
+- 🏆 **高达30亿参数的最强视觉通用主干模型**
+- 🏆 **斩获ImageNet和COCO“双料冠军”**
+- 🏆 **开源模型中ImageNet准确度最高**
+- 🏆 **物体检测标杆数据集COCO 65.4mAP，唯一超过65.0mAP的模型**
 
-#### ImageNet
+### 最新进展
+- 2023年3月14日: 🚀 书生2.5发布！
+- 2023年2月28日: 🚀 InternImage被CVPR 2023接收!
+- 2022年11月18日: 🚀 基于InternImage-XL主干网络，[BEVFormer v2](https://arxiv.org/abs/2211.10439) 在nuScenes的纯视觉3D检测任务上取得了最佳性能63.4NDS！
+- 2022年11月10日: 🚀 InternImage-H在COCO目标检测任务上以 65.4mAP 斩获冠军，是唯一突破 65mAP 的超强物体检测模型。
+- 2022年11月10日: 🚀 InternImage-H在ADE20k语义分割数据集上取得62.9 mIoU的性能，大幅领先同期模型！
+
+### 霸榜视觉基准数据集
+#### 1. ImageNet
 在视觉主流图像分类数据集ImageNet上，“书生2.5”仅基于公开数据便达到了90.1%的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型。
 
 <div align=center>
 <img src='./figs/imagenet_leaderboard.png' width=600>
 </div>
 
-#### COCO
+#### 2. COCO
 在物体检测标杆数据集COCO上，“书生2.5”取得了65.4的mAP，是世界上唯一超过65.0mAP的模型，已经大幅领先谷歌和微软。
 <div align=center>
 <img src='./figs/coco_leaderboard.png' width=600>
 </div>
+
+
+
 
 ### 图文跨模态应用
 
@@ -83,15 +100,8 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 <img src='./figs/network.png' width=600>
 </div>
 
-## 最新进展
-- 2023年3月14日: 🚀 书生2.5发布！
-- 2023年2月28日: 🚀 InternImage被CVPR 2023接收!
-- 2022年11月18日: 🚀 基于InternImage-XL主干网络，[BEVFormer v2](https://arxiv.org/abs/2211.10439) 在nuScenes的纯视觉3D检测任务上取得了最佳性能63.4NDS！
-- 2022年11月10日: 🚀 InternImage-H在COCO目标检测任务上以 65.4mAP 斩获冠军，是唯一突破 65mAP 的超强物体检测模型。
-- 2022年11月10日: 🚀 InternImage-H在ADE20k语义分割数据集上取得62.9 mIoU的性能，大幅领先同期模型！
 
-
-## 开源功能
+### 社区开源
 - [Coming] InternImage-H(1B)/G(3B)
 - [Coming] 各类downstream tasks
 - TensorRT 推理
@@ -102,11 +112,11 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 - InternImage-T/S/B/L/XL语义分割模型
 
 
-## InterImage介绍
-InterImage网络采用可变形卷积作为核心算子，可以自适应地调整卷积的位置和组合方式，从而为多功能视觉感知提供强大的表示。我们的模型使得从海量数据中学习更强大和鲁棒的大规模参数模型成为可能，其可以作为计算机视觉任务的通用主干网络，从而可以支撑各类计算机视觉任务。
+<!-- ## InterImage介绍
+InterImage网络采用可变形卷积作为核心算子，可以自适应地调整卷积的位置和组合方式，从而为多功能视觉感知提供强大的表示。我们的模型使得从海量数据中学习更强大和鲁棒的大规模参数模型成为可能，其可以作为计算机视觉任务的通用主干网络，从而可以支撑各类计算机视觉任务。 -->
 
 
-## 视觉任务性能
+### 经典视觉任务性能
 
 **ImageNet图像分类**
 
@@ -136,6 +146,7 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
 | InternImage-XL |     Cascade        |     1x      |  55.3   |   48.1   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_1x_coco.py) |
 | InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_3x_coco.py) |
 | InternImage-H |     DINO        |     3x      |  65.0   |   -   |  2.18B   | - |  - |
+| InternImage-G |     DINO        |     3x      |  65.3   |   -   |  3B   | - |  - |
 
 **ADE20K语义分割**
 
@@ -147,7 +158,8 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
 | InternImage-L  |  640x640   |     53.9     |    54.1     |  256M   | 2526G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_l_640_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_l_640_160k_ade20k.py) |
 | InternImage-XL |  640x640   |     55.0     |    55.3     |  368M   | 3142G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_xl_640_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_xl_640_160k_ade20k.py) |
 | InternImage-H |  896x896   |     59.9     |    60.3     |  1.12B   | 3566G | - |
-## 模型推理速度
+
+**模型推理速度**
 
 |      name      | resolution | #params | FLOPs | Batch 1 FPS(TensorRT) |
 | :------------: | :--------: | :-----: | :---: | :-------------------: |
@@ -158,7 +170,7 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
 | InternImage-XL |  384x384   |  335M   | 163G  |          47           |
 
 
-## 引用
+### 引用
 
 若你在研究中使用了“书生2.5”，请参考如下bibtex对我们的工作进行引用。
 
@@ -169,4 +181,28 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
   journal={arXiv preprint arXiv:2211.05778},
   year={2022}
 }
+
+@inproceedings{zhu2022uni,
+  title={Uni-perceiver: Pre-training unified architecture for generic perception for zero-shot and few-shot tasks},
+  author={Zhu, Xizhou and Zhu, Jinguo and Li, Hao and Wu, Xiaoshi and Li, Hongsheng and Wang, Xiaohua and Dai, Jifeng},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={16804--16815},
+  year={2022}
+}
+
+@article{zhu2022uni,
+  title={Uni-perceiver-moe: Learning sparse generalist models with conditional moes},
+  author={Zhu, Jinguo and Zhu, Xizhou and Wang, Wenhai and Wang, Xiaohua and Li, Hongsheng and Wang, Xiaogang and Dai, Jifeng},
+  journal={arXiv preprint arXiv:2206.04674},
+  year={2022}
+}
+
+@article{li2022uni,
+  title={Uni-Perceiver v2: A Generalist Model for Large-Scale Vision and Vision-Language Tasks},
+  author={Li, Hao and Zhu, Jinguo and Jiang, Xiaohu and Zhu, Xizhou and Li, Hongsheng and Yuan, Chun and Wang, Xiaohua and Qiao, Yu and Wang, Xiaogang and Wang, Wenhai and others},
+  journal={arXiv preprint arXiv:2211.09808},
+  year={2022}
+}
+
+
 ```
