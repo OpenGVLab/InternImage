@@ -101,7 +101,7 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 </div>
 
 
-### 社区开源
+### 模型代码开源
 - [Coming] InternImage-H(1B)/G(3B)
 - [Coming] 各类downstream tasks
 - TensorRT 推理
@@ -203,6 +203,4 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
   journal={arXiv preprint arXiv:2211.09808},
   year={2022}
 }
-
-
 ```
