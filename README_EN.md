@@ -24,70 +24,77 @@
 This repository is an official implementation of the [InternImage: Exploring Large-Scale Vision Foundation Models with
 Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 
-[Paper](https://arxiv.org/abs/2211.05778) \| [Blog in Chinese](https://zhuanlan.zhihu.com/p/610772005)
+[Paper](https://arxiv.org/abs/2211.05778) \| [Blog in Chinese](https://zhuanlan.zhihu.com/p/610772005) | [Documents](./docs/)
 
-
-## Intern 2.5- Visual Universal Backbone Model with 3 Billion Parameter
-### Introduction
+<!-- ## Intern 2.5- Visual Universal Backbone Model with 3 Billion Parameter -->
+## Introduction
 On March 14, 2023, SenseTime and Shanghai AI Laboratory jointly released the multimodal multitask universal model "Intern 2.5". The model achieved multiple breakthroughs in multimodal multitask processing, and its excellent cross-modal task processing ability in text and image can provide efficient and accurate perception and understanding capabilities for general scenarios such as autonomous driving.
 
-### Highlights
-- 🏆 **The strongest visual universal backbone model with up to 3 billion parameters**
+## Overview
+
+<div align=center>
+<img src='./docs/figs/intern_pipeline.png' width=700>
+</div>
+
+
+## Highlights
+- :thumbsup: **The strongest visual universal backbone model with up to 3 billion parameters**
 - 🏆 **Won the "double championship" of ImageNet and COCO**
 - 🏆 **The highest accuracy in ImageNet among open-source models**
-- 🏆 **Achieved 65.4mAP on the COCO benchmark dataset for object detection, the only model that exceeded 65.0mAP**
+- 🏆 **Achieved `65.4 mAP` on the COCO benchmark dataset for object detection, the only model that exceeded `65.0 mAP`**
 
-### News
+## News
 - `Mar 14, 2023`: 🚀 Intern 2.5 is released！
 - `Feb 28, 2023`: 🚀 InternImage is accepted to CVPR 2023!
 - `Nov 18, 2022`: 🚀 InternImage-XL merged into [BEVFormer v2](https://arxiv.org/abs/2211.10439) achieves state-of-the-art performance of `63.4 NDS` on nuScenes Camera Only.
 - `Nov 10, 2022`: 🚀 InternImage-H achieves a new record `65.4 mAP` on COCO detection test-dev and `62.9 mIoU` on
 ADE20K, outperforming previous models by a large margin.
 
-### Dominating the Visual Benchmark
-#### 1. ImageNet
+## Performance on Classic Datasets
+### 1. ImageNet
 On the mainstream visual image classification dataset ImageNet, "Intern 2.5" achieved a Top-1 accuracy of 90.1% based solely on public data. Except for two unpublished models from Google and Microsoft and additional datasets, this is the only model with an accuracy exceeding 90.0%. It is also the highest accuracy and largest open-source model on ImageNet in the world.
 
 <div align=center>
-<img src='./figs/imagenet_leaderboard.png' width=600>
+<img src='./docs/figs/imagenet_leaderboard.png' width=600>
 </div>
 
-#### 2. COCO
+### 2. COCO
 On the COCO benchmark for object detection, "Intern 2.5" achieved a mAP of 65.4, which is the only model in the world that exceeded 65.0mAP and has already taken a substantial lead over Google and Microsoft.
 <div align=center>
-<img src='./figs/coco_leaderboard.png' width=600>
+<img src='./docs/figs/coco_leaderboard.png' width=600>
 </div>
 
 
+##  Cross-modal Applications between Text and Images
 
-
-###  Cross-modal Applications between Text and Images
-
-The "Intern 2.5" multimodal multitask universal model currently focuses on cross-modal tasks between text and images. The model can flexibly and accurately handle various tasks without fine-tuning, and has achieved impressive performance in cross-modal tasks such as "image captioning, text-to-image generation, and image-text retrieval".
-
-#### Image-to-text
-
-"Image-to-text" is a type of task in visual perception that can generate corresponding text based on a given image and a prompt sentence. "Intern 2.5" has strong comprehension ability in image captioning, visual question answering, visual reasoning, and text recognition. For example, in the scenario of autonomous driving, it can significantly improve the scene perception and understanding ability, efficiently and accurately assist the vehicle in judging the traffic signal status, road signs and other information, and provide effective perception information support for vehicle decision-making and planning.
+Cross-modal fusion of text and image is an important direction for general artificial intelligence, which can combine information from images, text, and other modalities to achieve a better understanding and cognition of the world. It has important and extensive applications in fields such as autonomous driving. The "Intern 2.5" multimodal and multitask universal model currently focuses on cross-modal tasks between text and image, and the model can flexibly and accurately handle various tasks without fine-tuning. It has achieved impressive results in cross-modal tasks such as "image-text retrieval, image-to-text generation, and text-to-image generation". In more than 20 publicly available datasets for single-modal and cross-modal tasks in different scenarios and tasks, "Intern 2.5" has achieved the best performance.
 
 <div align=center>
-<img src='./figs/img2text.png' width=600>
-</div>
-
-#### Text-to-image Generation
-
-"Text-to-image generation" is an important direction in AI Generated Content (AIGC). The "Text-to-image generation" capability of "Shusheng 2.5" can generate high-quality and realistic images that meet the user's creative needs based on the diffusion model generation algorithm. For example, in data-dependent scenarios such as autonomous driving, "Shusheng 2.5" can generate various realistic road traffic scenes, such as busy city streets, crowded lanes in rainy weather, and running dogs on the road, to assist in the development of autonomous driving systems and continuously improve the perception ability of Corner Case scenarios.
-
-<div align=center>
-<img src='./figs/text2img.png' width=600>
+<img src='./docs/figs/multi_task_sota.png' width=600>
 </div>
 
 
-#### Image and Text Retrieval
+### 1. Image and Text Retrieval
 
-"Image-text retrieval" is the ability to retrieve the most semantically relevant images based on text content. "Intern 2.5" has powerful image-text retrieval capabilities, which can be applied to both videos and image collections, and can further combine object detection boxes. It has a rich application mode, helping users to find the desired image resources more conveniently and quickly.
+"Intern 2.5" can quickly locate and retrieve the most semantically relevant images based on the content of the text. This capability can be applied to both videos and image collections, and can also be further combined with object detection boxes, providing a variety of application modes to help users find the desired image resources more conveniently and quickly. For example, it can return the relevant images specified in the text in the photo album.
 
 <div align=center>
-<img src='./figs/image_text_retrieval.png' width=600>
+<img src='./docs/figs/image_text_retrieval.png' width=600>
+</div>
+
+### 2. Image-to-text
+"Intern 2.5" has strong comprehension abilities in "image-to-text generation" in various aspects such as image captioning, visual question answering, visual reasoning, and text recognition. For example, in the field of autonomous driving, it can enhance the vehicle's perception and understanding ability of the scene, assist the vehicle in judging traffic signal light status, road signs, and other information, and provide effective perceptual information support for vehicle decision-making and planning.
+
+<div align=center>
+<img src='./docs/figs/img2text.png' width=600>
+</div>
+
+#### 3. Text-to-image 
+
+The "Text-to-image generation" capability of "Intern 2.5" can generate high-quality and realistic images that meet the user's creative needs based on the diffusion model generation algorithm. For example, in data-dependent scenarios such as autonomous driving, "Intern 2.5" can generate various realistic road traffic scenes, such as busy city streets, crowded lanes in rainy weather, and running dogs on the road, to assist in the development of autonomous driving systems and continuously improve the perception ability of Corner Case scenarios.
+
+<div align=center>
+<img src='./docs/figs/text2img.png' width=600>
 </div>
 
 
@@ -98,23 +105,25 @@ InternImage, the visual backbone network of "Intern 2.5," has a parameter size o
 
 
 <div align=center>
-<img src='./figs/network.png' width=600>
+<img src='./docs/figs/network.png' width=600>
 </div>
 
 
-### Model and Code Release
+### Project Release
 - [coming ] InternImage-H(1B)/G(3B)
 - [coming ] Model for other downstream tasks. 
-- TensorRT inference. 
-- Classification code of the InternImage series.
-- InternImage-T/S/B/L/XL ImageNet-1k pretrained model.
-- InternImage-L/XL ImageNet-22k pretrained model.
-- InternImage-T/S/B/L/XL detection and instance segmentation model.
-- InternImage-T/S/B/L/XL semantic segmentation model.
+- 🚀 TensorRT inference. 
+- 🚀 Classification code of the InternImage series.
+- 🚀 InternImage-T/S/B/L/XL ImageNet-1k pretrained model.
+- 🚀 InternImage-L/XL ImageNet-22k pretrained model.
+- 🚀 InternImage-T/S/B/L/XL detection and instance segmentation model.
+- 🚀 InternImage-T/S/B/L/XL semantic segmentation model.
 
 
-<!-- ## InterImage介绍
-InterImage网络采用可变形卷积作为核心算子，可以自适应地调整卷积的位置和组合方式，从而为多功能视觉感知提供强大的表示。我们的模型使得从海量数据中学习更强大和鲁棒的大规模参数模型成为可能，其可以作为计算机视觉任务的通用主干网络，从而可以支撑各类计算机视觉任务。 -->
+## Model Zoo
+- Object Detection and Instance Segmentation: [COCO](detection/configs/mask_rcnn/)
+
+- Semantic Segmentation: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
 
 
 ### Performance on Visual Benchmark
@@ -186,7 +195,7 @@ If this work is helpful for your research, please consider citing the following 
 @inproceedings{zhu2022uni,
   title={Uni-perceiver: Pre-training unified architecture for generic perception for zero-shot and few-shot tasks},
   author={Zhu, Xizhou and Zhu, Jinguo and Li, Hao and Wu, Xiaoshi and Li, Hongsheng and Wang, Xiaohua and Dai, Jifeng},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  booktitle={CVPR},
   pages={16804--16815},
   year={2022}
 }
@@ -203,5 +212,27 @@ If this work is helpful for your research, please consider citing the following 
   author={Li, Hao and Zhu, Jinguo and Jiang, Xiaohu and Zhu, Xizhou and Li, Hongsheng and Yuan, Chun and Wang, Xiaohua and Qiao, Yu and Wang, Xiaogang and Wang, Wenhai and others},
   journal={arXiv preprint arXiv:2211.09808},
   year={2022}
+}
+
+@article{yang2022bevformer,
+  title={BEVFormer v2: Adapting Modern Image Backbones to Bird's-Eye-View Recognition via Perspective Supervision},
+  author={Yang, Chenyu and Chen, Yuntao and Tian, Hao and Tao, Chenxin and Zhu, Xizhou and Zhang, Zhaoxiang and Huang, Gao and Li, Hongyang and Qiao, Yu and Lu, Lewei and others},
+  journal={arXiv preprint arXiv:2211.10439},
+  year={2022}
+}
+
+@article{su2022towards,
+  title={Towards All-in-one Pre-training via Maximizing Multi-modal Mutual Information},
+  author={Su, Weijie and Zhu, Xizhou and Tao, Chenxin and Lu, Lewei and Li, Bin and Huang, Gao and Qiao, Yu and Wang, Xiaogang and Zhou, Jie and Dai, Jifeng},
+  journal={arXiv preprint arXiv:2211.09807},
+  year={2022}
+}
+
+@inproceedings{li2022bevformer,
+  title={Bevformer: Learning bird’s-eye-view representation from multi-camera images via spatiotemporal transformers},
+  author={Li, Zhiqi and Wang, Wenhai and Li, Hongyang and Xie, Enze and Sima, Chonghao and Lu, Tong and Qiao, Yu and Dai, Jifeng},
+  booktitle={ECCV},
+  pages={1--18},
+  year={2022},
 }
 ```
