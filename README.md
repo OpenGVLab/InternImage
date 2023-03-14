@@ -1,7 +1,8 @@
+<p align="center">
+  <a href="./README_EN.md">English Version</a>
+</p>
+
 # 书生2.5 - 多模态多任务通用大模型
-<div align=center>
-<img src='./docs/figs/log.png' width=600>
-</div>
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-coco)](https://paperswithcode.com/sota/object-detection-on-coco?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-coco-minival)](https://paperswithcode.com/sota/object-detection-on-coco-minival?p=internimage-exploring-large-scale-vision)
@@ -23,15 +24,15 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places205)](https://paperswithcode.com/sota/image-classification-on-places205?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-imagenet)](https://paperswithcode.com/sota/image-classification-on-imagenet?p=internimage-exploring-large-scale-vision)
 
-<!-- 这个代码仓库是InterImage的官方实现。 [InternImage: Exploring Large-Scale Vision Foundation Models with
-Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
+这个代码仓库是[InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions](https://arxiv.org/abs/2211.05778)的官方实现，包含以下功能：
 
+> Image Classification, Object Detection and Instance Segmentation: See [InterImage](https://github.com/OpenGVLab/InternImage)
+
+> Image and Text Retrieval and Image-to-Text: See [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
+
+> 3D detection: See [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
 [文章](https://arxiv.org/abs/2211.05778) \| [博客](https://zhuanlan.zhihu.com/p/610772005) | [文档](./docs/)
-
-
-
-<!-- ## 书生2.5-30亿参数视觉通用主干模型 -->
 ## 简介
 商汤科技与上海人工智能实验室在2023年3月14日联合发布多模态多任务通用大模型“书生2.5”。“书生2.5”在多模态多任务处理能力中斩获多项全新突破，其卓越的图文跨模态任务处理能力可为自动驾驶等通用场景任务提供高效精准的感知和理解能力支持。“书生2.5”致力于多模态多任务通用模型的构建，旨在接收处理各种不同模态的输入，并采用统一的模型架构和参数处理各种不同的任务，促进不同模态和任务之间在表示学习方面的协作，逐步实现通用人工智能领域的融会贯通。
 
@@ -44,7 +45,6 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 
 ## 亮点
 - :thumbsup: **高达30亿参数的最强视觉通用主干模型**
-- 🏆 **斩获ImageNet和COCO“双料冠军”**
 - 🏆 **开源模型中ImageNet准确度最高**
 - 🏆 **物体检测标杆数据集COCO `65.4 mAP`，唯一超过`65.0 mAP`的模型**
 
@@ -56,27 +56,88 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 - 2022年11月10日: 🚀 InternImage-H 在ADE20k语义分割数据集上取得 `62.9 mIoU` 的SOTA性能！
 
 ## 经典数据集性能
-### 1. ImageNet
+1. ImageNet
 在图像分类标杆数据集ImageNet上，“书生2.5”仅基于公开数据便达到了 90.1% 的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型。
 
-<div align=center>
-<img src='./docs/figs/imagenet_leaderboard.png' width=600>
-</div>
+2. COCO
+在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.4 的 mAP，是世界上唯一超过65.0mAP的模型。
 
-### 2. COCO
-在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.4 的 mAP，是世界上唯一超过65.0mAP的模型，已经领先谷歌和微软。
-<div align=center>
-<img src='./docs/figs/coco_leaderboard.png' width=600>
-</div>
 
 ## 图文跨模态应用
-图文跨模态是通用人工智能的重要方向，可以结合图像、文本等信息来实现对世界的理解和认知，在自动驾驶等领域具有重要且广泛的应用前景。“书生2.5”多模态多任务通用模型当前专注于图文跨模态任务，模型无需微调，便可灵活、精准地应对各式任务，并在“图文检索、以图生文和以文生图和”等图文跨模态任务上都取得了令人印象深刻的表现。在20余个不同场景不同任务的单模态和跨模态公开数据集， “书生2.5”都取得了最佳成绩。
-<div align=center>
-<img src='./docs/figs/multi_task_sota.png' width=600>
+图文跨模态是通用人工智能的重要方向，可以结合图像、文本等信息来实现对世界的理解和认知，在自动驾驶等领域具有重要且广泛的应用前景。“书生2.5”多模态多任务通用模型当前专注于图文跨模态任务，模型无需微调，便可灵活、精准地应对各式任务。
+
+### 1. 单模态和跨模态任务性能
+<div align="center">
+
+**分类**
+
+<table border="1" width="100%">
+	<tr align="center">
+        <th colspan="1"> 图像分类</th><th colspan="2"> 场景分类 </th><th colspan="1">长尾分类</th>
+    </tr>
+    <tr align="center">
+        <th>ImageNet</th><th>Places365</th><th>Places 205</th><th>iNaturalist 2018</th>
+    </tr>
+    <tr align="center">
+        <th>90.1</th><th>61.2</th><th>71.7</th><th>92.3</th>
+    </tr>
+</table>
+<br>
+
+
+**检测**
+<table border="1" width="100%">
+	<tr align="center">
+        <th colspan="3"> 常规物体检测</th><th colspan="4">长尾物体检测 </th><th colspan="1">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
+    </tr>
+    <tr align="center">
+        <th>COCO</th><th>VOC 2007</th><th>VOC 2012</th><th>OpenImage</th><th>LVIS minival</th><th>LVIS val</th><th>BDD100K</th><th>nuScenes</th><th>CrowdHuman</th>
+    </tr>
+    <tr align="center">
+        <th>65.5</th><th>94.0</th><th>97.2</th><th>74.1</th><th>62.5</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
+    </tr>
+</table>
+<br>
+
+**分割**
+
+<table border="1" width="100%">
+	<tr align="center">
+        <th colspan="3"> 语义分割</th><th colspan="1">街景分割</th><th colspan="1">RGBD分割</th>
+    </tr>
+    <tr align="center">
+        <th>ADE20K</th><th>COCO Stuff-10K</th><th>Pascal Context</th><th>CityScapes</th><th>NYU Depth V2</th>
+    </tr>
+    <tr align="center">
+        <th>62.9</th><th>59.6</th><th>70.3</th><th>86.1</th><th>69.7</th>
+    </tr>
+</table>
+<br>
+
+**图文**
+
+<table border="1" width="100%">
+	<tr align="center">
+        <th colspan="1"> 图像描述</th><th colspan="2">微调图文检索</th><th colspan="1">零样本图文检索</th>
+    </tr>
+    <tr align="center">
+        <th>COCO Caption</th><th>COCO Caption</th><th>Flickr30k</th><th>Flickr30k</th>
+    </tr>
+    <tr align="center">
+        <th>148.2</th><th>76.4</th><th>94.8</th><th>89.1</th>
+    </tr>
+</table>
+<br>
+
 </div>
 
 
-### 1. 图文检索
+<!-- <div align=center>
+<img src='./docs/figs/multi_task_sota.png' width=600>
+</div> -->
+
+
+### 2. 图文检索
 
 “书生2.5”可根据文本内容需求快速定位检索出语义最相关的图像。这一能力既可应用于视频和图像集合，也可进一步结合物体检测框，具有丰富的应用模式，帮助用户更便捷、快速地找到所需图像资源, 例如可在相册中返回文本所指定的相关图像。
 
@@ -84,20 +145,13 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 <img src='./docs/figs/image_text_retrieval.png' width=600>
 </div>
 
-### 2. 以图生文
+### 3. 以图生文
 
 “书生2.5”的“以图生文”在图像描述、视觉问答、视觉推理和文字识别等多个方面均拥有强大的理解能力。例如在自动驾驶场景下，可以提升场景感知理解能力，辅助车辆判断交通信号灯状态、道路标志牌等信息，为车辆的决策规划提供有效的感知信息支持。
 
 <div align=center>
 <img src='./docs/figs/img2text.png' width=600>
 </div>
-
-### 3. 以文生图
-“书生2.5”的“以文生图”能力，可根据用户提出的文本创作需求，利用扩散模型生成算法，生成满足需求的高质量、自然的写实图像。例如，针对自动驾驶等数据依赖场景，“书生2.5”可以生成各类真实的道路交通场景，如繁忙的城市街道、雨天拥挤的车道、马路上奔跑的狗等，从而辅助自动驾驶系统的研发，不断提高Corner Case场景的感知能力上限。
-<div align=center>
-<img src='./docs/figs/text2img.png' width=600>
-</div>
-
 
 
 ## 核心技术
@@ -136,11 +190,11 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 | InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |   97M   |  16G  |          -          | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_b_1k_224.pth) \| [cfg](classification/configs/internimage_b_1k_224.yaml) |
 | InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M   | 108G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22kto1k_384.pth) \| [cfg](classification/configs/internimage_l_22kto1k_384.yaml) |
 | InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
-| InternImage-H | ImageNet-22K |  224x224   | 88.9  |  1.08B   | 188G  | TBD         | TBD |
-| InternImage-H | ImageNet-22K |  640x640   | 89.6  |  1.08B   | 1478G  |TBD           | TBD |
-| InternImage-G | ImageNet-22K |  640x640   | 90.1  |  3B   | -  |  TBD      | TBD|
+| InternImage-H | Joint 427M |  224x224   | 88.9  |  1.08B   | 188G  | TBD         | TBD |
+| InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  |TBD           | TBD |
+| InternImage-G | Joint 427M |  640x640   | 90.1  |  3B   | -  |  TBD      | TBD|
 
-**COCO目标检测和实例分割**
+**COCO minival 目标检测和实例分割**
 
 |    backbone    |       method       | schd | box mAP | mask mAP | #param | FLOPs | Download | 
 | :------------: | :----------------: | :---------: | :-----: | :------: | :-----: | :---: | :---: | 
@@ -154,8 +208,8 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 | InternImage-L  |     Cascade        |     3x      |  56.1   |   48.5   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_3x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_l_fpn_3x_coco.py) |
 | InternImage-XL |     Cascade        |     1x      |  55.3   |   48.1   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_1x_coco.py) |
 | InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_3x_coco.py) |
-| InternImage-H |     DINO        |     3x      |  65.0   |   -   |  2.18B   | TBD |  TBD |
-| InternImage-G |     DINO        |     3x      |  65.3   |   -   |  3B   | TBD |  TBD |
+| InternImage-H |     DINO (TTA)        |     3x      |  65.0   |   -   |  2.18B   | TBD |  TBD |
+| InternImage-G |     DINO (TTA)       |     3x      |  65.3   |   -   |  3B   | TBD |  TBD |
 
 **ADE20K语义分割**
 
@@ -237,3 +291,7 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
   year={2022},
 }
 ```
+
+<div align=center>
+<img src='./docs/figs/log.png' width=600>
+</div>
