@@ -21,15 +21,15 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/2d-object-detection-on-bdd100k-val)](https://paperswithcode.com/sota/2d-object-detection-on-bdd100k-val?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-imagenet)](https://paperswithcode.com/sota/image-classification-on-imagenet?p=internimage-exploring-large-scale-vision)
 
-This repository is an official implementation of the [InternImage: Exploring Large-Scale Vision Foundation Models with
-Deformable Convolutions](https://arxiv.org/abs/2211.05778).
+<!-- 这个代码仓库是InterImage的官方实现。 [InternImage: Exploring Large-Scale Vision Foundation Models with
+Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 
-[Paper](https://arxiv.org/abs/2211.05778) \| [Blog in Chinese](https://zhuanlan.zhihu.com/p/610772005)
+[文章](https://arxiv.org/abs/2211.05778) \| [博客](https://zhuanlan.zhihu.com/p/610772005)
 
 
 <!-- ## 书生2.5-30亿参数视觉通用主干模型 -->
 ## 简介
-商汤科技与上海人工智能实验室在2023年3月14日联合发布多模态多任务通用大模型“书生2.5”。“书生2.5”在多模态多任务处理能力中斩获多项全新突破，其卓越的图文跨模态任务处理能力可为自动驾驶等通用场景任务提供高效精准的感知和理解能力支持。此次全新发布的“书生2.5”致力于多模态多任务通用模型的构建，旨在接收处理各种不同模态的输入，并采用统一的模型架构和参数处理各种不同的任务，促进不同模态和任务之间在表示学习方面的协作，逐步实现通用人工智能领域的融会贯通。
+商汤科技与上海人工智能实验室在2023年3月14日联合发布多模态多任务通用大模型“书生2.5”。“书生2.5”在多模态多任务处理能力中斩获多项全新突破，其卓越的图文跨模态任务处理能力可为自动驾驶等通用场景任务提供高效精准的感知和理解能力支持。“书生2.5”致力于多模态多任务通用模型的构建，旨在接收处理各种不同模态的输入，并采用统一的模型架构和参数处理各种不同的任务，促进不同模态和任务之间在表示学习方面的协作，逐步实现通用人工智能领域的融会贯通。
 
 ## 概览图
 
@@ -51,7 +51,7 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 - 2022年11月10日: 🚀 InternImage-H 在COCO目标检测任务上以 `65.4 mAP` 斩获冠军，是唯一突破 `65 mAP` 的超强物体检测模型！
 - 2022年11月10日: 🚀 InternImage-H 在ADE20k语义分割数据集上取得 `62.9 mIoU` 的SOTA性能！
 
-## 霸榜视觉标杆数据集
+## 标杆数据集性能
 ### 1. ImageNet
 在图像分类标杆数据集ImageNet上，“书生2.5”仅基于公开数据便达到了 90.1% 的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型。
 
@@ -60,38 +60,40 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 </div>
 
 ### 2. COCO
-在物体检测标杆数据集COCO上，“书生2.5” 取得了65.4的mAP，是世界上唯一超过65.0mAP的模型，已经大幅领先谷歌和微软。
+在物体检测标杆数据集COCO上，“书生2.5” 取得了65.4的mAP，是世界上唯一超过65.0mAP的模型，已经领先谷歌和微软。
 <div align=center>
 <img src='./figs/coco_leaderboard.png' width=600>
 </div>
 
-
-
 ## 图文跨模态应用
-图文跨模态是通用人工智能的重要方向，可以结合图像、文本等信息来实现对世界的理解和认知，在自动驾驶等领域具有重要且广泛的应用前景。“书生2.5”多模态多任务通用模型当前专注于图文跨模态任务，模型无需微调，便可灵活、精准地应对各式任务，并在“以图生文、以文生图和图文检索”等图文跨模态任务上都取得了令人印象深刻的表现。
-
-### 1. 以图生文
-
-“书生2.5”的“以图生文”在图像描述、视觉问答、视觉推理和文字识别等多个方面均拥有强大的理解能力。例如在自动驾驶场景下，可以大幅提升场景感知理解能力，高效准确地辅助车辆判断交通信号灯状态、道路标志牌等信息，为车辆的决策规划提供有效的感知信息支持。
-
+图文跨模态是通用人工智能的重要方向，可以结合图像、文本等信息来实现对世界的理解和认知，在自动驾驶等领域具有重要且广泛的应用前景。“书生2.5”多模态多任务通用模型当前专注于图文跨模态任务，模型无需微调，便可灵活、精准地应对各式任务，并在“图文检索、以图生文和以文生图和”等图文跨模态任务上都取得了令人印象深刻的表现。在20余个不同场景不同任务的单模态和跨模态公开数据集， “书生2.5”都取得了最佳成绩。
 <div align=center>
-<img src='./figs/img2text.png' width=600>
-</div>
-
-### 2. 以文生图
-“书生2.5”的“以文生图”能力，可根据用户提出的文本创作需求，利用扩散模型生成算法，精准地生成满足需求的高质量、自然的写实图像。例如，针对自动驾驶等数据依赖场景，“书生2.5”可以生成各类真实的道路交通场景，如繁忙的城市街道、雨天拥挤的车道、马路上奔跑的狗等，从而辅助自动驾驶系统的研发，不断提高Corner Case场景的感知能力上限。
-<div align=center>
-<img src='./figs/text2img.png' width=600>
+<img src='./figs/multi_task_sota.png' width=600>
 </div>
 
 
-### 3. 图文检索
+### 1. 图文检索
 
 “书生2.5”可根据文本内容需求快速定位检索出语义最相关的图像。这一能力既可应用于视频和图像集合，也可进一步结合物体检测框，具有丰富的应用模式，帮助用户更便捷、快速地找到所需图像资源, 例如可在相册中返回文本所指定的相关图像。
 
 <div align=center>
 <img src='./figs/image_text_retrieval.png' width=600>
 </div>
+
+### 2. 以图生文
+
+“书生2.5”的“以图生文”在图像描述、视觉问答、视觉推理和文字识别等多个方面均拥有强大的理解能力。例如在自动驾驶场景下，可以提升场景感知理解能力，辅助车辆判断交通信号灯状态、道路标志牌等信息，为车辆的决策规划提供有效的感知信息支持。
+
+<div align=center>
+<img src='./figs/img2text.png' width=600>
+</div>
+
+### 3. 以文生图
+“书生2.5”的“以文生图”能力，可根据用户提出的文本创作需求，利用扩散模型生成算法，生成满足需求的高质量、自然的写实图像。例如，针对自动驾驶等数据依赖场景，“书生2.5”可以生成各类真实的道路交通场景，如繁忙的城市街道、雨天拥挤的车道、马路上奔跑的狗等，从而辅助自动驾驶系统的研发，不断提高Corner Case场景的感知能力上限。
+<div align=center>
+<img src='./figs/text2img.png' width=600>
+</div>
+
 
 
 ## 核心技术
