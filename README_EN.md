@@ -25,21 +25,20 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 
 [Paper](https://arxiv.org/abs/2211.05778) \| [Blog in Chinese](https://zhuanlan.zhihu.com/p/610772005) | [Documents](./docs/)
 
-<!-- ## Intern 2.5- Visual Universal Backbone Model with 3 Billion Parameter -->
+
 ## Introduction
-On March 14, 2023, SenseTime and Shanghai AI Laboratory jointly released the multimodal multitask universal model "INTERN-2.5". The model achieved multiple breakthroughs in multimodal multitask processing, and its excellent cross-modal task processing ability in text and image can provide efficient and accurate perception and understanding capabilities for general scenarios such as autonomous driving.
+SenseTime and Shanghai AI Laboratory jointly released the multimodal multitask universal model "INTERN-2.5" on March 14, 2023. "INTERN-2.5" achieved multiple breakthroughs in multimodal multitask processing, and its excellent cross-modal task processing ability in text and image can provide efficient and accurate perception and understanding capabilities for general scenarios such as autonomous driving.
 
 ## Overview
 
 <div align=left>
-<img src='./docs/figs/intern_pipeline.png' width=900>
+<img src='./docs/figs/intern_pipeline_en.png' width=900>
 </div>
-
 
 ## Highlights
 - :thumbsup: **The strongest visual universal backbone model with up to 3 billion parameters**
 - 🏆 **Achieved Top1 accuracy rate of 90.1% in ImageNet, the most accurate among open-source models**
-- 🏆 **Achieved `65.4 mAP` on the COCO benchmark dataset for object detection, the only model that exceeded `65.0 mAP`**
+- 🏆 **Achieved `65.5 mAP` on the COCO benchmark dataset for object detection, the only model that exceeded `65.0 mAP`**
 
 ## News
 - `Mar 14, 2023`: 🚀 "INTERN-2.5" is released！
@@ -139,7 +138,7 @@ ADE20K, outperforming previous models by a large margin.
 ## Technologies Introduction
 The outstanding performance of "INTERN-2.5" in the field of cross-modal learning is due to several innovations in the core technology of multi-modal multi-task universal model, including the development of InternImage as the backbone network for visual perception, LLM as the large-scale text pre-training network for text processing, and Uni-Perceiver as the compatible decoding modeling for multi-task learning.
 
-InternImage, the visual backbone network of "INTERN-2.5"， has a parameter size of up to 3 billion and can adaptively adjust the position and combination of convolutions based on dynamic sparse convolution operators, providing powerful representations for multi-functional visual perception. Uni-Perceiver, a versatile task decoding model, encodes data from different modalities into a unified representation space and unifies different tasks into the same task paradigm, enabling simultaneous processing of various modalities and tasks with the same task architecture and shared model parameters.
+InternImage, the visual backbone network of "INTERN-2.5", has a parameter size of up to 3 billion and can adaptively adjust the position and combination of convolutions based on dynamic sparse convolution operators, providing powerful representations for multi-functional visual perception. Uni-Perceiver, a versatile task decoding model, encodes data from different modalities into a unified representation space and unifies different tasks into the same task paradigm, enabling simultaneous processing of various modalities and tasks with the same task architecture and shared model parameters.
 
 
 <div align=left>
