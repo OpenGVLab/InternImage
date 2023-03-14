@@ -11,20 +11,24 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-pascal-voc-2012)](https://paperswithcode.com/sota/object-detection-on-pascal-voc-2012?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-openimages-v6)](https://paperswithcode.com/sota/object-detection-on-openimages-v6?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-crowdhuman-full-body)](https://paperswithcode.com/sota/object-detection-on-crowdhuman-full-body?p=internimage-exploring-large-scale-vision)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/2d-object-detection-on-bdd100k-val)](https://paperswithcode.com/sota/2d-object-detection-on-bdd100k-val?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-ade20k)](https://paperswithcode.com/sota/semantic-segmentation-on-ade20k?p=internimage-exploring-large-scale-vision)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-cityscapes)](https://paperswithcode.com/sota/semantic-segmentation-on-cityscapes?p=internimage-exploring-large-scale-vision)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-cityscapes-val)](https://paperswithcode.com/sota/semantic-segmentation-on-cityscapes-val?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-pascal-context)](https://paperswithcode.com/sota/semantic-segmentation-on-pascal-context?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-coco-stuff-test)](https://paperswithcode.com/sota/semantic-segmentation-on-coco-stuff-test?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/bevformer-v2-adapting-modern-image-backbones/3d-object-detection-on-nuscenes-camera-only)](https://paperswithcode.com/sota/3d-object-detection-on-nuscenes-camera-only?p=bevformer-v2-adapting-modern-image-backbones)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-inaturalist-2018)](https://paperswithcode.com/sota/image-classification-on-inaturalist-2018?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places365)](https://paperswithcode.com/sota/image-classification-on-places365?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places205)](https://paperswithcode.com/sota/image-classification-on-places205?p=internimage-exploring-large-scale-vision)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/2d-object-detection-on-bdd100k-val)](https://paperswithcode.com/sota/2d-object-detection-on-bdd100k-val?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-imagenet)](https://paperswithcode.com/sota/image-classification-on-imagenet?p=internimage-exploring-large-scale-vision)
 
 <!-- 这个代码仓库是InterImage的官方实现。 [InternImage: Exploring Large-Scale Vision Foundation Models with
 Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 
-[文章](https://arxiv.org/abs/2211.05778) \| [博客](https://zhuanlan.zhihu.com/p/610772005)
+
+[文章](https://arxiv.org/abs/2211.05778) \| [博客](https://zhuanlan.zhihu.com/p/610772005) | [文档](./docs/)
+
 
 
 <!-- ## 书生2.5-30亿参数视觉通用主干模型 -->
@@ -34,7 +38,7 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 ## 概览图
 
 <div align=center>
-<img src='./figs/intern_pipeline.png' width=700>
+<img src='./docs/figs/intern_pipeline.png' width=700>
 </div>
 
 
@@ -56,19 +60,19 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 在图像分类标杆数据集ImageNet上，“书生2.5”仅基于公开数据便达到了 90.1% 的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型。
 
 <div align=center>
-<img src='./figs/imagenet_leaderboard.png' width=600>
+<img src='./docs/figs/imagenet_leaderboard.png' width=600>
 </div>
 
 ### 2. COCO
 在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.4 的 mAP，是世界上唯一超过65.0mAP的模型，已经领先谷歌和微软。
 <div align=center>
-<img src='./figs/coco_leaderboard.png' width=600>
+<img src='./docs/figs/coco_leaderboard.png' width=600>
 </div>
 
 ## 图文跨模态应用
 图文跨模态是通用人工智能的重要方向，可以结合图像、文本等信息来实现对世界的理解和认知，在自动驾驶等领域具有重要且广泛的应用前景。“书生2.5”多模态多任务通用模型当前专注于图文跨模态任务，模型无需微调，便可灵活、精准地应对各式任务，并在“图文检索、以图生文和以文生图和”等图文跨模态任务上都取得了令人印象深刻的表现。在20余个不同场景不同任务的单模态和跨模态公开数据集， “书生2.5”都取得了最佳成绩。
 <div align=center>
-<img src='./figs/multi_task_sota.png' width=600>
+<img src='./docs/figs/multi_task_sota.png' width=600>
 </div>
 
 
@@ -77,7 +81,7 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 “书生2.5”可根据文本内容需求快速定位检索出语义最相关的图像。这一能力既可应用于视频和图像集合，也可进一步结合物体检测框，具有丰富的应用模式，帮助用户更便捷、快速地找到所需图像资源, 例如可在相册中返回文本所指定的相关图像。
 
 <div align=center>
-<img src='./figs/image_text_retrieval.png' width=600>
+<img src='./docs/figs/image_text_retrieval.png' width=600>
 </div>
 
 ### 2. 以图生文
@@ -85,13 +89,13 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 “书生2.5”的“以图生文”在图像描述、视觉问答、视觉推理和文字识别等多个方面均拥有强大的理解能力。例如在自动驾驶场景下，可以提升场景感知理解能力，辅助车辆判断交通信号灯状态、道路标志牌等信息，为车辆的决策规划提供有效的感知信息支持。
 
 <div align=center>
-<img src='./figs/img2text.png' width=600>
+<img src='./docs/figs/img2text.png' width=600>
 </div>
 
 ### 3. 以文生图
 “书生2.5”的“以文生图”能力，可根据用户提出的文本创作需求，利用扩散模型生成算法，生成满足需求的高质量、自然的写实图像。例如，针对自动驾驶等数据依赖场景，“书生2.5”可以生成各类真实的道路交通场景，如繁忙的城市街道、雨天拥挤的车道、马路上奔跑的狗等，从而辅助自动驾驶系统的研发，不断提高Corner Case场景的感知能力上限。
 <div align=center>
-<img src='./figs/text2img.png' width=600>
+<img src='./docs/figs/text2img.png' width=600>
 </div>
 
 
@@ -101,11 +105,11 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 
 
 <div align=center>
-<img src='./figs/network.png' width=600>
+<img src='./docs/figs/network.png' width=600>
 </div>
 
 
-## 模型代码开源
+## 项目功能
 - [Coming] InternImage-H(1B)/G(3B)
 - [Coming] 各类downstream tasks
 - 🚀 TensorRT 推理
@@ -116,14 +120,15 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 - 🚀 InternImage-T/S/B/L/XL语义分割模型
 
 
-<!-- ## InterImage介绍
-InterImage网络采用可变形卷积作为核心算子，可以自适应地调整卷积的位置和组合方式，从而为多功能视觉感知提供强大的表示。我们的模型使得从海量数据中学习更强大和鲁棒的大规模参数模型成为可能，其可以作为计算机视觉任务的通用主干网络，从而可以支撑各类计算机视觉任务。 -->
+## 开源模型
+- 目标检测和实例分割: [COCO](detection/configs/mask_rcnn/)
+- 语义分割: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
+
 
 
 ## 经典视觉任务性能
 
 **ImageNet图像分类**
-
 |      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |      22K model      |      1K model       |
 | :------------: | :----------: | :--------: | :---: | :-----: | :---: | :-----------------: | :-----------------: |
 | InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |   30M   |  5G   |          -          | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_t_1k_224.pth) \| [cfg](classification/configs/internimage_t_1k_224.yaml) |
@@ -156,6 +161,7 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
 
 |    backbone    | resolution | single scale | multi scale | #param | FLOPs | Download | 
 | :------------: | :--------: | :----------: | :---------: | :-----: | :---: |   :---:  |
+<<<<<<< HEAD
 | InternImage-T  |  512x512   |     47.9     |    48.1     |   59M   | 944G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_t_512_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_t_512_160k_ade20k.py) |
 | InternImage-S  |  512x512   |     50.1     |    50.9     |   80M   | 1017G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_s_512_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_s_512_160k_ade20k.py) |
 | InternImage-B  |  512x512   |     50.8     |    51.3     |  128M   | 1185G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_b_512_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_b_512_160k_ade20k.py) |
@@ -164,9 +170,10 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
 | InternImage-H |  896x896   |     59.9     |    60.3     |  1.12B   | 3566G | TBD |
 | InternImage-H |  896x896   |     62.5     |    62.9     |  1.31B   | 4635G | TBD |
 
+
 **模型推理速度**
 
-|      name      | resolution | #params | FLOPs | Batch 1 FPS(TensorRT) |
+|      name      | resolution | #param | FLOPs | Batch 1 FPS(TensorRT) |
 | :------------: | :--------: | :-----: | :---: | :-------------------: |
 | InternImage-T  |  224x224   |   30M   |  5G   |          156          |
 | InternImage-S  |  224x224   |   50M   |  8G   |          129          |
