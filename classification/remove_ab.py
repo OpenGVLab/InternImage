@@ -61,5 +61,4 @@ def remove_ab(m):
 model = torch.load(args.filename, map_location=torch.device('cpu'))
 model = remove_ab(model)
 # model['model_ema'] = remove_ab(model['model_ema'])
-
-torch.save(model, "./cls/ckpt_ms_rmab.pth")
+torch.save(model, args.filename.replace(".pth", "_rmab.pth"))
