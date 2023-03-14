@@ -72,8 +72,8 @@
 - 在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.5 的 mAP，是世界上唯一超过65 mAP的模型。
 - 在17个重要的视觉基础数据集上取得世界最好性能
 
-<div align="center">
-	
+<div align="left">
+<br>
 **分类任务**
 <table border="1" width="90%">
 	<tr align="center">
@@ -171,20 +171,20 @@
 
 “书生2.5”可根据文本内容需求快速定位检索出语义最相关的图像。这一能力既可应用于视频和图像集合，也可进一步结合物体检测框，具有丰富的应用模式，帮助用户更便捷、快速地找到所需图像资源, 例如可在相册中返回文本所指定的相关图像。
 
-<div align=center>
+<!-- <div align=center>
 <img src='./docs/figs/image_text_retrieval.png' width=800>
 </div>
-
+ -->
 - 以图生文
 
 “书生2.5”的“以图生文”在图像描述、视觉问答、视觉推理和文字识别等多个方面均拥有强大的理解能力。例如在自动驾驶场景下，可以提升场景感知理解能力，辅助车辆判断交通信号灯状态、道路标志牌等信息，为车辆的决策规划提供有效的感知信息支持。
 
-<div align=center>
+<!-- <div align=center>
 <img src='./docs/figs/img2text.png' width=800>
-</div>
+</div> -->
 
-<div align="center">
-
+<div align="left">
+<br>
 **图文多模态任务**
 <table border="1" width="90%">
 	<tr align="center">
