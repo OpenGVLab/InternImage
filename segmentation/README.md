@@ -101,7 +101,7 @@ For example, to train `InternImage-T` with 8 GPU on 1 node (total batch size 16)
 sh dist_train.sh configs/ade20k/upernet_internimage_t_512_160k_ade20k.py 8
 ```
 
-### Manage jobs with Srun
+### Manage Jobs with Srun
 
 For example, to train `InternImage-XL` with 8 GPU on 1 node (total batch size 16), run:
 
