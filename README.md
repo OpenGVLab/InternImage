@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="./README_EN.md">English Version</a>
+  <a href="./README_EN.md">[English Version]</a>
 </p>
 
 # 书生2.5 - 多模态多任务通用大模型
@@ -45,8 +45,8 @@
 
 ## 亮点
 - :thumbsup: **高达30亿参数的最强视觉通用主干模型**
-- 🏆 **开源模型中ImageNet准确度最高, 90.1% Top1准确率**
-- 🏆 **物体检测标杆数据集COCO `65.4 mAP`，唯一超过`65.0 mAP`的模型**
+- 🏆 **图像分类标杆数据集ImageNet `90.1% Top1`准确率，开源模型中准确度最高**
+- 🏆 **物体检测标杆数据集COCO `65.4 mAP`，唯一超过`65 mAP`的模型**
 
 ## 最新进展
 - 2023年3月14日: 🚀 书生2.5发布！
@@ -60,7 +60,7 @@
 在图像分类标杆数据集ImageNet上，“书生2.5”仅基于公开数据便达到了 90.1% 的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型。
 
 2. COCO:
-在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.4 的 mAP，是世界上唯一超过65.0mAP的模型。
+在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.4 的 mAP，是世界上唯一超过65 mAP的模型。
 
 
 ## 图文跨模态应用
@@ -131,7 +131,7 @@
 
 <!-- <div align="center"> -->
 
-<!-- **分类**
+<!-- 
 <table border="1" width="100%">
 	<tr align="center">
         <th colspan="3"> 图像分类</th><th colspan="4"> 场景分类 </th><th colspan="3">长尾分类</th>
@@ -149,7 +149,7 @@
         <th>COCO</th><th>VOC 2007</th><th>VOC 2012</th><th>OpenImage</th><th>LVIS minival</th><th>LVIS val</th><th>BDD100K</th><th>nuScenes</th><th>CrowdHuman</th>
     </tr>
     <tr align="center">
-        <th>65.5</th><th>94.0</th><th>97.2</th><th>74.1</th><th>62.5</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
+        <th>65.4</th><th>94.0</th><th>97.2</th><th>74.1</th><th>62.5</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
     </tr>
     <tr align="center">
         <th colspan="3"> 常规物体检测</th><th colspan="4">长尾物体检测 </th><th colspan="1">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
