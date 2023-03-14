@@ -49,7 +49,7 @@ ADE20K, outperforming previous models by a large margin.
 
 ## Applications
 
-### 1. Performance of Image Modality Tasks
+### 1. Performance on Image Modality Tasks
 - On the ImageNet benchmark dataset, 
 "INTERN-2.5" achieved a Top-1 accuracy of 90.1% using only publicly available data for image classification. This is the only model, besides two undisclosed models from Google and Microsoft and additional datasets, to achieve a Top-1 accuracy of over 90.0%. It is also the highest-accuracy open-source model on ImageNet and the largest model in scale in the world.
 - On the COCO object detection benchmark dataset, "INTERN-2.5" achieved a mAP of 65.5, making it the only model in the world to surpass 65 mAP.
