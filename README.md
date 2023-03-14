@@ -152,7 +152,7 @@
 - [ ] 各类下游任务
 - [x] InternImage-H(1B)/G(3B)
 - [x] TensorRT 推理
-- [x] InternImage系列分类代码
+- [x] InternImage 系列分类代码
 - [x] InternImage-T/S/B/L/XL ImageNet-1K 预训练模型
 - [x] InternImage-L/XL ImageNet-22K 预训练模型
 - [x] InternImage-T/S/B/L/XL 检测和实例分割模型
