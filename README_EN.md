@@ -89,7 +89,7 @@ Cross-modal fusion of text and image is an important direction for general artif
 <img src='./docs/figs/img2text.png' width=600>
 </div>
 
-#### 3. Text-to-image 
+### 3. Text-to-image 
 
 The "Text-to-image generation" capability of "Intern 2.5" can generate high-quality and realistic images that meet the user's creative needs based on the diffusion model generation algorithm. For example, in data-dependent scenarios such as autonomous driving, "Intern 2.5" can generate various realistic road traffic scenes, such as busy city streets, crowded lanes in rainy weather, and running dogs on the road, to assist in the development of autonomous driving systems and continuously improve the perception ability of Corner Case scenarios.
 
@@ -98,7 +98,7 @@ The "Text-to-image generation" capability of "Intern 2.5" can generate high-qual
 </div>
 
 
-### Technologies Introduction
+## Technologies Introduction
 The outstanding performance of "Intern 2.5" in the field of cross-modal learning is due to several innovations in the core technology of multi-modal multi-task universal model, including the development of InternImage as the backbone network for visual perception, LLM as the large-scale text pre-training network for text processing, and Uni-Perceiver as the compatible decoding modeling for multi-task learning.
 
 InternImage, the visual backbone network of "Intern 2.5," has a parameter size of up to 3 billion and can adaptively adjust the position and combination of convolutions based on dynamic sparse convolution operators, providing powerful representations for multi-functional visual perception. Uni-Perceiver, a versatile task decoding model, encodes data from different modalities into a unified representation space and unifies different tasks into the same task paradigm, enabling simultaneous processing of various modalities and tasks with the same task architecture and shared model parameters.
@@ -109,7 +109,7 @@ InternImage, the visual backbone network of "Intern 2.5," has a parameter size o
 </div>
 
 
-### Project Release
+## Project Release
 - [coming ] InternImage-H(1B)/G(3B)
 - [coming ] Model for other downstream tasks. 
 - 🚀 TensorRT inference. 
@@ -126,7 +126,7 @@ InternImage, the visual backbone network of "Intern 2.5," has a parameter size o
 - Semantic Segmentation: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
 
 
-### Performance on Visual Benchmark
+## Performance on Visual Benchmark
 
 **ImageNet Image Classification**
 
@@ -180,7 +180,7 @@ InternImage, the visual backbone network of "Intern 2.5," has a parameter size o
 | InternImage-XL |  384x384   |  335M   | 163G  |          47           |
 
 
-### Citation
+## Citation
 
 If this work is helpful for your research, please consider citing the following BibTeX entry.
 
