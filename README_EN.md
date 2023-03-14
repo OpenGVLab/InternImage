@@ -148,14 +148,14 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 
 ## Project Release
 - [ ] Model for other downstream 
-tasks. 
+tasks
 - [x] InternImage-H(1B)/G(3B)
-- [x] TensorRT inference. 
-- [x] Classification code of the InternImage series.
-- [x] InternImage-T/S/B/L/XL ImageNet-1k pretrained model.
-- [x] InternImage-L/XL ImageNet-22k pretrained model.
-- [x] InternImage-T/S/B/L/XL detection and instance segmentation model.
-- [x] InternImage-T/S/B/L/XL semantic segmentation model.
+- [x] TensorRT inference
+- [x] Classification code of the InternImage series
+- [x] InternImage-T/S/B/L/XL ImageNet-1k pretrained model
+- [x] InternImage-L/XL ImageNet-22k pretrained model
+- [x] InternImage-T/S/B/L/XL detection and instance segmentation model
+- [x] InternImage-T/S/B/L/XL semantic segmentation model
 
 
 ## Model Zoo
