@@ -50,8 +50,8 @@ test_pipeline = [
 optimizer = dict(
     _delete_=True, type='AdamW', lr=0.00006, betas=(0.9, 0.999), weight_decay=0.05,
     constructor='CustomLayerDecayOptimizerConstructor',
-    paramwise_cfg=dict(num_layers=30, layer_decay_rate=1.0,
-                       depths=[4, 4, 18, 4]))
+    paramwise_cfg=dict(num_layers=33, layer_decay_rate=1.0,
+                       depths=[4, 4, 21, 4]))
 lr_config = dict(_delete_=True, policy='poly',
                  warmup='linear',
                  warmup_iters=1500,

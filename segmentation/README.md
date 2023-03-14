@@ -54,9 +54,9 @@ sh ./make.sh
 python test.py
 ```
 
-## Data Preparation
+### Data Preparation
 
-Prepare ADE20K according to the [guidelines](https://github.com/open-mmlab/mmsegmentation/blob/master/docs/en/dataset_prepare.md#prepare-datasets) in MMSegmentation.
+Prepare datasets according to the [guidelines](https://github.com/open-mmlab/mmsegmentation/blob/master/docs/en/dataset_prepare.md#prepare-datasets) in MMSegmentation.
 
 
 ### Evaluation
@@ -70,16 +70,16 @@ sh dist_test.sh <config-file> <checkpoint> <gpu-num> --eval mIoU
 For example, to evaluate the `InternImage-T` with a single GPU:
 
 ```bash
-python test.py configs/upernet/upernet_internimage_t_512_160k_ade20k.py checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth --eval mIoU
+python test.py configs/ade20k/upernet_internimage_t_512_160k_ade20k.py checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth --eval mIoU
 ```
 
 For example, to evaluate the `InternImage-B` with a single node with 8 GPUs:
 
 ```bash
-sh dist_test.sh configs/upernet/upernet_internimage_b_512_160k_ade20k.py checkpoint_dir/seg/upernet_internimage_b_512_160k_ade20k.py 8 --eval mIoU
+sh dist_test.sh configs/ade20k/upernet_internimage_b_512_160k_ade20k.py checkpoint_dir/seg/upernet_internimage_b_512_160k_ade20k.py 8 --eval mIoU
 ```
 
-### Training on ADE20K
+### Training
 
 To train an `InternImage` on ADE20K, run:
 
@@ -87,16 +87,16 @@ To train an `InternImage` on ADE20K, run:
 sh dist_train.sh <config-file> <gpu-num>
 ```
 
-For example, to train `InternImage-T` with 8 GPU on 1 node, run:
+For example, to train `InternImage-T` with 8 GPU on 1 node (total batch size 16), run:
 
 ```bash
-sh dist_train.sh configs/upernet/upernet_internimage_t_512_160k_ade20k.py 8
+sh dist_train.sh configs/ade20k/upernet_internimage_t_512_160k_ade20k.py 8
 ```
 
 ### Manage jobs with Srun
 
-For example, to train `InternImage-XL` with 8 GPU on 1 node, run:
+For example, to train `InternImage-XL` with 8 GPU on 1 node (total batch size 16), run:
 
 ```bash
-GPUS=8 sh slurm_train.sh <partition> <job-name> configs/upernet/upernet_internimage_xl_640_160k_ade20k.py
+GPUS=8 sh slurm_train.sh <partition> <job-name> configs/ade20k/upernet_internimage_xl_640_160k_ade20k.py
 ```
