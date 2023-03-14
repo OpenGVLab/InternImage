@@ -46,7 +46,7 @@
 ## 亮点
 - :thumbsup: **高达30亿参数的最强视觉通用主干模型**
 - 🏆 **图像分类标杆数据集ImageNet `90.1% Top1`准确率，开源模型中准确度最高**
-- 🏆 **物体检测标杆数据集COCO `65.4 mAP`，唯一超过`65 mAP`的模型**
+- 🏆 **物体检测标杆数据集COCO `65.5 mAP`，唯一超过`65 mAP`的模型**
 
 ## 最新进展
 - 2023年3月14日: 🚀 书生2.5发布！
@@ -60,7 +60,7 @@
 在图像分类标杆数据集ImageNet上，“书生2.5”仅基于公开数据便达到了 90.1% 的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型。
 
 2. COCO:
-在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.4 的 mAP，是世界上唯一超过65 mAP的模型。
+在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.5 的 mAP，是世界上唯一超过65 mAP的模型。
 
 
 ## 图文跨模态应用
@@ -69,7 +69,7 @@
 ### 1. 单模态和跨模态任务性能
 <div align="center">
 
-**分类**
+**分类任务**
 <table border="1" width="90%">
 	<tr align="center">
         <th colspan="1"> 图像分类</th><th colspan="2"> 场景分类 </th><th colspan="1">长尾分类</th>
@@ -84,7 +84,7 @@
 <br>
 
 
-**检测**
+**检测任务**
 <table border="1" width="90%">
 	<tr align="center">
         <th colspan="4"> 常规物体检测</th><th colspan="3">长尾物体检测 </th><th colspan="1">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
@@ -98,7 +98,7 @@
 </table>
 <br>
 
-**分割**
+**分割任务**
 <table border="1" width="90%">
 	<tr align="center">
         <th colspan="3"> 语义分割</th><th colspan="1">街景分割</th><th colspan="1">RGBD分割</th>
@@ -112,7 +112,7 @@
 </table>
 <br>
 
-**图文**
+**图文多模态任务**
 <table border="1" width="90%">
 	<tr align="center">
         <th colspan="1"> 图像描述</th><th colspan="2">微调图文检索</th><th colspan="1">零样本图文检索</th>
@@ -149,7 +149,7 @@
         <th>COCO</th><th>VOC 2007</th><th>VOC 2012</th><th>OpenImage</th><th>LVIS minival</th><th>LVIS val</th><th>BDD100K</th><th>nuScenes</th><th>CrowdHuman</th>
     </tr>
     <tr align="center">
-        <th>65.4</th><th>94.0</th><th>97.2</th><th>74.1</th><th>62.5</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
+        <th>65.5</th><th>94.0</th><th>97.2</th><th>74.1</th><th>62.5</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
     </tr>
     <tr align="center">
         <th colspan="3"> 常规物体检测</th><th colspan="4">长尾物体检测 </th><th colspan="1">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
@@ -233,22 +233,22 @@
 | InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  |TBD           | TBD |
 | InternImage-G | Joint 427M |  640x640   | 90.1  |  3B   | -  |  TBD      | TBD|
 
-**COCO minival 目标检测和实例分割**
+**COCO目标检测和实例分割**
 
-|    backbone    |       method       | schd | box mAP | mask mAP | #param | FLOPs | Download | 
+|    backbone    |       method       | schd | box mAP (val/test) | mask mAP (val/test) | #param | FLOPs | Download | 
 | :------------: | :----------------: | :---------: | :-----: | :------: | :-----: | :---: | :---: | 
-| InternImage-T  |     Mask R-CNN     |     1x      |  47.2   |   42.5   |   49M   | 270G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_t_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_t_fpn_1x_coco.py) |
-| InternImage-T  |     Mask R-CNN     |     3x      |  49.1   |   43.7   |   49M   | 270G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_t_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_t_fpn_3x_coco.py) |
-| InternImage-S  |     Mask R-CNN     |     1x      |  47.8   |   43.3   |   69M   | 340G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_s_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_s_fpn_1x_coco.py) |
-| InternImage-S  |     Mask R-CNN     |     3x      |  49.7   |   44.5   |   69M   | 340G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_s_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_s_fpn_3x_coco.py) |
-| InternImage-B  |     Mask R-CNN     |     1x      |  48.8   |   44.0   |  115M   | 501G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_b_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_b_fpn_1x_coco.py) |
-| InternImage-B  |     Mask R-CNN     |     3x      |  50.3   |   44.8   |  115M   | 501G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_b_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_b_fpn_3x_coco.py) |
-| InternImage-L  |     Cascade        |     1x      |  54.9   |   47.7   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_l_fpn_1x_coco.py) |
-| InternImage-L  |     Cascade        |     3x      |  56.1   |   48.5   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_3x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_l_fpn_3x_coco.py) |
-| InternImage-XL |     Cascade        |     1x      |  55.3   |   48.1   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_1x_coco.py) |
-| InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_3x_coco.py) |
-| InternImage-H |     DINO (TTA)        |     3x      |  65.0   |   -   |  2.18B   | TBD |  TBD |
-| InternImage-G |     DINO (TTA)       |     3x      |  65.3   |   -   |  3B   | TBD |  TBD |
+| InternImage-T  |     Mask R-CNN     |     1x      |  47.2/-   |   42.5/-   |   49M   | 270G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_t_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_t_fpn_1x_coco.py) |
+| InternImage-T  |     Mask R-CNN     |     3x      |  49.1/-   |   43.7/-   |   49M   | 270G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_t_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_t_fpn_3x_coco.py) |
+| InternImage-S  |     Mask R-CNN     |     1x      |  47.8/-   |   43.3/-   |   69M   | 340G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_s_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_s_fpn_1x_coco.py) |
+| InternImage-S  |     Mask R-CNN     |     3x      |  49.7/-   |   44.5/-   |   69M   | 340G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_s_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_s_fpn_3x_coco.py) |
+| InternImage-B  |     Mask R-CNN     |     1x      |  48.8/-   |   44.0/-   |  115M   | 501G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_b_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_b_fpn_1x_coco.py) |
+| InternImage-B  |     Mask R-CNN     |     3x      |  50.3/-   |   44.8/-   |  115M   | 501G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_b_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_b_fpn_3x_coco.py) |
+| InternImage-L  |     Cascade        |     1x      |  54.9/-   |   47.7/-   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_l_fpn_1x_coco.py) |
+| InternImage-L  |     Cascade        |     3x      |  56.1/-   |   48.5/-   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_3x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_l_fpn_3x_coco.py) |
+| InternImage-XL |     Cascade        |     1x      |  55.3/-   |   48.1/-   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_1x_coco.py) |
+| InternImage-XL |     Cascade        |     3x      |  56.2/-   |   48.8/-   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_3x_coco.py) |
+| InternImage-H |     DINO (TTA)        |     3x      |  65.0/65.4  |   -/-   |  2.18B   | TBD |  TBD |
+| InternImage-G |     DINO (TTA)       |     3x      |  65.3/65.5  |   -/-   |  3B   | TBD |  TBD |
 
 **ADE20K语义分割**
 
