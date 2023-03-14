@@ -4,6 +4,14 @@ This folder contains the implementation of the InternImage for semantic segmenta
 
 Our segmentation code is developed on top of [MMSegmentation v0.27.0](https://github.com/open-mmlab/mmsegmentation/tree/v0.27.0).
 
+## Model Zoo
+
+- [x] [ADE20K](configs/ade20k/)
+- [x] [Cityscapes](configs/cityscapes/)
+- [ ] COCO-Stuff-164K
+- [ ] COCO-Stuff-10K
+- [ ] Pascal Context
+- [ ] NYU Depth V2
 
 ## Usage
 
@@ -29,7 +37,7 @@ conda activate internimage
 
 For examples, to install torch==1.11 with CUDA==11.3:
 ```bash
-pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
+pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
 - Install `timm==0.6.11` and `mmcv-full==1.5.0`:
@@ -54,9 +62,9 @@ sh ./make.sh
 python test.py
 ```
 
-## Data Preparation
+### Data Preparation
 
-Prepare ADE20K according to the [guidelines](https://github.com/open-mmlab/mmsegmentation/blob/master/docs/en/dataset_prepare.md#prepare-datasets) in MMSegmentation.
+Prepare datasets according to the [guidelines](https://github.com/open-mmlab/mmsegmentation/blob/master/docs/en/dataset_prepare.md#prepare-datasets) in MMSegmentation.
 
 
 ### Evaluation
@@ -70,16 +78,16 @@ sh dist_test.sh <config-file> <checkpoint> <gpu-num> --eval mIoU
 For example, to evaluate the `InternImage-T` with a single GPU:
 
 ```bash
-python test.py configs/upernet/upernet_internimage_t_512_160k_ade20k.py checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth --eval mIoU
+python test.py configs/ade20k/upernet_internimage_t_512_160k_ade20k.py checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth --eval mIoU
 ```
 
 For example, to evaluate the `InternImage-B` with a single node with 8 GPUs:
 
 ```bash
-sh dist_test.sh configs/upernet/upernet_internimage_b_512_160k_ade20k.py checkpoint_dir/seg/upernet_internimage_b_512_160k_ade20k.py 8 --eval mIoU
+sh dist_test.sh configs/ade20k/upernet_internimage_b_512_160k_ade20k.py checkpoint_dir/seg/upernet_internimage_b_512_160k_ade20k.pth 8 --eval mIoU
 ```
 
-### Training on ADE20K
+### Training
 
 To train an `InternImage` on ADE20K, run:
 
@@ -87,16 +95,26 @@ To train an `InternImage` on ADE20K, run:
 sh dist_train.sh <config-file> <gpu-num>
 ```
 
-For example, to train `InternImage-T` with 8 GPU on 1 node, run:
+For example, to train `InternImage-T` with 8 GPU on 1 node (total batch size 16), run:
 
 ```bash
-sh dist_train.sh configs/upernet/upernet_internimage_t_512_160k_ade20k.py 8
+sh dist_train.sh configs/ade20k/upernet_internimage_t_512_160k_ade20k.py 8
 ```
 
-### Manage jobs with Srun
+### Manage Jobs with Slurm
 
-For example, to train `InternImage-XL` with 8 GPU on 1 node, run:
+For example, to train `InternImage-XL` with 8 GPU on 1 node (total batch size 16), run:
 
 ```bash
-GPUS=8 sh slurm_train.sh <partition> <job-name> configs/upernet/upernet_internimage_xl_640_160k_ade20k.py
+GPUS=8 sh slurm_train.sh <partition> <job-name> configs/ade20k/upernet_internimage_xl_640_160k_ade20k.py
+```
+
+### Image Demo
+To inference a single image like this:
+```
+CUDA_VISIBLE_DEVICES=0 python image_demo.py \
+  data/ade/ADEChallengeData2016/images/validation/ADE_val_00000591.jpg \
+  configs/ade20k/upernet_internimage_t_512_160k_ade20k.py  \
+  checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth  \
+  --palette ade20k 
 ```
