@@ -1,5 +1,6 @@
 <p align="center">
-  <a href="./README_EN.md">[English Version]</a>
+<p>
+	<a href="./README_EN.md">[English Version]</a>
 </p>
 
 # 书生2.5 - 多模态多任务通用大模型
@@ -166,7 +167,7 @@
 
 </div> -->
 
-### 2. 跨模态任务性能
+### 2. 图文跨模态任务性能
 
 - 图文检索
 
