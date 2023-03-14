@@ -7,8 +7,7 @@ _base_ = [
     '../_base_/models/segformer_mit-b0.py', '../_base_/datasets/cityscapes_extra.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
-# TODO: load_from
-load_from = 'work_dirs/segformer_internimage_xl_512x1024_80k_mapillary/iter_80000.pth'
+load_from = 'https://github.com/OpenGVLab/InternImage/releases/download/seg_models/segformer_internimage_xl_512x1024_80k_mapillary.pth'
 model = dict(
     backbone=dict(
         _delete_=True,
