@@ -82,7 +82,7 @@ ADE20K, outperforming previous models by a large margin.
         <th>COCO</th><th>VOC 2007</th><th>VOC 2012</th><th>OpenImage</th><th>LVIS minival</th><th>LVIS val</th><th>BDD100K</th><th>nuScenes</th><th>CrowdHuman</th>
     </tr>
     <tr align="center">
-        <th>65.5</th><th>94.0</th><th>97.2</th><th>74.1</th><th>62.5</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
+        <th>65.5</th><th>94.0</th><th>97.2</th><th>74.1</th><th>65.8</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
     </tr>
 </table>
 <br>
