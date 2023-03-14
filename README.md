@@ -38,7 +38,7 @@
 
 ## 概览图
 
-<div align=center>
+<div align=left>
 <img src='./docs/figs/intern_pipeline.png' width=700>
 </div>
 
@@ -74,6 +74,7 @@
 
 <div align="left">
 <br>
+	
 **分类任务**
 <table border="1" width="90%">
 	<tr align="center">
@@ -179,7 +180,7 @@
 
 “书生2.5”的“以图生文”在图像描述、视觉问答、视觉推理和文字识别等多个方面均拥有强大的理解能力。例如在自动驾驶场景下，可以提升场景感知理解能力，辅助车辆判断交通信号灯状态、道路标志牌等信息，为车辆的决策规划提供有效的感知信息支持。
 
-<!-- <div align=center>
+<!-- <div align=left>
 <img src='./docs/figs/img2text.png' width=800>
 </div> -->
 
