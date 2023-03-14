@@ -42,13 +42,13 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 - :thumbsup: **高达30亿参数的最强视觉通用主干模型**
 - 🏆 **斩获ImageNet和COCO“双料冠军”**
 - 🏆 **开源模型中ImageNet准确度最高**
-- 🏆 **物体检测标杆数据集COCO `65.4 mAP`，唯一超过65.0 mAP的模型**
+- 🏆 **物体检测标杆数据集COCO `65.4 mAP`，唯一超过`65.0 mAP`的模型**
 
 ## 最新进展
 - 2023年3月14日: 🚀 书生2.5发布！
 - 2023年2月28日: 🚀 InternImage 被CVPR 2023接收!
 - 2022年11月18日: 🚀 基于 InternImage-XL 主干网络，[BEVFormer v2](https://arxiv.org/abs/2211.10439) 在nuScenes的纯视觉3D检测任务上取得了最佳性能 `63.4 NDS` ！
-- 2022年11月10日: 🚀 InternImage-H 在COCO目标检测任务上以 `65.4 mAP` 斩获冠军，是唯一突破 `65mAP` 的超强物体检测模型！
+- 2022年11月10日: 🚀 InternImage-H 在COCO目标检测任务上以 `65.4 mAP` 斩获冠军，是唯一突破 `65 mAP` 的超强物体检测模型！
 - 2022年11月10日: 🚀 InternImage-H 在ADE20k语义分割数据集上取得 `62.9 mIoU` 的SOTA性能！
 
 ## 霸榜视觉标杆数据集
@@ -87,7 +87,7 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 
 ### 3. 图文检索
 
-“书生2.5”可根据文本内容需求快速定位检索出语义最相关的图像。这一能力既可应用于视频和图像集合，也可进一步结合物体检测框，具有丰富的应用模式，帮助用户更便捷、快速地找到所需图像资源。
+“书生2.5”可根据文本内容需求快速定位检索出语义最相关的图像。这一能力既可应用于视频和图像集合，也可进一步结合物体检测框，具有丰富的应用模式，帮助用户更便捷、快速地找到所需图像资源, 例如可在相册中返回文本所指定的相关图像。
 
 <div align=center>
 <img src='./figs/image_text_retrieval.png' width=600>
