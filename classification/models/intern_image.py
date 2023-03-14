@@ -74,7 +74,6 @@ class CrossAttention(nn.Module):
                  qk_scale=None,
                  attn_drop=0.,
                  proj_drop=0.,
-                 window_size=None,
                  attn_head_dim=None,
                  out_dim=None):
         super().__init__()
@@ -157,7 +156,6 @@ class AttentiveBlock(nn.Module):
                  attn_drop=0.,
                  drop_path=0.,
                  norm_layer="LN",
-                 window_size=None,
                  attn_head_dim=None,
                  out_dim=None):
         super().__init__()
@@ -171,7 +169,6 @@ class AttentiveBlock(nn.Module):
                                         qk_scale=qk_scale,
                                         attn_drop=attn_drop,
                                         proj_drop=drop,
-                                        window_size=window_size,
                                         attn_head_dim=attn_head_dim,
                                         out_dim=out_dim)
 

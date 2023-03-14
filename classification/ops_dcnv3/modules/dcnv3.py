@@ -204,13 +204,11 @@ class DCNv3_pytorch(nn.Module):
             self.group, self.group_channels,
             self.offset_scale)
         if self.center_feature_scale:
-            x1 = x1.reshape(N, -1, H * W).permute(0, 2, 1)
-            center_feature_scale = self.center_feature_scale_module(x1,
-                                                                    self.center_feature_scale_proj_weight,
-                                                                    self.center_feature_scale_proj_bias)
-            # N, Len_q, n_heads -> N, Len_q, n_heads, 1 -> N, Len_q, n_heads, _d_per_head -> N, Len_q, d_model
-            center_feature_scale = center_feature_scale[..., None].repeat(1, 1, 1,
-                                                                          self.channels // self.group).flatten(-2)
+            center_feature_scale = self.center_feature_scale_module(
+                x1, self.center_feature_scale_proj_weight, self.center_feature_scale_proj_bias)
+            # N, H, W, groups -> N, H, W, groups, 1 -> N, H, W, groups, _d_per_group -> N, H, W, channels
+            center_feature_scale = center_feature_scale[..., None].repeat(
+                1, 1, 1, 1, self.channels // self.group).flatten(-2)
             x = x * (1 - center_feature_scale) + x_proj * center_feature_scale
         x = self.output_proj(x)
 
@@ -336,12 +334,11 @@ class DCNv3(nn.Module):
             256)
         
         if self.center_feature_scale:
-            center_feature_scale = self.center_feature_scale_module(x1,
-                                                                    self.center_feature_scale_proj_weight,
-                                                                    self.center_feature_scale_proj_bias)
+            center_feature_scale = self.center_feature_scale_module(
+                x1, self.center_feature_scale_proj_weight, self.center_feature_scale_proj_bias)
             # N, H, W, groups -> N, H, W, groups, 1 -> N, H, W, groups, _d_per_group -> N, H, W, channels
-            center_feature_scale = center_feature_scale[..., None].repeat(1, 1, 1, 1,
-                                                                          self.channels // self.group).flatten(-2)
+            center_feature_scale = center_feature_scale[..., None].repeat(
+                1, 1, 1, 1, self.channels // self.group).flatten(-2)
             x = x * (1 - center_feature_scale) + x_proj * center_feature_scale
         x = self.output_proj(x)
 

@@ -59,7 +59,7 @@ def convert_to_newop(m):
         if "fc_norm." in k:
             new_k = new_k.replace('fc_norm.', 'fc_norm.0.')
 
-        new_sd[new_k] = v
+        new_sd[new_k] = v.half()
 
     return new_sd
 

@@ -8,7 +8,7 @@ print(model.keys())
 new_model = {}
 for k, v in model.items():
     new_k = k
-    new_model[new_k] = v.half()
+    new_model[new_k] = v
     if "sampling_offsets" in new_k or "attention_weights" in new_k:
         n_levels = 1
         n_points = 8
@@ -47,7 +47,7 @@ for k, v in model.items():
                 v = torch.cat([part1, pad, part2], dim=2)
                 v = v.reshape(n_heads * n_levels * (n_points + 1), out_dim)
 
-        new_model[new_k] = v.half()
+        new_model[new_k] = v
         if "gamma" in new_k:
             print(new_k, v.shape)
 
