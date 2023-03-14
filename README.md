@@ -24,13 +24,13 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places205)](https://paperswithcode.com/sota/image-classification-on-places205?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-imagenet)](https://paperswithcode.com/sota/image-classification-on-imagenet?p=internimage-exploring-large-scale-vision)
 
-这个代码仓库是[InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions](https://arxiv.org/abs/2211.05778)的官方实现，包含以下功能及拓展：
+这个代码仓库是[InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions](https://arxiv.org/abs/2211.05778)的官方实现。
 
-> Image Classification, Object Detection and Instance Segmentation: See [InterImage](https://github.com/OpenGVLab/InternImage)
+<!-- > Image Classification, Object Detection, and Segmentation: See [InternImage](https://github.com/OpenGVLab/InternImage)
 
-> Image and Text Retrieval and Image-to-Text: See [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
+> Image and Text Retrieval, and Image-to-Text: See [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
 
-> 3D detection: See [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
+> 3D detection: See [BEVFormer](https://github.com/fundamentalvision/BEVFormer) -->
 
 [文章](https://arxiv.org/abs/2211.05778) \| [博客](https://zhuanlan.zhihu.com/p/610772005) | [文档](./docs/)
 ## 简介
@@ -45,7 +45,7 @@
 
 ## 亮点
 - :thumbsup: **高达30亿参数的最强视觉通用主干模型**
-- 🏆 **开源模型中ImageNet准确度最高**
+- 🏆 **开源模型中ImageNet准确度最高, 90.1% Top1准确率**
 - 🏆 **物体检测标杆数据集COCO `65.4 mAP`，唯一超过`65.0 mAP`的模型**
 
 ## 最新进展
@@ -56,10 +56,10 @@
 - 2022年11月10日: 🚀 InternImage-H 在ADE20k语义分割数据集上取得 `62.9 mIoU` 的SOTA性能！
 
 ## 经典数据集性能
-1. ImageNet
+1. ImageNet:
 在图像分类标杆数据集ImageNet上，“书生2.5”仅基于公开数据便达到了 90.1% 的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型。
 
-2. COCO
+2. COCO:
 在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.4 的 mAP，是世界上唯一超过65.0mAP的模型。
 
 
