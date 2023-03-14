@@ -149,7 +149,7 @@
 
 
 ## 项目功能
-- [Coming] 各类downstream tasks
+- [ ]  各类downstream tasks
 - [x] InternImage-H(1B)/G(3B)
 - [x] TensorRT 推理
 - [x] InternImage系列分类代码
