@@ -130,9 +130,9 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
 | InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |   97M   |  16G  |          -          | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_b_1k_224.pth) \| [cfg](classification/configs/internimage_b_1k_224.yaml) |
 | InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M   | 108G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22kto1k_384.pth) \| [cfg](classification/configs/internimage_l_22kto1k_384.yaml) |
 | InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
-| InternImage-H | ImageNet-22K |  224x224   | 88.9  |  1.08B   | 188G  | -         | - |
-| InternImage-H | ImageNet-22K |  640x640   | 89.6  |  1.08B   | 1478G  |-           | - |
-| InternImage-G | ImageNet-22K |  640x640   | 90.1  |  3B   | -  |  -       | -|
+| InternImage-H | ImageNet-22K |  224x224   | 88.9  |  1.08B   | 188G  | TBD         | TBD |
+| InternImage-H | ImageNet-22K |  640x640   | 89.6  |  1.08B   | 1478G  |TBD           | TBD |
+| InternImage-G | ImageNet-22K |  640x640   | 90.1  |  3B   | TBD  |  -       | TBD|
 
 **COCO目标检测和实例分割**
 
@@ -148,8 +148,8 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
 | InternImage-L  |     Cascade        |     3x      |  56.1   |   48.5   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_3x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_l_fpn_3x_coco.py) |
 | InternImage-XL |     Cascade        |     1x      |  55.3   |   48.1   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_1x_coco.py) |
 | InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_3x_coco.py) |
-| InternImage-H |     DINO        |     3x      |  65.0   |   -   |  2.18B   | - |  - |
-| InternImage-G |     DINO        |     3x      |  65.3   |   -   |  3B   | - |  - |
+| InternImage-H |     DINO        |     3x      |  65.0   |   -   |  2.18B   | TBD |  TBD |
+| InternImage-G |     DINO        |     3x      |  65.3   |   -   |  3B   | TBD |  TBD |
 
 **ADE20K语义分割**
 
@@ -160,8 +160,8 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
 | InternImage-B  |  512x512   |     50.8     |    51.3     |  128M   | 1185G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_b_512_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_b_512_160k_ade20k.py) |
 | InternImage-L  |  640x640   |     53.9     |    54.1     |  256M   | 2526G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_l_640_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_l_640_160k_ade20k.py) |
 | InternImage-XL |  640x640   |     55.0     |    55.3     |  368M   | 3142G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_xl_640_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_xl_640_160k_ade20k.py) |
-| InternImage-H |  896x896   |     59.9     |    60.3     |  1.12B   | 3566G | - |
-| InternImage-H |  896x896   |     62.5     |    62.9     |  1.31B   | 4635G | - |
+| InternImage-H |  896x896   |     59.9     |    60.3     |  1.12B   | 3566G | TBD |
+| InternImage-H |  896x896   |     62.5     |    62.9     |  1.31B   | 4635G | TBD |
 
 **模型推理速度**
 
