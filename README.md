@@ -70,8 +70,7 @@
 <div align="center">
 
 **分类**
-
-<table border="1" width="100%">
+<table border="1" width="90%">
 	<tr align="center">
         <th colspan="1"> 图像分类</th><th colspan="2"> 场景分类 </th><th colspan="1">长尾分类</th>
     </tr>
@@ -86,7 +85,7 @@
 
 
 **检测**
-<table border="1" width="100%">
+<table border="1" width="90%">
 	<tr align="center">
         <th colspan="3"> 常规物体检测</th><th colspan="4">长尾物体检测 </th><th colspan="1">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
     </tr>
@@ -100,8 +99,7 @@
 <br>
 
 **分割**
-
-<table border="1" width="100%">
+<table border="1" width="90%">
 	<tr align="center">
         <th colspan="3"> 语义分割</th><th colspan="1">街景分割</th><th colspan="1">RGBD分割</th>
     </tr>
@@ -115,8 +113,7 @@
 <br>
 
 **图文**
-
-<table border="1" width="100%">
+<table border="1" width="90%">
 	<tr align="center">
         <th colspan="1"> 图像描述</th><th colspan="2">微调图文检索</th><th colspan="1">零样本图文检索</th>
     </tr>
@@ -132,9 +129,51 @@
 </div>
 
 
-<!-- <div align=center>
-<img src='./docs/figs/multi_task_sota.png' width=600>
+<div align="center">
+
+<!-- **分类**
+<table border="1" width="100%">
+	<tr align="center">
+        <th colspan="3"> 图像分类</th><th colspan="4"> 场景分类 </th><th colspan="3">长尾分类</th>
+    </tr>
+    <tr align="center">
+        <th colspan="3">ImageNet</th><th>Places365</th><th>Places 205</th><th>iNaturalist 2018</th>
+    </tr>
+    <tr align="center">
+        <th colspan="3">90.1</th><th>61.2</th><th>71.7</th><th>92.3</th>
+    </tr>
+    <tr align="center">
+        <th colspan="3"> 常规物体检测</th><th colspan="4">长尾物体检测 </th><th colspan="1">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
+    </tr>
+    <tr align="center">
+        <th>COCO</th><th>VOC 2007</th><th>VOC 2012</th><th>OpenImage</th><th>LVIS minival</th><th>LVIS val</th><th>BDD100K</th><th>nuScenes</th><th>CrowdHuman</th>
+    </tr>
+    <tr align="center">
+        <th>65.5</th><th>94.0</th><th>97.2</th><th>74.1</th><th>62.5</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
+    </tr>
+    <tr align="center">
+        <th colspan="3"> 常规物体检测</th><th colspan="4">长尾物体检测 </th><th colspan="1">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
+    </tr>
+    <tr align="center">
+        <th>COCO</th><th>VOC 2007</th><th>VOC 2012</th><th>OpenImage</th><th>LVIS minival</th><th>LVIS val</th><th>BDD100K</th><th>nuScenes</th><th>CrowdHuman</th>
+    </tr>
+    <tr align="center">
+        <th>65.5</th><th>94.0</th><th>97.2</th><th>74.1</th><th>62.5</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
+    </tr>
+    <tr align="center">
+        <th colspan="3"> 语义分割</th><th colspan="1">街景分割</th><th colspan="1">RGBD分割</th>
+    </tr>
+    <tr align="center">
+        <th>ADE20K</th><th>COCO Stuff-10K</th><th>Pascal Context</th><th>CityScapes</th><th>NYU Depth V2</th>
+    </tr>
+    <tr align="center">
+        <th>62.9</th><th>59.6</th><th>70.3</th><th>86.1</th><th>69.7</th>
+    </tr>
+</table>
+<br>
+
 </div> -->
+
 
 
 ### 2. 图文检索
