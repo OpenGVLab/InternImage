@@ -48,10 +48,10 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 - 2023年3月14日: 🚀 书生2.5发布！
 - 2023年2月28日: 🚀 InternImage 被CVPR 2023接收!
 - 2022年11月18日: 🚀 基于 InternImage-XL 主干网络，[BEVFormer v2](https://arxiv.org/abs/2211.10439) 在nuScenes的纯视觉3D检测任务上取得了最佳性能 `63.4 NDS` ！
-- 2022年11月10日: 🚀 InternImage-H 在COCO目标检测任务上以 `65.4 mAP` 斩获冠军，是唯一突破 `65 mAP` 的超强物体检测模型！
+- 2022年11月10日: 🚀 InternImage-H 在COCO目标检测任务上以 `65.4 mAP` 斩获冠军，是唯一突破 `65.0 mAP` 的超强物体检测模型！
 - 2022年11月10日: 🚀 InternImage-H 在ADE20k语义分割数据集上取得 `62.9 mIoU` 的SOTA性能！
 
-## 标杆数据集性能
+## 经典数据集性能
 ### 1. ImageNet
 在图像分类标杆数据集ImageNet上，“书生2.5”仅基于公开数据便达到了 90.1% 的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型。
 
@@ -60,7 +60,7 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778). -->
 </div>
 
 ### 2. COCO
-在物体检测标杆数据集COCO上，“书生2.5” 取得了65.4的mAP，是世界上唯一超过65.0mAP的模型，已经领先谷歌和微软。
+在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.4 的 mAP，是世界上唯一超过65.0mAP的模型，已经领先谷歌和微软。
 <div align=center>
 <img src='./figs/coco_leaderboard.png' width=600>
 </div>
