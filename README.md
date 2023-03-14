@@ -181,7 +181,7 @@
 “书生2.5”可根据文本内容需求快速定位检索出语义最相关的图像。这一能力既可应用于视频和图像集合，也可进一步结合物体检测框，具有丰富的应用模式，帮助用户更便捷、快速地找到所需图像资源, 例如可在相册中返回文本所指定的相关图像。
 
 <div align=center>
-<img src='./docs/figs/image_text_retrieval.png' width=600>
+<img src='./docs/figs/image_text_retrieval.png' width=800>
 </div>
 
 ### 3. 以图生文
@@ -189,7 +189,7 @@
 “书生2.5”的“以图生文”在图像描述、视觉问答、视觉推理和文字识别等多个方面均拥有强大的理解能力。例如在自动驾驶场景下，可以提升场景感知理解能力，辅助车辆判断交通信号灯状态、道路标志牌等信息，为车辆的决策规划提供有效的感知信息支持。
 
 <div align=center>
-<img src='./docs/figs/img2text.png' width=600>
+<img src='./docs/figs/img2text.png' width=800>
 </div>
 
 
@@ -198,13 +198,13 @@
 
 
 <div align=center>
-<img src='./docs/figs/network.png' width=600>
+<img src='./docs/figs/network.png' width=800>
 </div>
 
 
 ## 项目功能
-- [Coming] InternImage-H(1B)/G(3B)
 - [Coming] 各类downstream tasks
+- 🚀 InternImage-H(1B)/G(3B)
 - 🚀 TensorRT 推理
 - 🚀 InternImage系列分类代码
 - 🚀 InternImage-T/S/B/L/XL ImageNet-1k 预训练模型
@@ -216,7 +216,6 @@
 ## 开源模型
 - 目标检测和实例分割: [COCO](detection/configs/mask_rcnn/)
 - 语义分割: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
-
 
 
 ## 经典视觉任务性能
