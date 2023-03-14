@@ -37,7 +37,7 @@ conda activate internimage
 
 For examples, to install torch==1.11 with CUDA==11.3:
 ```bash
-pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
+pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
 - Install `timm==0.6.11` and `mmcv-full==1.5.0`:
@@ -84,7 +84,7 @@ python test.py configs/ade20k/upernet_internimage_t_512_160k_ade20k.py checkpoin
 For example, to evaluate the `InternImage-B` with a single node with 8 GPUs:
 
 ```bash
-sh dist_test.sh configs/ade20k/upernet_internimage_b_512_160k_ade20k.py checkpoint_dir/seg/upernet_internimage_b_512_160k_ade20k.py 8 --eval mIoU
+sh dist_test.sh configs/ade20k/upernet_internimage_b_512_160k_ade20k.py checkpoint_dir/seg/upernet_internimage_b_512_160k_ade20k.pth 8 --eval mIoU
 ```
 
 ### Training
@@ -101,10 +101,20 @@ For example, to train `InternImage-T` with 8 GPU on 1 node (total batch size 16)
 sh dist_train.sh configs/ade20k/upernet_internimage_t_512_160k_ade20k.py 8
 ```
 
-### Manage Jobs with Srun
+### Manage Jobs with Slurm
 
 For example, to train `InternImage-XL` with 8 GPU on 1 node (total batch size 16), run:
 
 ```bash
 GPUS=8 sh slurm_train.sh <partition> <job-name> configs/ade20k/upernet_internimage_xl_640_160k_ade20k.py
+```
+
+### Image Demo
+To inference a single image like this:
+```
+CUDA_VISIBLE_DEVICES=0 python image_demo.py \
+  data/ade/ADEChallengeData2016/images/validation/ADE_val_00000591.jpg \
+  configs/ade20k/upernet_internimage_t_512_160k_ade20k.py  \
+  checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth  \
+  --palette ade20k 
 ```
