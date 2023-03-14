@@ -27,7 +27,7 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 
 
 ## Introduction
-SenseTime and Shanghai AI Laboratory jointly released the multimodal multitask universal model "INTERN-2.5" on March 14, 2023. "INTERN-2.5" achieved multiple breakthroughs in multimodal multitask processing, and its excellent cross-modal task processing ability in text and image can provide efficient and accurate perception and understanding capabilities for general scenarios such as autonomous driving.
+SenseTime and Shanghai AI Laboratory jointly released the multimodal multitask general model "INTERN-2.5" on March 14, 2023. "INTERN-2.5" achieved multiple breakthroughs in multimodal multitask processing, and its excellent cross-modal task processing ability in text and image can provide efficient and accurate perception and understanding capabilities for general scenarios such as autonomous driving.
 
 ## Overview
 
