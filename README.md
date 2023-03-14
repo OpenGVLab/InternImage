@@ -180,7 +180,7 @@
 | InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  | TBD            | [ckpt](https://pan.baidu.com/s/1R3niTRjrERUet2xGc6ePPA) \| [cfg](classification/configs/internimage_h_jointto1k_640.yaml) |
 | InternImage-G | Joint 427M |  512x512   | 90.1  |  3B   | -  | TBD            | [ckpt](https://pan.baidu.com/s/1R3niTRjrERUet2xGc6ePPA) \| [cfg](classification/configs/internimage_g_jointto1k_512.yaml) |
 
-- Extraction code for downloading InternImage-H/G: 2vwu
+- 下载InternImage-H/G的百度网盘提取码: 2vwu
 
 **COCO目标检测和实例分割**
 
