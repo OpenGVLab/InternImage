@@ -1,6 +1,6 @@
 # 书生2.5 - 多模态多任务通用大模型
 <div align=center>
-<img src='./figs/log.png' width=600>
+<img src='./docs/figs/log.png' width=600>
 </div>
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-coco)](https://paperswithcode.com/sota/object-detection-on-coco?p=internimage-exploring-large-scale-vision)
