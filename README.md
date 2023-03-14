@@ -48,10 +48,10 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 - 2023年3月14日: 🚀 书生2.5发布！
 - 2023年2月28日: 🚀 InternImage 被CVPR 2023接收!
 - 2022年11月18日: 🚀 基于 InternImage-XL 主干网络，[BEVFormer v2](https://arxiv.org/abs/2211.10439) 在nuScenes的纯视觉3D检测任务上取得了最佳性能 `63.4 NDS` ！
-- 2022年11月10日: 🚀 InternImage-H 在COCO目标检测任务上以 `65.4 mAP` 斩获冠军，是唯一突破 65mAP 的超强物体检测模型！
+- 2022年11月10日: 🚀 InternImage-H 在COCO目标检测任务上以 `65.4 mAP` 斩获冠军，是唯一突破 `65mAP` 的超强物体检测模型！
 - 2022年11月10日: 🚀 InternImage-H 在ADE20k语义分割数据集上取得 `62.9 mIoU` 的SOTA性能！
 
-## 霸榜视觉基准数据集
+## 霸榜视觉标杆数据集
 ### 1. ImageNet
 在图像分类标杆数据集ImageNet上，“书生2.5”仅基于公开数据便达到了 90.1% 的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型。
 
@@ -72,15 +72,14 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 
 ### 1. 以图生文
 
-“以图生文”是视觉感知中的一类任务，可根据给定图像和提示性语句，作出相应的文本作答。“书生2.5”的“以图生文”在图像描述、视觉问答、视觉推理和文字识别等多个方面均拥有强大的理解能力。例如在自动驾驶场景下，可以大幅提升场景感知理解能力，高效准确地辅助车辆判断交通信号灯状态、道路标志牌等信息，为车辆的决策规划提供有效的感知信息支持。
+“书生2.5”的“以图生文”在图像描述、视觉问答、视觉推理和文字识别等多个方面均拥有强大的理解能力。例如在自动驾驶场景下，可以大幅提升场景感知理解能力，高效准确地辅助车辆判断交通信号灯状态、道路标志牌等信息，为车辆的决策规划提供有效的感知信息支持。
 
 <div align=center>
 <img src='./figs/img2text.png' width=600>
 </div>
 
 ### 2. 以文生图
-
-“以文生图”是人工智能生成内容（AIGC, AI Generated Content）的重要方向。“书生2.5”的“以文生图”能力，可根据用户提出的文本创作需求，利用扩散模型生成算法，精准地生成满足需求的高质量、自然的写实图像。例如，针对自动驾驶等数据依赖场景，“书生2.5”可以生成各类真实的道路交通场景，如繁忙的城市街道、雨天拥挤的车道、马路上奔跑的狗等，从而辅助自动驾驶系统的研发，不断提高Corner Case场景的感知能力上限。
+“书生2.5”的“以文生图”能力，可根据用户提出的文本创作需求，利用扩散模型生成算法，精准地生成满足需求的高质量、自然的写实图像。例如，针对自动驾驶等数据依赖场景，“书生2.5”可以生成各类真实的道路交通场景，如繁忙的城市街道、雨天拥挤的车道、马路上奔跑的狗等，从而辅助自动驾驶系统的研发，不断提高Corner Case场景的感知能力上限。
 <div align=center>
 <img src='./figs/text2img.png' width=600>
 </div>
@@ -88,7 +87,7 @@ Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 
 ### 3. 图文检索
 
-“图文检索”可以根据文本内容检索出语义最相关的图像。“书生2.5”的“图文检索”能力既可应用于视频和图像集合，也可进一步结合物体检测框，具有丰富的应用模式，帮助用户更便捷、更快速地找到所需的图像资源。
+“书生2.5”可根据文本内容需求快速定位检索出语义最相关的图像。这一能力既可应用于视频和图像集合，也可进一步结合物体检测框，具有丰富的应用模式，帮助用户更便捷、快速地找到所需图像资源。
 
 <div align=center>
 <img src='./figs/image_text_retrieval.png' width=600>
@@ -132,7 +131,7 @@ InterImage网络采用可变形卷积作为核心算子，可以自适应地调�
 | InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
 | InternImage-H | ImageNet-22K |  224x224   | 88.9  |  1.08B   | 188G  | TBD         | TBD |
 | InternImage-H | ImageNet-22K |  640x640   | 89.6  |  1.08B   | 1478G  |TBD           | TBD |
-| InternImage-G | ImageNet-22K |  640x640   | 90.1  |  3B   | TBD  |  -       | TBD|
+| InternImage-G | ImageNet-22K |  640x640   | 90.1  |  3B   | -  |  TBD      | TBD|
 
 **COCO目标检测和实例分割**
 
