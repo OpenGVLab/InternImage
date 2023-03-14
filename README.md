@@ -55,20 +55,25 @@
 - 2022年11月10日: 🚀 InternImage-H 在COCO目标检测任务上以 `65.4 mAP` 斩获冠军，是唯一突破 `65.0 mAP` 的超强物体检测模型！
 - 2022年11月10日: 🚀 InternImage-H 在ADE20k语义分割数据集上取得 `62.9 mIoU` 的SOTA性能！
 
-## 经典数据集性能
+<!-- ## 经典数据集性能
 1. ImageNet:
 在图像分类标杆数据集ImageNet上，“书生2.5”仅基于公开数据便达到了 90.1% 的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型。
 
 2. COCO:
 在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.5 的 mAP，是世界上唯一超过65 mAP的模型。
+ -->
 
+## InternImage应用
+<!-- 图文跨模态是通用人工智能的重要方向，可以结合图像、文本等信息来实现对世界的理解和认知，在自动驾驶等领域具有重要且广泛的应用前景。“书生2.5”多模态多任务通用模型当前专注于图文跨模态任务，模型无需微调，便可灵活、精准地应对各式任务。 -->
 
-## 图文跨模态应用
-图文跨模态是通用人工智能的重要方向，可以结合图像、文本等信息来实现对世界的理解和认知，在自动驾驶等领域具有重要且广泛的应用前景。“书生2.5”多模态多任务通用模型当前专注于图文跨模态任务，模型无需微调，便可灵活、精准地应对各式任务。
+<!-- ### 1. 单模态和跨模态任务性能 -->
+1. 图像模态性能
+- 在图像分类标杆数据集ImageNet上，“书生2.5”仅基于公开数据便达到了 90.1% 的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型。
+- 在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.5 的 mAP，是世界上唯一超过65 mAP的模型。
+- 在17个重要的视觉基础数据集上取得世界最好性能
 
-### 1. 单模态和跨模态任务性能
 <div align="center">
-
+	
 **分类任务**
 <table border="1" width="90%">
 	<tr align="center">
@@ -108,20 +113,6 @@
     </tr>
     <tr align="center">
         <th>62.9</th><th>59.6</th><th>70.3</th><th>86.1</th><th>69.7</th>
-    </tr>
-</table>
-<br>
-
-**图文多模态任务**
-<table border="1" width="90%">
-	<tr align="center">
-        <th colspan="1"> 图像描述</th><th colspan="2">微调图文检索</th><th colspan="1">零样本图文检索</th>
-    </tr>
-    <tr align="center">
-        <th>COCO Caption</th><th>COCO Caption</th><th>Flickr30k</th><th>Flickr30k</th>
-    </tr>
-    <tr align="center">
-        <th>148.2</th><th>76.4</th><th>94.8</th><th>89.1</th>
     </tr>
 </table>
 <br>
@@ -174,9 +165,9 @@
 
 </div> -->
 
+跨模态任务性能
 
-
-### 2. 图文检索
+- 图文检索
 
 “书生2.5”可根据文本内容需求快速定位检索出语义最相关的图像。这一能力既可应用于视频和图像集合，也可进一步结合物体检测框，具有丰富的应用模式，帮助用户更便捷、快速地找到所需图像资源, 例如可在相册中返回文本所指定的相关图像。
 
@@ -184,12 +175,30 @@
 <img src='./docs/figs/image_text_retrieval.png' width=800>
 </div>
 
-### 3. 以图生文
+- 以图生文
 
 “书生2.5”的“以图生文”在图像描述、视觉问答、视觉推理和文字识别等多个方面均拥有强大的理解能力。例如在自动驾驶场景下，可以提升场景感知理解能力，辅助车辆判断交通信号灯状态、道路标志牌等信息，为车辆的决策规划提供有效的感知信息支持。
 
 <div align=center>
 <img src='./docs/figs/img2text.png' width=800>
+</div>
+
+<div align="center">
+
+**图文多模态任务**
+<table border="1" width="90%">
+	<tr align="center">
+        <th colspan="1"> 图像描述</th><th colspan="2">微调图文检索</th><th colspan="1">零样本图文检索</th>
+    </tr>
+    <tr align="center">
+        <th>COCO Caption</th><th>COCO Caption</th><th>Flickr30k</th><th>Flickr30k</th>
+    </tr>
+    <tr align="center">
+        <th>148.2</th><th>76.4</th><th>94.8</th><th>89.1</th>
+    </tr>
+</table>
+<br>
+
 </div>
 
 
@@ -198,7 +207,7 @@
 
 
 <div align=center>
-<img src='./docs/figs/network.png' width=800>
+<img src='./docs/figs/network.png' width=900>
 </div>
 
 
