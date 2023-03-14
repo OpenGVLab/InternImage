@@ -21,6 +21,12 @@ def build_model(config):
             post_norm=config.MODEL.INTERN_IMAGE.POST_NORM,
             mlp_ratio=config.MODEL.INTERN_IMAGE.MLP_RATIO,
             with_cp=config.TRAIN.USE_CHECKPOINT,
+            res_post_norm=config.MODEL.INTERN_IMAGE.RES_POST_NORM, # for InternImage-H/G
+            dw_kernel_size=config.MODEL.INTERN_IMAGE.DW_KERNEL_SIZE, # for InternImage-H/G
+            use_clip_projector=config.MODEL.INTERN_IMAGE.USE_CLIP_PROJECTOR, # for InternImage-H/G
+            level2_post_norm=config.MODEL.INTERN_IMAGE.LEVEL2_POST_NORM, # for InternImage-H/G
+            level2_post_norm_block_ids=config.MODEL.INTERN_IMAGE.LEVEL2_POST_NORM_BLOCK_IDS, # for InternImage-H/G
+            center_feature_scale=config.MODEL.INTERN_IMAGE.CENTER_FEATURE_SCALE # for InternImage-H/G
         )
     else:
         raise NotImplementedError(f"Unkown model: {model_type}")
