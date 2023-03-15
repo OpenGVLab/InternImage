@@ -27,7 +27,7 @@
 
 这个代码仓库是[InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions](https://arxiv.org/abs/2211.05778)的官方实现。
 
-[文章](https://arxiv.org/abs/2211.05778) \| [博客](https://zhuanlan.zhihu.com/p/610772005) | [文档](./docs/)
+[论文](https://arxiv.org/abs/2211.05778) \| [知乎专栏](https://zhuanlan.zhihu.com/p/610772005) | [文档](./docs/)
 ## 简介
 商汤科技与上海人工智能实验室在2023年3月14日联合发布多模态多任务通用大模型“书生2.5”。“书生2.5”在多模态多任务处理能力中斩获多项全新突破，其卓越的图文跨模态任务处理能力可为自动驾驶等通用场景任务提供高效精准的感知和理解能力支持。“书生2.5”致力于多模态多任务通用模型的构建，旨在接收处理各种不同模态的输入，并采用统一的模型架构和参数处理各种不同的任务，促进不同模态和任务之间在表示学习方面的协作，逐步实现通用人工智能领域的融会贯通。
 
@@ -48,7 +48,7 @@
 - 2023年2月28日: 🚀 InternImage 被CVPR 2023接收!
 - 2022年11月18日: 🚀 基于 InternImage-XL 主干网络，[BEVFormer v2](https://arxiv.org/abs/2211.10439) 在nuScenes的纯视觉3D检测任务上取得了最佳性能 `63.4 NDS` ！
 - 2022年11月10日: 🚀 InternImage-H 在COCO目标检测任务上以 `65.4 mAP` 斩获冠军，是唯一突破 `65.0 mAP` 的超强物体检测模型！
-- 2022年11月10日: 🚀 InternImage-H 在ADE20k语义分割数据集上取得 `62.9 mIoU` 的SOTA性能！
+- 2022年11月10日: 🚀 InternImage-H 在ADE20K语义分割数据集上取得 `62.9 mIoU` 的SOTA性能！
 
 
 ## “书生2.5”的应用
@@ -85,7 +85,7 @@
         <th>COCO</th><th>VOC 2007</th><th>VOC 2012</th><th>OpenImage</th><th>LVIS minival</th><th>LVIS val</th><th>BDD100K</th><th>nuScenes</th><th>CrowdHuman</th>
     </tr>
     <tr align="center">
-        <th>65.5</th><th>94.0</th><th>97.2</th><th>74.1</th><th>62.5</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
+        <th>65.5</th><th>94.0</th><th>97.2</th><th>74.1</th><th>65.8</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
     </tr>
 </table>
 <br>
@@ -149,14 +149,14 @@
 
 
 ## 项目功能
-- [ ]  各类downstream tasks
+- [ ] 各类下游任务
 - [x] InternImage-H(1B)/G(3B)
 - [x] TensorRT 推理
-- [x] InternImage系列分类代码
-- [x]  InternImage-T/S/B/L/XL ImageNet-1k 预训练模型
-- [x] InternImage-L/XL ImageNet-22k 预训练模型
+- [x] InternImage 系列分类代码
+- [x] InternImage-T/S/B/L/XL ImageNet-1K 预训练模型
+- [x] InternImage-L/XL ImageNet-22K 预训练模型
 - [x] InternImage-T/S/B/L/XL 检测和实例分割模型
-- [x] InternImage-T/S/B/L/XL语义分割模型
+- [x] InternImage-T/S/B/L/XL 语义分割模型
 
 
 ## 开源模型
@@ -176,40 +176,43 @@
 | InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |   97M   |  16G  |          -          | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_b_1k_224.pth) \| [cfg](classification/configs/internimage_b_1k_224.yaml) |
 | InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M   | 108G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22kto1k_384.pth) \| [cfg](classification/configs/internimage_l_22kto1k_384.yaml) |
 | InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
-| InternImage-H | Joint 427M |  224x224   | 88.9  |  1.08B   | 188G  | -            | [ckpt](https://pan.baidu.com/s/1R3niTRjrERUet2xGc6ePPA) \| [cfg](classification/configs/internimage_h_jointto1k_224.yaml) |
-| InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  | -            | [ckpt](https://pan.baidu.com/s/1R3niTRjrERUet2xGc6ePPA) \| [cfg](classification/configs/internimage_h_jointto1k_640.yaml) |
-| InternImage-G | Joint 427M |  512x512   | 90.1  |  3B   | -  | -            | [ckpt](https://pan.baidu.com/s/1R3niTRjrERUet2xGc6ePPA) \| [cfg](classification/configs/internimage_g_jointto1k_512.yaml) |
+| InternImage-H | Joint 427M |  224x224   | 88.9  |  1.08B   | 188G  | TBD            | [ckpt](https://pan.baidu.com/s/1R3niTRjrERUet2xGc6ePPA) \| [cfg](classification/configs/internimage_h_jointto1k_224.yaml) |
+| InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  | TBD            | [ckpt](https://pan.baidu.com/s/1R3niTRjrERUet2xGc6ePPA) \| [cfg](classification/configs/internimage_h_jointto1k_640.yaml) |
+| InternImage-G | Joint 427M |  512x512   | 90.1  |  3B   | TBD  | TBD            | [ckpt](https://pan.baidu.com/s/1R3niTRjrERUet2xGc6ePPA) \| [cfg](classification/configs/internimage_g_jointto1k_512.yaml) |
 
-- Extraction code for downloading InternImage-H/G: 2vwu
+- 下载InternImage-H/G的百度网盘提取码: 2vwu
 
 **COCO目标检测和实例分割**
 
-|    backbone    |       method       | schd | box mAP (val/test) | mask mAP (val/test) | #param | FLOPs | Download | 
+|    backbone    |       method       | schd | box mAP  | mask mAP  | #param | FLOPs | Download | 
 | :------------: | :----------------: | :---------: | :-----: | :------: | :-----: | :---: | :---: | 
-| InternImage-T  |     Mask R-CNN     |     1x      |  47.2/-   |   42.5/-   |   49M   | 270G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_t_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_t_fpn_1x_coco.py) |
-| InternImage-T  |     Mask R-CNN     |     3x      |  49.1/-   |   43.7/-   |   49M   | 270G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_t_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_t_fpn_3x_coco.py) |
-| InternImage-S  |     Mask R-CNN     |     1x      |  47.8/-   |   43.3/-   |   69M   | 340G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_s_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_s_fpn_1x_coco.py) |
-| InternImage-S  |     Mask R-CNN     |     3x      |  49.7/-   |   44.5/-   |   69M   | 340G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_s_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_s_fpn_3x_coco.py) |
-| InternImage-B  |     Mask R-CNN     |     1x      |  48.8/-   |   44.0/-   |  115M   | 501G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_b_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_b_fpn_1x_coco.py) |
-| InternImage-B  |     Mask R-CNN     |     3x      |  50.3/-   |   44.8/-   |  115M   | 501G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_b_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_b_fpn_3x_coco.py) |
-| InternImage-L  |     Cascade        |     1x      |  54.9/-   |   47.7/-   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_l_fpn_1x_coco.py) |
-| InternImage-L  |     Cascade        |     3x      |  56.1/-   |   48.5/-   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_3x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_l_fpn_3x_coco.py) |
-| InternImage-XL |     Cascade        |     1x      |  55.3/-   |   48.1/-   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_1x_coco.py) |
-| InternImage-XL |     Cascade        |     3x      |  56.2/-   |   48.8/-   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_3x_coco.py) |
-| InternImage-H |     DINO (TTA)        |     3x      |  65.0/65.4  |   -/-   |  2.18B   | TBD |  TBD |
-| InternImage-G |     DINO (TTA)       |     3x      |  65.3/65.5  |   -/-   |  3B   | TBD |  TBD |
+| InternImage-T  |     Mask R-CNN     |     1x      |  47.2   |   42.5   |   49M   | 270G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_t_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_t_fpn_1x_coco.py) |
+| InternImage-T  |     Mask R-CNN     |     3x      |  49.1   |   43.7   |   49M   | 270G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_t_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_t_fpn_3x_coco.py) |
+| InternImage-S  |     Mask R-CNN     |     1x      |  47.8   |   43.3   |   69M   | 340G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_s_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_s_fpn_1x_coco.py) |
+| InternImage-S  |     Mask R-CNN     |     3x      |  49.7   |   44.5   |   69M   | 340G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_s_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_s_fpn_3x_coco.py) |
+| InternImage-B  |     Mask R-CNN     |     1x      |  48.8   |   44.0   |  115M   | 501G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_b_fpn_1x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_b_fpn_1x_coco.py) |
+| InternImage-B  |     Mask R-CNN     |     3x      |  50.3   |   44.8   |  115M   | 501G  |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/mask_rcnn_internimage_b_fpn_3x_coco.pth) \| [cfg](detection/configs/mask_rcnn/mask_rcnn_internimage_b_fpn_3x_coco.py) |
+| InternImage-L  |     Cascade        |     1x      |  54.9   |   47.7   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_l_fpn_1x_coco.py) |
+| InternImage-L  |     Cascade        |     3x      |  56.1   |   48.5   |  277M   | 1399G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_l_fpn_3x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_l_fpn_3x_coco.py) |
+| InternImage-XL |     Cascade        |     1x      |  55.3   |   48.1   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_1x_coco.py) |
+| InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/det_model/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_3x_coco.py) |
+
+|    backbone    |       method       |  box mAP (val/test) |  #param  | FLOPs | Download | 
+| :------------: | :----------------: |     :---------:     | :------: | :-----: | :---: | 
+| InternImage-H  |     DINO (TTA)     |      65.0 / 65.4     |   2.18B  | TBD |  TBD |
+| InternImage-G  |     DINO (TTA)     |      65.3 / 65.5     |    3B    | TBD |  TBD |
 
 **ADE20K语义分割**
 
-|    backbone    | resolution | single scale | multi scale | #param | FLOPs | Download | 
-| :------------: | :--------: | :----------: | :---------: | :-----: | :---: |   :---:  |
-| InternImage-T  |  512x512   |     47.9     |    48.1     |   59M   | 944G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_t_512_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_t_512_160k_ade20k.py) |
-| InternImage-S  |  512x512   |     50.1     |    50.9     |   80M   | 1017G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_s_512_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_s_512_160k_ade20k.py) |
-| InternImage-B  |  512x512   |     50.8     |    51.3     |  128M   | 1185G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_b_512_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_b_512_160k_ade20k.py) |
-| InternImage-L  |  640x640   |     53.9     |    54.1     |  256M   | 2526G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_l_640_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_l_640_160k_ade20k.py) |
-| InternImage-XL |  640x640   |     55.0     |    55.3     |  368M   | 3142G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_xl_640_160k_ade20k.pth) \| [cfg](segmentation/configs/upernet/upernet_internimage_xl_640_160k_ade20k.py) |
-| InternImage-H |  896x896   |     59.9     |    60.3     |  1.12B   | 3566G | TBD |
-| InternImage-H |  896x896   |     62.5     |    62.9     |  1.31B   | 4635G | TBD |
+|    backbone    | method     |   resolution | mIoU (ss/ms) | #param | FLOPs | Download | 
+| :------------: | :--------: | :--------: | :----------: | :-----: | :---: |   :---:  |
+| InternImage-T  |  UperNet   |   512x512   |     47.9 / 48.1     |   59M   | 944G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_t_512_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_t_512_160k_ade20k.py) |
+| InternImage-S  |  UperNet   |  512x512   |     50.1 / 50.9     |   80M   | 1017G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_s_512_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_s_512_160k_ade20k.py) |
+| InternImage-B  |  UperNet   |  512x512   |     50.8 / 51.3     |  128M   | 1185G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_b_512_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_b_512_160k_ade20k.py) |
+| InternImage-L  |  UperNet   |  640x640   |     53.9 / 54.1     |  256M   | 2526G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_l_640_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_l_640_160k_ade20k.py) |
+| InternImage-XL |  UperNet   |  640x640   |     55.0 / 55.3     |  368M   | 3142G | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/seg_models/upernet_internimage_xl_640_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_xl_640_160k_ade20k.py) |
+| InternImage-H |  UperNet   |  896x896   |     59.9 / 60.3     |  1.12B   | 3566G | TBD |
+| InternImage-H |  Mask2Former   |  896x896   |     62.5 / 62.9     |  1.31B   | 4635G | TBD |
 
 
 **模型推理速度**
