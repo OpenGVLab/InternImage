@@ -160,7 +160,7 @@
 
 
 ## 开源模型
-- 目标检测和实例分割: [COCO](detection/configs/mask_rcnn/)
+- 目标检测和实例分割: [COCO](detection/configs/coco/)
 - 语义分割: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
 - 图文检索、图像描述和视觉问答: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
 - 3D感知: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)

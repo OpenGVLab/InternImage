@@ -159,7 +159,7 @@ tasks
 
 
 ## Model Zoo
-- Object Detection and Instance Segmentation: [COCO](detection/configs/mask_rcnn/)
+- Object Detection and Instance Segmentation: [COCO](detection/configs/coco/)
 - Semantic Segmentation: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
 - Image-Text Retrieval, Image Captioning, and Visual Question Answering: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
 - 3D Perception: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
