@@ -98,7 +98,7 @@ class CrossAttention(nn.Module):
         if attn_head_dim is not None:
             head_dim = attn_head_dim
         all_head_dim = head_dim * self.num_heads
-        self.scale = qk_scale or head_dim**-0.5
+        self.scale = qk_scale or head_dim ** -0.5
         assert all_head_dim == dim
 
         self.q = nn.Linear(dim, all_head_dim, bias=False)
@@ -405,9 +405,8 @@ class InternImageLayer(nn.Module):
                 if self.post_norm:
                     x = x + self.drop_path(self.norm1(self.dcn(x)))
                     x = x + self.drop_path(self.norm2(self.mlp(x)))
-                elif self.res_post_norm:
-                    shortcut = x
-                    x = shortcut + self.drop_path(self.res_post_norm1(self.dcn(self.norm1(x))))
+                elif self.res_post_norm: # for InternImage-H/G
+                    x = x + self.drop_path(self.res_post_norm1(self.dcn(self.norm1(x))))
                     x = x + self.drop_path(self.res_post_norm2(self.mlp(self.norm2(x))))
                 else:
                     x = x + self.drop_path(self.dcn(self.norm1(x)))
@@ -470,6 +469,7 @@ class InternImageBlock(nn.Module):
         self.depth = depth
         self.post_norm = post_norm
         self.center_feature_scale = center_feature_scale
+
         self.blocks = nn.ModuleList([
             InternImageLayer(
                 core_op=core_op,
@@ -499,7 +499,7 @@ class InternImageBlock(nn.Module):
             )
         self.downsample = DownsampleLayer(
             channels=channels, norm_layer=norm_layer) if downsample else None
-        
+
     def forward(self, x, return_wo_downsample=False):
         for i, blk in enumerate(self.blocks):
             x = blk(x)
@@ -536,6 +536,12 @@ class InternImage(nn.Module):
         layer_scale (bool): Whether to use layer scale. Default: False
         cls_scale (bool): Whether to use class scale. Default: False
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
+        dw_kernel_size (int): Size of the dwconv. Default: None
+        use_clip_projector (bool): Whether to use clip projector. Default: False
+        level2_post_norm (bool): Whether to use level2 post norm. Default: False
+        level2_post_norm_block_ids (list): Indexes of post norm blocks. Default: None
+        res_post_norm (bool): Whether to use res post norm. Default: False
+        center_feature_scale (bool): Whether to use center feature scale. Default: False
     """
 
     def __init__(self,
@@ -580,7 +586,7 @@ class InternImage(nn.Module):
         print(f"level2_post_norm: {level2_post_norm}")
         print(f"level2_post_norm_block_ids: {level2_post_norm_block_ids}")
         print(f"res_post_norm: {res_post_norm}")
-        
+
         in_chans = 3
         self.patch_embed = StemLayer(in_chans=in_chans,
                                      out_chans=channels,
