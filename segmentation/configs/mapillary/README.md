@@ -3,7 +3,9 @@
 
 Introduced by Neuhold et al. in [The Mapillary Vistas Dataset for Semantic Understanding of Street Scenes](http://openaccess.thecvf.com/content_ICCV_2017/papers/Neuhold_The_Mapillary_Vistas_ICCV_2017_paper.pdf)
 
-Mapillary Vistas Dataset is a diverse street-level imagery dataset with pixel‑accurate and instance‑specific human annotations for understanding street scenes around the world. We first pretrain our models on the Mapillary Vistas dataset, then finetune them on the Cityscapes dataset.
+Mapillary Vistas Dataset is a diverse street-level imagery dataset with pixel‑accurate and instance‑specific human annotations for understanding street scenes around the world. 
+
+We first pretrain our models on the Mapillary Vistas dataset, then finetune them on the Cityscapes dataset.
 
 
 ## Model Zoo
