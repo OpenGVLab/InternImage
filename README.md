@@ -79,7 +79,7 @@
 **检测任务**
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="4"> 常规物体检测</th><th colspan="3">长尾物体检测 </th><th colspan="1">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
+        <th colspan="4"> 常规物体检测</th><th colspan="2">长尾物体检测 </th><th colspan="2">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
     </tr>
     <tr align="center">
         <th>COCO</th><th>VOC 2007</th><th>VOC 2012</th><th>OpenImage</th><th>LVIS minival</th><th>LVIS val</th><th>BDD100K</th><th>nuScenes</th><th>CrowdHuman</th>
@@ -176,7 +176,6 @@
 | InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |   97M   |  16G  |          -          | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_b_1k_224.pth) \| [cfg](classification/configs/internimage_b_1k_224.yaml) |
 | InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M   | 108G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22kto1k_384.pth) \| [cfg](classification/configs/internimage_l_22kto1k_384.yaml) |
 | InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22k_192to384.pth)            | [ckpt](https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
-| InternImage-H | Joint 427M |  224x224   | 88.9  |  1.08B   | 188G  | TBD            | [ckpt](https://pan.baidu.com/s/1R3niTRjrERUet2xGc6ePPA) \| [cfg](classification/configs/internimage_h_jointto1k_224.yaml) |
 | InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  | TBD            | [ckpt](https://pan.baidu.com/s/1R3niTRjrERUet2xGc6ePPA) \| [cfg](classification/configs/internimage_h_jointto1k_640.yaml) |
 | InternImage-G | Joint 427M |  512x512   | 90.1  |  3B   | TBD  | TBD            | [ckpt](https://pan.baidu.com/s/1R3niTRjrERUet2xGc6ePPA) \| [cfg](classification/configs/internimage_g_jointto1k_512.yaml) |
 
