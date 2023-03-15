@@ -17,7 +17,7 @@ model = dict(
         depths=[6, 6, 32, 6],
         groups=[10, 20, 40, 80],
         mlp_ratio=4.,
-        drop_path_rate=0.4,
+        drop_path_rate=0.5,
         norm_layer='LN',
         layer_scale=None,
         offset_scale=1.0,
@@ -27,7 +27,7 @@ model = dict(
         level2_post_norm=True, # for InternImage-H/G
         level2_post_norm_block_ids=[5, 11, 17, 23, 29], # for InternImage-H/G
         center_feature_scale=True, # for InternImage-H/G
-        with_cp=True,
+        with_cp=False,
         out_indices=(0, 1, 2, 3),
         init_cfg=None), #dict(type='Pretrained', checkpoint=pretrained)),
     decode_head=dict(num_classes=150, in_channels=[320, 640, 1280, 2560]),
