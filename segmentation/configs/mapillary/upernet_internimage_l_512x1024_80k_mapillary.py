@@ -4,10 +4,10 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 _base_ = [
-    '../_base_/models/segformer_mit-b0.py', '../_base_/datasets/mapillary.py',
+    '../_base_/models/upernet_r50.py', '../_base_/datasets/mapillary.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_80k.py'
 ]
-pretrained = 'https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22k_192to384.pth'
+pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth'
 model = dict(
     backbone=dict(
         _delete_=True,
@@ -26,6 +26,7 @@ model = dict(
         out_indices=(0, 1, 2, 3),
         init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
     decode_head=dict(num_classes=150, in_channels=[160, 320, 640, 1280]),
+    auxiliary_head=dict(num_classes=150, in_channels=640),
     test_cfg=dict(mode='whole'))
 optimizer = dict(
     _delete_=True, type='AdamW', lr=0.00002, betas=(0.9, 0.999), weight_decay=0.05,

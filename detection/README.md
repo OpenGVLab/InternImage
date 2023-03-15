@@ -70,13 +70,13 @@ sh dist_test.sh <config-file> <checkpoint> <gpu-num> --eval bbox segm
 For example, to evaluate the `InternImage-T` with a single GPU:
 
 ```bash
-python test.py configs/mask_rcnn/mask_rcnn_internimage_t_fpn_1x_coco.py checkpoint_dir/det/mask_rcnn_internimage_t_fpn_1x_coco.pth --eval bbox segm
+python test.py configs/coco/mask_rcnn_internimage_t_fpn_1x_coco.py checkpoint_dir/det/mask_rcnn_internimage_t_fpn_1x_coco.pth --eval bbox segm
 ```
 
 For example, to evaluate the `InternImage-B` with a single node with 8 GPUs:
 
 ```bash
-sh dist_test.sh configs/mask_rcnn/mask_rcnn_internimage_b_fpn_1x_coco.py checkpoint_dir/det/mask_rcnn_internimage_b_fpn_1x_coco.py 8 --eval bbox segm
+sh dist_test.sh configs/coco/mask_rcnn_internimage_b_fpn_1x_coco.py checkpoint_dir/det/mask_rcnn_internimage_b_fpn_1x_coco.py 8 --eval bbox segm
 ```
 
 ### Training on COCO
@@ -90,7 +90,7 @@ sh dist_train.sh <config-file> <gpu-num>
 For example, to train `InternImage-T` with 8 GPU on 1 node, run:
 
 ```bash
-sh dist_train.sh configs/mask_rcnn/mask_rcnn_internimage_t_fpn_1x_coco.py 8
+sh dist_train.sh configs/coco/mask_rcnn_internimage_t_fpn_1x_coco.py 8
 ```
 
 ### Manage jobs with Srun
@@ -98,5 +98,5 @@ sh dist_train.sh configs/mask_rcnn/mask_rcnn_internimage_t_fpn_1x_coco.py 8
 For example, to train `InternImage-L` with 32 GPU on 4 node, run:
 
 ```bash
-GPUS=32 sh slurm_train.sh <partition> <job-name> configs/cascade_mask_rcnn/cascade_internimage_xl_fpn_3x_coco.py work_dirs/cascade_internimage_xl_fpn_3x_coco
+GPUS=32 sh slurm_train.sh <partition> <job-name> configs/coco/cascade_internimage_xl_fpn_3x_coco.py work_dirs/cascade_internimage_xl_fpn_3x_coco
 ```

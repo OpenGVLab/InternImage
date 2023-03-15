@@ -6,20 +6,20 @@
 _base_ = [
     '../_base_/models/mask_rcnn_r50_fpn.py',
     '../_base_/datasets/coco_instance.py',
-    '../_base_/schedules/schedule_1x.py',
+    '../_base_/schedules/schedule_3x.py',
     '../_base_/default_runtime.py'
 ]
-pretrained = 'https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_s_1k_224.pth'
+pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth'
 model = dict(
     backbone=dict(
         _delete_=True,
         type='InternImage',
         core_op='DCNv3',
-        channels=80,
+        channels=112,
         depths=[4, 4, 21, 4],
-        groups=[5, 10, 20, 40],
+        groups=[7, 14, 28, 56],
         mlp_ratio=4.,
-        drop_path_rate=0.3,
+        drop_path_rate=0.4,
         norm_layer='LN',
         layer_scale=1.0,
         offset_scale=1.0,
@@ -29,7 +29,7 @@ model = dict(
         init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
     neck=dict(
         type='FPN',
-        in_channels=[80, 160, 320, 640],
+        in_channels=[112, 224, 448, 896],
         out_channels=256,
         num_outs=5))
 # By default, models are trained on 8 GPUs with 2 images per GPU
