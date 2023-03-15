@@ -90,7 +90,7 @@ ADE20K, outperforming previous models by a large margin.
 **Segmentation Task**
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="3"> Semantic Segmentation</th><th colspan="1">Streetscape Segmentation</th><th colspan="1">RGBD Segmentation</th>
+        <th colspan="3"> Semantic Segmentation</th><th colspan="1">Street Segmentation</th><th colspan="1">RGBD Segmentation</th>
     </tr>
     <tr align="center">
         <th>ADE20K</th><th>COCO Stuff-10K</th><th>Pascal Context</th><th>CityScapes</th><th>NYU Depth V2</th>
