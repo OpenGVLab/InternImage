@@ -79,7 +79,7 @@
 **检测任务**
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="4"> 常规物体检测</th><th colspan="3">长尾物体检测 </th><th colspan="1">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
+        <th colspan="4"> 常规物体检测</th><th colspan="2">长尾物体检测 </th><th colspan="2">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
     </tr>
     <tr align="center">
         <th>COCO</th><th>VOC 2007</th><th>VOC 2012</th><th>OpenImage</th><th>LVIS minival</th><th>LVIS val</th><th>BDD100K</th><th>nuScenes</th><th>CrowdHuman</th>
