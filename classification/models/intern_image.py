@@ -66,7 +66,21 @@ def build_act_layer(act_layer):
 
 
 class CrossAttention(nn.Module):
-
+    r""" Cross Attention Module
+    Args:
+        dim (int): Number of input channels.
+        num_heads (int): Number of attention heads. Default: 8
+        qkv_bias (bool, optional):  If True, add a learnable bias to q, k, v.
+            Default: False.
+        qk_scale (float | None, optional): Override default qk scale of
+            head_dim ** -0.5 if set. Default: None.
+        attn_drop (float, optional): Dropout ratio of attention weight.
+            Default: 0.0
+        proj_drop (float, optional): Dropout ratio of output. Default: 0.0
+        attn_head_dim (int, optional): Dimension of attention head.
+        out_dim (int, optional): Dimension of output.
+    """
+    
     def __init__(self,
                  dim,
                  num_heads=8,
@@ -142,7 +156,23 @@ class CrossAttention(nn.Module):
 
 
 class AttentiveBlock(nn.Module):
-
+    r"""Attentive Block
+    Args:
+        dim (int): Number of input channels.
+        num_heads (int): Number of attention heads. Default: 8
+        qkv_bias (bool, optional):  If True, add a learnable bias to q, k, v.
+            Default: False.
+        qk_scale (float | None, optional): Override default qk scale of
+            head_dim ** -0.5 if set. Default: None.
+        drop (float, optional): Dropout rate. Default: 0.0.
+        attn_drop (float, optional): Attention dropout rate. Default: 0.0.
+        drop_path (float | tuple[float], optional): Stochastic depth rate.
+            Default: 0.0.
+        norm_layer (nn.Module, optional): Normalization layer.  Default: nn.LayerNorm.
+        attn_head_dim (int, optional): Dimension of attention head. Default: None.
+        out_dim (int, optional): Dimension of output. Default: None.
+    """
+    
     def __init__(self,
                  dim,
                  num_heads,
