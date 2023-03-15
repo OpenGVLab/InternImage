@@ -6,10 +6,10 @@
 _base_ = [
     '../_base_/models/cascade_mask_rcnn_r50_fpn.py',
     '../_base_/datasets/coco_instance.py',
-    '../_base_/schedules/schedule_1x.py',
+    '../_base_/schedules/schedule_3x.py',
     '../_base_/default_runtime.py'
 ]
-pretrained = 'https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22k_192to384.pth'
+pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth'
 model = dict(
     backbone=dict(
         _delete_=True,
@@ -19,7 +19,7 @@ model = dict(
         depths=[5, 5, 24, 5],
         groups=[12, 24, 48, 96],
         mlp_ratio=4.,
-        drop_path_rate=0.4,
+        drop_path_rate=0.6,
         norm_layer='LN',
         layer_scale=1.0,
         offset_scale=2.0,
@@ -92,13 +92,57 @@ model = dict(
                     type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),
                 loss_bbox=dict(type='GIoULoss', loss_weight=10.0))
 ]))
-# By default, models are trained on 8 GPUs with 2 images per GPU
-data = dict(samples_per_gpu=2)
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+# augmentation strategy originates from DETR / Sparse RCNN
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
+    dict(type='RandomFlip', flip_ratio=0.5),
+    dict(type='AutoAugment',
+         policies=[
+             [
+                 dict(type='Resize',
+                      img_scale=[(480, 1333), (512, 1333), (544, 1333), (576, 1333),
+                                 (608, 1333), (640, 1333), (672, 1333), (704, 1333),
+                                 (736, 1333), (768, 1333), (800, 1333)],
+                      multiscale_mode='value',
+                      keep_ratio=True)
+             ],
+             [
+                 dict(type='Resize',
+                      img_scale=[(400, 1333), (500, 1333), (600, 1333)],
+                      multiscale_mode='value',
+                      keep_ratio=True),
+                 dict(type='RandomCrop',
+                      crop_type='absolute_range',
+                      crop_size=(384, 600),
+                      allow_negative_crop=True),
+                 dict(type='Resize',
+                      img_scale=[(480, 1333), (512, 1333), (544, 1333),
+                                 (576, 1333), (608, 1333), (640, 1333),
+                                 (672, 1333), (704, 1333), (736, 1333),
+                                 (768, 1333), (800, 1333)],
+                      multiscale_mode='value',
+                      override=True,
+                      keep_ratio=True)
+             ]
+         ]),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='Pad', size_divisor=32),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels', 'gt_masks']),
+]
+# we use 4 nodes to train this model, with a total batch size of 64
+data = dict(
+    samples_per_gpu=2,
+    train=dict(pipeline=train_pipeline))
+# optimizer
 optimizer = dict(
-    _delete_=True, type='AdamW', lr=0.0001, weight_decay=0.05,
+    _delete_=True, type='AdamW', lr=0.0001 * 2, weight_decay=0.05,
     constructor='CustomLayerDecayOptimizerConstructor',
-    paramwise_cfg=dict(num_layers=39, layer_decay_rate=0.94,
-                       depths=[5, 5, 24, 5]))
+    paramwise_cfg=dict(num_layers=39, layer_decay_rate=0.90,
+                       depths=[5, 5, 24, 5], offset_lr_scale=0.01))
 optimizer_config = dict(grad_clip=None)
 # fp16 = dict(loss_scale=dict(init_scale=512))
 evaluation = dict(save_best='auto')
@@ -107,3 +151,11 @@ checkpoint_config = dict(
     max_keep_ckpts=3,
     save_last=True,
 )
+resume_from = None
+custom_hooks = [
+    dict(
+        type='ExpMomentumEMAHook',
+        resume_from=resume_from,
+        momentum=0.0001,
+        priority=49)
+]

@@ -9,15 +9,15 @@ _base_ = [
     '../_base_/schedules/schedule_1x.py',
     '../_base_/default_runtime.py'
 ]
-pretrained = 'https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_l_22k_192to384.pth'
+pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth'
 model = dict(
     backbone=dict(
         _delete_=True,
         type='InternImage',
         core_op='DCNv3',
-        channels=160,
-        depths=[5, 5, 22, 5],
-        groups=[10, 20, 40, 80],
+        channels=192,
+        depths=[5, 5, 24, 5],
+        groups=[12, 24, 48, 96],
         mlp_ratio=4.,
         drop_path_rate=0.4,
         norm_layer='LN',
@@ -29,7 +29,7 @@ model = dict(
         init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
     neck=dict(
         type='FPN',
-        in_channels=[160, 320, 640, 1280],
+        in_channels=[192, 384, 768, 1536],
         out_channels=256,
         num_outs=5),
     roi_head=dict(
@@ -97,8 +97,8 @@ data = dict(samples_per_gpu=2)
 optimizer = dict(
     _delete_=True, type='AdamW', lr=0.0001, weight_decay=0.05,
     constructor='CustomLayerDecayOptimizerConstructor',
-    paramwise_cfg=dict(num_layers=37, layer_decay_rate=0.94,
-                       depths=[5, 5, 22, 5]))
+    paramwise_cfg=dict(num_layers=39, layer_decay_rate=0.94,
+                       depths=[5, 5, 24, 5]))
 optimizer_config = dict(grad_clip=None)
 # fp16 = dict(loss_scale=dict(init_scale=512))
 evaluation = dict(save_best='auto')

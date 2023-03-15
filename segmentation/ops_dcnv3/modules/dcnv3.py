@@ -9,6 +9,7 @@ from __future__ import print_function
 from __future__ import division
 
 import warnings
+import torch
 from torch import nn
 import torch.nn.functional as F
 from torch.nn.init import xavier_uniform_, constant_
@@ -72,21 +73,41 @@ def _is_power_of_2(n):
     if (not isinstance(n, int)) or (n < 0):
         raise ValueError(
             "invalid input for _is_power_of_2: {} (type: {})".format(n, type(n)))
+    
+    return (n & (n - 1) == 0) and n != 0
 
-    return (n & (n-1) == 0) and n != 0
+
+class CenterFeatureScaleModule(nn.Module):
+    def forward(self,
+                query,
+                center_feature_scale_proj_weight,
+                center_feature_scale_proj_bias):
+        center_feature_scale = F.linear(query,
+                                        weight=center_feature_scale_proj_weight,
+                                        bias=center_feature_scale_proj_bias).sigmoid()
+        return center_feature_scale
 
 
 class DCNv3_pytorch(nn.Module):
     def __init__(
-            self, channels=64, kernel_size=3, stride=1,
-            pad=1, dilation=1, group=4, offset_scale=1.0,
-            act_layer='GELU', norm_layer='LN'):
+            self,
+            channels=64,
+            kernel_size=3,
+            dw_kernel_size=None,
+            stride=1,
+            pad=1,
+            dilation=1,
+            group=4,
+            offset_scale=1.0,
+            act_layer='GELU',
+            norm_layer='LN',
+            center_feature_scale=False):
         """
         DCNv3 Module
-        :param channels     
-        :param kernel_size  
-        :param stride      
-        :param pad     
+        :param channels
+        :param kernel_size
+        :param stride
+        :param pad
         :param dilation
         :param group
         :param offset_scale
@@ -98,29 +119,32 @@ class DCNv3_pytorch(nn.Module):
             raise ValueError(
                 f'channels must be divisible by group, but got {channels} and {group}')
         _d_per_group = channels // group
+        dw_kernel_size = dw_kernel_size if dw_kernel_size is not None else kernel_size
         # you'd better set _d_per_group to a power of 2 which is more efficient in our CUDA implementation
         if not _is_power_of_2(_d_per_group):
             warnings.warn(
                 "You'd better set channels in DCNv3 to make the dimension of each attention head a power of 2 "
                 "which is more efficient in our CUDA implementation.")
-
+        
         self.offset_scale = offset_scale
         self.channels = channels
         self.kernel_size = kernel_size
+        self.dw_kernel_size = dw_kernel_size
         self.stride = stride
-        self.dilation = 1
+        self.dilation = dilation
         self.pad = pad
         self.group = group
         self.group_channels = channels // group
         self.offset_scale = offset_scale
-
+        self.center_feature_scale = center_feature_scale
+        
         self.dw_conv = nn.Sequential(
             nn.Conv2d(
                 channels,
                 channels,
-                kernel_size=kernel_size,
+                kernel_size=dw_kernel_size,
                 stride=1,
-                padding=(kernel_size-1)//2,
+                padding=(dw_kernel_size - 1) // 2,
                 groups=channels),
             build_norm_layer(
                 channels,
@@ -137,7 +161,14 @@ class DCNv3_pytorch(nn.Module):
         self.input_proj = nn.Linear(channels, channels)
         self.output_proj = nn.Linear(channels, channels)
         self._reset_parameters()
-
+        
+        if center_feature_scale:
+            self.center_feature_scale_proj_weight = nn.Parameter(
+                torch.zeros((group, channels), dtype=torch.float))
+            self.center_feature_scale_proj_bias = nn.Parameter(
+                torch.tensor(0.0, dtype=torch.float).view((1,)).repeat(group, ))
+            self.center_feature_scale_module = CenterFeatureScaleModule()
+    
     def _reset_parameters(self):
         constant_(self.offset.weight.data, 0.)
         constant_(self.offset.bias.data, 0.)
@@ -171,22 +202,38 @@ class DCNv3_pytorch(nn.Module):
             self.dilation, self.dilation,
             self.group, self.group_channels,
             self.offset_scale)
+        if self.center_feature_scale:
+            center_feature_scale = self.center_feature_scale_module(
+                x1, self.center_feature_scale_proj_weight, self.center_feature_scale_proj_bias)
+            # N, H, W, groups -> N, H, W, groups, 1 -> N, H, W, groups, _d_per_group -> N, H, W, channels
+            center_feature_scale = center_feature_scale[..., None].repeat(
+                1, 1, 1, 1, self.channels // self.group).flatten(-2)
+            x = x * (1 - center_feature_scale) + x_proj * center_feature_scale
         x = self.output_proj(x)
-
+        
         return x
 
 
 class DCNv3(nn.Module):
     def __init__(
-            self, channels=64, kernel_size=3, stride=1,
-            pad=1, dilation=1, group=4, offset_scale=1.0,
-            act_layer='GELU', norm_layer='LN'):
+            self,
+            channels=64,
+            kernel_size=3,
+            dw_kernel_size=None,
+            stride=1,
+            pad=1,
+            dilation=1,
+            group=4,
+            offset_scale=1.0,
+            act_layer='GELU',
+            norm_layer='LN',
+            center_feature_scale=False):
         """
         DCNv3 Module
-        :param channels     
-        :param kernel_size  
-        :param stride      
-        :param pad     
+        :param channels
+        :param kernel_size
+        :param stride
+        :param pad
         :param dilation
         :param group
         :param offset_scale
@@ -198,29 +245,32 @@ class DCNv3(nn.Module):
             raise ValueError(
                 f'channels must be divisible by group, but got {channels} and {group}')
         _d_per_group = channels // group
+        dw_kernel_size = dw_kernel_size if dw_kernel_size is not None else kernel_size
         # you'd better set _d_per_group to a power of 2 which is more efficient in our CUDA implementation
         if not _is_power_of_2(_d_per_group):
             warnings.warn(
                 "You'd better set channels in DCNv3 to make the dimension of each attention head a power of 2 "
                 "which is more efficient in our CUDA implementation.")
-
+        
         self.offset_scale = offset_scale
         self.channels = channels
         self.kernel_size = kernel_size
+        self.dw_kernel_size = dw_kernel_size
         self.stride = stride
-        self.dilation = 1
+        self.dilation = dilation
         self.pad = pad
         self.group = group
         self.group_channels = channels // group
         self.offset_scale = offset_scale
-
+        self.center_feature_scale = center_feature_scale
+        
         self.dw_conv = nn.Sequential(
             nn.Conv2d(
                 channels,
                 channels,
-                kernel_size=kernel_size,
+                kernel_size=dw_kernel_size,
                 stride=1,
-                padding=(kernel_size-1)//2,
+                padding=(dw_kernel_size - 1) // 2,
                 groups=channels),
             build_norm_layer(
                 channels,
@@ -237,7 +287,14 @@ class DCNv3(nn.Module):
         self.input_proj = nn.Linear(channels, channels)
         self.output_proj = nn.Linear(channels, channels)
         self._reset_parameters()
-
+        
+        if center_feature_scale:
+            self.center_feature_scale_proj_weight = nn.Parameter(
+                torch.zeros((group, channels), dtype=torch.float))
+            self.center_feature_scale_proj_bias = nn.Parameter(
+                torch.tensor(0.0, dtype=torch.float).view((1,)).repeat(group, ))
+            self.center_feature_scale_module = CenterFeatureScaleModule()
+    
     def _reset_parameters(self):
         constant_(self.offset.weight.data, 0.)
         constant_(self.offset.bias.data, 0.)
@@ -273,6 +330,14 @@ class DCNv3(nn.Module):
             self.group, self.group_channels,
             self.offset_scale,
             256)
+        
+        if self.center_feature_scale:
+            center_feature_scale = self.center_feature_scale_module(
+                x1, self.center_feature_scale_proj_weight, self.center_feature_scale_proj_bias)
+            # N, H, W, groups -> N, H, W, groups, 1 -> N, H, W, groups, _d_per_group -> N, H, W, channels
+            center_feature_scale = center_feature_scale[..., None].repeat(
+                1, 1, 1, 1, self.channels // self.group).flatten(-2)
+            x = x * (1 - center_feature_scale) + x_proj * center_feature_scale
         x = self.output_proj(x)
-
+        
         return x

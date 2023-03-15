@@ -66,7 +66,21 @@ def build_act_layer(act_layer):
 
 
 class CrossAttention(nn.Module):
-
+    r""" Cross Attention Module
+    Args:
+        dim (int): Number of input channels.
+        num_heads (int): Number of attention heads. Default: 8
+        qkv_bias (bool, optional):  If True, add a learnable bias to q, k, v.
+            Default: False.
+        qk_scale (float | None, optional): Override default qk scale of
+            head_dim ** -0.5 if set. Default: None.
+        attn_drop (float, optional): Dropout ratio of attention weight.
+            Default: 0.0
+        proj_drop (float, optional): Dropout ratio of output. Default: 0.0
+        attn_head_dim (int, optional): Dimension of attention head.
+        out_dim (int, optional): Dimension of output.
+    """
+    
     def __init__(self,
                  dim,
                  num_heads=8,
@@ -84,7 +98,7 @@ class CrossAttention(nn.Module):
         if attn_head_dim is not None:
             head_dim = attn_head_dim
         all_head_dim = head_dim * self.num_heads
-        self.scale = qk_scale or head_dim**-0.5
+        self.scale = qk_scale or head_dim ** -0.5
         assert all_head_dim == dim
 
         self.q = nn.Linear(dim, all_head_dim, bias=False)
@@ -104,9 +118,7 @@ class CrossAttention(nn.Module):
         self.proj = nn.Linear(all_head_dim, out_dim)
         self.proj_drop = nn.Dropout(proj_drop)
 
-    def forward(self, x, bool_masked_pos=None, k=None, v=None):
-        # import pdb; pdb.set_trace()
-        # print("1", x.shape, k.shape, v.shape)
+    def forward(self, x, k=None, v=None):
         B, N, C = x.shape
         N_k = k.shape[1]
         N_v = v.shape[1]
@@ -114,7 +126,6 @@ class CrossAttention(nn.Module):
         q_bias, k_bias, v_bias = None, None, None
         if self.q_bias is not None:
             q_bias = self.q_bias
-            # k_bias = torch.zeros_like(self.v_bias, requires_grad=False)
             k_bias = self.k_bias
             v_bias = self.v_bias
 
@@ -131,7 +142,6 @@ class CrossAttention(nn.Module):
         v = v.reshape(B, N_v, 1, self.num_heads, -1).permute(2, 0, 3, 1,
                                                              4).squeeze(0)
 
-        # print("2", q.shape, k.shape, v.shape)
         q = q * self.scale
         attn = (q @ k.transpose(-2, -1))  # (B, N_head, N_q, N_k)
 
@@ -146,7 +156,23 @@ class CrossAttention(nn.Module):
 
 
 class AttentiveBlock(nn.Module):
-
+    r"""Attentive Block
+    Args:
+        dim (int): Number of input channels.
+        num_heads (int): Number of attention heads. Default: 8
+        qkv_bias (bool, optional):  If True, add a learnable bias to q, k, v.
+            Default: False.
+        qk_scale (float | None, optional): Override default qk scale of
+            head_dim ** -0.5 if set. Default: None.
+        drop (float, optional): Dropout rate. Default: 0.0.
+        attn_drop (float, optional): Attention dropout rate. Default: 0.0.
+        drop_path (float | tuple[float], optional): Stochastic depth rate.
+            Default: 0.0.
+        norm_layer (nn.Module, optional): Normalization layer.  Default: nn.LayerNorm.
+        attn_head_dim (int, optional): Dimension of attention head. Default: None.
+        out_dim (int, optional): Dimension of output. Default: None.
+    """
+    
     def __init__(self,
                  dim,
                  num_heads,
@@ -322,7 +348,6 @@ class InternImageLayer(nn.Module):
                  core_op,
                  channels,
                  groups,
-                 dw_kernel_size,
                  mlp_ratio=4.,
                  drop=0.,
                  drop_path=0.,
@@ -332,8 +357,9 @@ class InternImageLayer(nn.Module):
                  layer_scale=None,
                  offset_scale=1.0,
                  with_cp=False,
-                 res_post_norm=False,
-                 center_feature_scale=False):
+                 dw_kernel_size=None, # for InternImage-H/G
+                 res_post_norm=False, # for InternImage-H/G
+                 center_feature_scale=False): # for InternImage-H/G
         super().__init__()
         self.channels = channels
         self.groups = groups
@@ -345,7 +371,6 @@ class InternImageLayer(nn.Module):
         self.dcn = core_op(
             channels=channels,
             kernel_size=3,
-            dw_kernel_size=dw_kernel_size,
             stride=1,
             pad=1,
             dilation=1,
@@ -353,7 +378,8 @@ class InternImageLayer(nn.Module):
             offset_scale=offset_scale,
             act_layer=act_layer,
             norm_layer=norm_layer,
-            center_feature_scale=center_feature_scale)
+            dw_kernel_size=dw_kernel_size, # for InternImage-H/G
+            center_feature_scale=center_feature_scale) # for InternImage-H/G
         self.drop_path = DropPath(drop_path) if drop_path > 0. \
             else nn.Identity()
         self.norm2 = build_norm_layer(channels, 'LN')
@@ -379,9 +405,8 @@ class InternImageLayer(nn.Module):
                 if self.post_norm:
                     x = x + self.drop_path(self.norm1(self.dcn(x)))
                     x = x + self.drop_path(self.norm2(self.mlp(x)))
-                elif self.res_post_norm:
-                    shortcut = x
-                    x = shortcut + self.drop_path(self.res_post_norm1(self.dcn(self.norm1(x))))
+                elif self.res_post_norm: # for InternImage-H/G
+                    x = x + self.drop_path(self.res_post_norm1(self.dcn(self.norm1(x))))
                     x = x + self.drop_path(self.res_post_norm2(self.mlp(self.norm2(x))))
                 else:
                     x = x + self.drop_path(self.dcn(self.norm1(x)))
@@ -425,7 +450,6 @@ class InternImageBlock(nn.Module):
                  channels,
                  depth,
                  groups,
-                 dw_kernel_size,
                  downsample=True,
                  mlp_ratio=4.,
                  drop=0.,
@@ -436,6 +460,7 @@ class InternImageBlock(nn.Module):
                  offset_scale=1.0,
                  layer_scale=None,
                  with_cp=False,
+                 dw_kernel_size=None, # for InternImage-H/G
                  post_norm_block_ids=None, # for InternImage-H/G
                  res_post_norm=False, # for InternImage-H/G
                  center_feature_scale=False): # for InternImage-H/G
@@ -444,12 +469,12 @@ class InternImageBlock(nn.Module):
         self.depth = depth
         self.post_norm = post_norm
         self.center_feature_scale = center_feature_scale
+
         self.blocks = nn.ModuleList([
             InternImageLayer(
                 core_op=core_op,
                 channels=channels,
                 groups=groups,
-                dw_kernel_size=dw_kernel_size,
                 mlp_ratio=mlp_ratio,
                 drop=drop,
                 drop_path=drop_path[i] if isinstance(
@@ -460,20 +485,21 @@ class InternImageBlock(nn.Module):
                 layer_scale=layer_scale,
                 offset_scale=offset_scale,
                 with_cp=with_cp,
-                res_post_norm=res_post_norm,
-                center_feature_scale=center_feature_scale
+                dw_kernel_size=dw_kernel_size, # for InternImage-H/G
+                res_post_norm=res_post_norm, # for InternImage-H/G
+                center_feature_scale=center_feature_scale # for InternImage-H/G
             ) for i in range(depth)
         ])
         if not self.post_norm or center_feature_scale:
             self.norm = build_norm_layer(channels, 'LN')
         self.post_norm_block_ids = post_norm_block_ids
-        if post_norm_block_ids is not None:
+        if post_norm_block_ids is not None: # for InternImage-H/G
             self.post_norms = nn.ModuleList(
                 [build_norm_layer(channels, 'LN', eps=1e-6) for _ in post_norm_block_ids]
             )
         self.downsample = DownsampleLayer(
             channels=channels, norm_layer=norm_layer) if downsample else None
-        
+
     def forward(self, x, return_wo_downsample=False):
         for i, blk in enumerate(self.blocks):
             x = blk(x)
@@ -510,6 +536,12 @@ class InternImage(nn.Module):
         layer_scale (bool): Whether to use layer scale. Default: False
         cls_scale (bool): Whether to use class scale. Default: False
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
+        dw_kernel_size (int): Size of the dwconv. Default: None
+        use_clip_projector (bool): Whether to use clip projector. Default: False
+        level2_post_norm (bool): Whether to use level2 post norm. Default: False
+        level2_post_norm_block_ids (list): Indexes of post norm blocks. Default: None
+        res_post_norm (bool): Whether to use res post norm. Default: False
+        center_feature_scale (bool): Whether to use center feature scale. Default: False
     """
 
     def __init__(self,
@@ -554,7 +586,7 @@ class InternImage(nn.Module):
         print(f"level2_post_norm: {level2_post_norm}")
         print(f"level2_post_norm_block_ids: {level2_post_norm_block_ids}")
         print(f"res_post_norm: {res_post_norm}")
-        
+
         in_chans = 3
         self.patch_embed = StemLayer(in_chans=in_chans,
                                      out_chans=channels,
@@ -578,7 +610,6 @@ class InternImage(nn.Module):
                 channels=int(channels * 2**i),
                 depth=depths[i],
                 groups=groups[i],
-                dw_kernel_size=dw_kernel_size, # for InternImage-H/G
                 mlp_ratio=self.mlp_ratio,
                 drop=drop_rate,
                 drop_path=dpr[sum(depths[:i]):sum(depths[:i + 1])],
@@ -589,6 +620,7 @@ class InternImage(nn.Module):
                 layer_scale=layer_scale,
                 offset_scale=offset_scale,
                 with_cp=with_cp,
+                dw_kernel_size=dw_kernel_size,  # for InternImage-H/G
                 post_norm_block_ids=post_norm_block_ids, # for InternImage-H/G
                 res_post_norm=res_post_norm, # for InternImage-H/G
                 center_feature_scale=center_feature_scale # for InternImage-H/G
