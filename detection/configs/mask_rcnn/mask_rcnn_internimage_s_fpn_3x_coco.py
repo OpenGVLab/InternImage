@@ -9,7 +9,7 @@ _base_ = [
     '../_base_/schedules/schedule_3x.py',
     '../_base_/default_runtime.py'
 ]
-pretrained = 'https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_s_1k_224.pth'
+pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth'
 model = dict(
     backbone=dict(
         _delete_=True,

@@ -7,7 +7,7 @@ _base_ = [
     '../_base_/models/upernet_r50.py', '../_base_/datasets/ade20k.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
-pretrained = 'https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_s_1k_224.pth'
+pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth'
 model = dict(
     backbone=dict(
         _delete_=True,

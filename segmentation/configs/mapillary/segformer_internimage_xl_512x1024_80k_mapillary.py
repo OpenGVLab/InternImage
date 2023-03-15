@@ -7,7 +7,7 @@ _base_ = [
     '../_base_/models/segformer_mit-b0.py', '../_base_/datasets/mapillary.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_80k.py'
 ]
-pretrained = 'https://github.com/OpenGVLab/InternImage/releases/download/cls_model/internimage_xl_22k_192to384.pth'
+pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth'
 model = dict(
     backbone=dict(
         _delete_=True,
