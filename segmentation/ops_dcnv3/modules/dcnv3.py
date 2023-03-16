@@ -73,7 +73,7 @@ def _is_power_of_2(n):
     if (not isinstance(n, int)) or (n < 0):
         raise ValueError(
             "invalid input for _is_power_of_2: {} (type: {})".format(n, type(n)))
-    
+
     return (n & (n - 1) == 0) and n != 0
 
 
@@ -125,7 +125,7 @@ class DCNv3_pytorch(nn.Module):
             warnings.warn(
                 "You'd better set channels in DCNv3 to make the dimension of each attention head a power of 2 "
                 "which is more efficient in our CUDA implementation.")
-        
+
         self.offset_scale = offset_scale
         self.channels = channels
         self.kernel_size = kernel_size
@@ -137,7 +137,7 @@ class DCNv3_pytorch(nn.Module):
         self.group_channels = channels // group
         self.offset_scale = offset_scale
         self.center_feature_scale = center_feature_scale
-        
+
         self.dw_conv = nn.Sequential(
             nn.Conv2d(
                 channels,
@@ -168,7 +168,7 @@ class DCNv3_pytorch(nn.Module):
             self.center_feature_scale_proj_bias = nn.Parameter(
                 torch.tensor(0.0, dtype=torch.float).view((1,)).repeat(group, ))
             self.center_feature_scale_module = CenterFeatureScaleModule()
-    
+
     def _reset_parameters(self):
         constant_(self.offset.weight.data, 0.)
         constant_(self.offset.bias.data, 0.)
@@ -187,6 +187,7 @@ class DCNv3_pytorch(nn.Module):
         N, H, W, _ = input.shape
 
         x = self.input_proj(input)
+        x_proj = x
 
         x1 = input.permute(0, 3, 1, 2)
         x1 = self.dw_conv(x1)
@@ -210,7 +211,7 @@ class DCNv3_pytorch(nn.Module):
                 1, 1, 1, 1, self.channels // self.group).flatten(-2)
             x = x * (1 - center_feature_scale) + x_proj * center_feature_scale
         x = self.output_proj(x)
-        
+
         return x
 
 
@@ -251,7 +252,7 @@ class DCNv3(nn.Module):
             warnings.warn(
                 "You'd better set channels in DCNv3 to make the dimension of each attention head a power of 2 "
                 "which is more efficient in our CUDA implementation.")
-        
+
         self.offset_scale = offset_scale
         self.channels = channels
         self.kernel_size = kernel_size
@@ -294,7 +295,7 @@ class DCNv3(nn.Module):
             self.center_feature_scale_proj_bias = nn.Parameter(
                 torch.tensor(0.0, dtype=torch.float).view((1,)).repeat(group, ))
             self.center_feature_scale_module = CenterFeatureScaleModule()
-    
+
     def _reset_parameters(self):
         constant_(self.offset.weight.data, 0.)
         constant_(self.offset.bias.data, 0.)
@@ -313,6 +314,7 @@ class DCNv3(nn.Module):
         N, H, W, _ = input.shape
 
         x = self.input_proj(input)
+        x_proj = x
         dtype = x.dtype
 
         x1 = input.permute(0, 3, 1, 2)
@@ -339,5 +341,5 @@ class DCNv3(nn.Module):
                 1, 1, 1, 1, self.channels // self.group).flatten(-2)
             x = x * (1 - center_feature_scale) + x_proj * center_feature_scale
         x = self.output_proj(x)
-        
+
         return x

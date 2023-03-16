@@ -74,7 +74,7 @@ def _is_power_of_2(n):
         raise ValueError(
             "invalid input for _is_power_of_2: {} (type: {})".format(n, type(n)))
 
-    return (n & (n-1) == 0) and n != 0
+    return (n & (n - 1) == 0) and n != 0
 
 
 class CenterFeatureScaleModule(nn.Module):
@@ -86,7 +86,7 @@ class CenterFeatureScaleModule(nn.Module):
                                         weight=center_feature_scale_proj_weight,
                                         bias=center_feature_scale_proj_bias).sigmoid()
         return center_feature_scale
-    
+
 
 class DCNv3_pytorch(nn.Module):
     def __init__(
@@ -104,10 +104,10 @@ class DCNv3_pytorch(nn.Module):
             center_feature_scale=False):
         """
         DCNv3 Module
-        :param channels     
-        :param kernel_size  
-        :param stride      
-        :param pad     
+        :param channels
+        :param kernel_size
+        :param stride
+        :param pad
         :param dilation
         :param group
         :param offset_scale
@@ -231,10 +231,10 @@ class DCNv3(nn.Module):
             center_feature_scale=False):
         """
         DCNv3 Module
-        :param channels     
-        :param kernel_size  
-        :param stride      
-        :param pad     
+        :param channels
+        :param kernel_size
+        :param stride
+        :param pad
         :param dilation
         :param group
         :param offset_scale
