@@ -147,8 +147,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 
 
 ## Project Release
-- [ ] Model for other downstream 
-tasks
+- [ ] Model for other downstream tasks
 - [x] InternImage-H(1B)/G(3B)
 - [x] TensorRT inference
 - [x] Classification code of the InternImage series
@@ -165,23 +164,29 @@ tasks
 - 3D Perception: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
 
-## Performance on Visual Benchmark
-
-**ImageNet Image Classification**
-
-|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |      22K model      |      1K model       |
-| :------------: | :----------: | :--------: | :---: | :-----: | :---: | :-----------------: | :-----------------: |
-| InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |   30M   |  5G   |          -          | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](classification/configs/internimage_t_1k_224.yaml) |
-| InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |   50M   |  8G   |          -          | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](classification/configs/internimage_s_1k_224.yaml) |
-| InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |   97M   |  16G  |          -          | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](classification/configs/internimage_b_1k_224.yaml) |
-| InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M   | 108G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)            | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](classification/configs/internimage_l_22kto1k_384.yaml) |
-| InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)            | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
-| InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  |TODO           | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto1k_640.pth) \| [cfg](classification/configs/internimage_h_jointto1k_640.yaml) |
-| InternImage-G | Joint 427M |  512x512   | 90.1  |  3B   | TODO  |  TODO      | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_jointto1k_512.pth) \| [cfg](classification/configs/internimage_g_jointto1k_512.yaml)|
+## Open-source Visual Pretrained Models
+|      name      | pretrain   | pre-training  resolution |  #param |       download      |
+| :------------: | :--------: | :--------: | :-----: | :-----------------: |
+| InternImage-L  | ImageNet-22K |  384x384   |  223M   |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)            |
+| InternImage-XL | ImageNet-22K |  384x384   |  335M   |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)            |
+| InternImage-H | Joint 427M |  384x384   |  1.08B   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)            |
+| InternImage-G | - |  384x384   |   3B   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth)            | 
 
 
-**COCO Object Detection and Instance Segmentation**
 
+## ImageNet-1K Image Classification
+|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |           download       |
+| :------------: | :----------: | :--------: | :---: | :-----: | :---: |  :-----------------: |
+| InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |   30M   |  5G   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](classification/configs/internimage_t_1k_224.yaml) |
+| InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |   50M   |  8G   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](classification/configs/internimage_s_1k_224.yaml) |
+| InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |   97M   |  16G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](classification/configs/internimage_b_1k_224.yaml) |
+| InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M   | 108G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](classification/configs/internimage_l_22kto1k_384.yaml) |
+| InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
+| InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](classification/configs/internimage_h_22kto1k_640.yaml) |
+| InternImage-G | - | 512x512 | 90.1  |  3B   | 2700G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](classification/configs/internimage_g_22kto1k_512.yaml) |
+
+
+## COCO Object Detection and Instance Segmentation
 
 |    backbone    |       method       | schd | box mAP  | mask mAP  | #param | FLOPs | Download | 
 | :------------: | :----------------: | :---------: | :-----: | :------: | :-----: | :---: | :---: | 
@@ -201,7 +206,7 @@ tasks
 | InternImage-H  |     DINO (TTA)     |      65.0 / 65.4     |   2.18B  | TODO |  TODO |
 | InternImage-G  |     DINO (TTA)     |      65.3 / 65.5     |    3B    | TODO |  TODO |
 
-**ADE20K Semantic Segmentation**
+## ADE20K Semantic Segmentation
 
 
 |    backbone    | method     |   resolution | mIoU (ss/ms) | #param | FLOPs | Download | 
@@ -215,7 +220,7 @@ tasks
 | InternImage-H |  Mask2Former   |  896x896   |     62.5 / 62.9     |  1.31B   | 4635G | TODO | ckpt \| cfg
 
 
-**Main Results of FPS**
+## Main Results of FPS 
 
 |      name      | resolution | #params | FLOPs | Batch 1 FPS(TensorRT) |
 | :------------: | :--------: | :-----: | :---: | :-------------------: |
