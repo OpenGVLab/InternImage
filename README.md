@@ -159,28 +159,36 @@
 - [x] InternImage-T/S/B/L/XL 语义分割模型
 
 
-## 开源模型
+## 相关开源项目
 - 目标检测和实例分割: [COCO](detection/configs/coco/)
 - 语义分割: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
 - 图文检索、图像描述和视觉问答: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
 - 3D感知: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
-
-## 经典视觉任务性能
-
-**ImageNet图像分类**
-|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |      22K model      |      1K model       |
-| :------------: | :----------: | :--------: | :---: | :-----: | :---: | :-----------------: | :-----------------: |
-| InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |   30M   |  5G   |          -          | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](classification/configs/internimage_t_1k_224.yaml) |
-| InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |   50M   |  8G   |          -          | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](classification/configs/internimage_s_1k_224.yaml) |
-| InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |   97M   |  16G  |          -          | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](classification/configs/internimage_b_1k_224.yaml) |
-| InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M   | 108G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)            | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](classification/configs/internimage_l_22kto1k_384.yaml) |
-| InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)            | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
-| InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  | TODO            | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto1k_640.pth) \| [cfg](classification/configs/internimage_h_jointto1k_640.yaml) |
-| InternImage-G | Joint 427M |  512x512   | 90.1  |  3B   | TODO  | TODO            | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_jointto1k_512.pth) \| [cfg](classification/configs/internimage_g_jointto1k_512.yaml) |
+## 开源视觉预训练模型
+|      name      | pretrain   | pre-training resolution |  #param | FLOPs |       model      |
+| :------------: | :--------: | :--------: | :-----: | :---: | :-----------------: |
+| InternImage-L  | ImageNet-22K |  384x384   |  223M   |  108G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)            |
+| InternImage-XL | ImageNet-22K |  384x384   |  335M   |  163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)            |
+| InternImage-H | Joint 427M |  384x384   |  1.08B   | 1478G  | (2023/03/16)            |
+| InternImage-G | - |  384x384   |   3B   | (2023/03/16)  | (2023/03/16)            | 
 
 
-**COCO目标检测和实例分割**
+
+## ImageNet-1K图像分类
+|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |           1K model       |
+| :------------: | :----------: | :--------: | :---: | :-----: | :---: |  :-----------------: |
+| InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |   30M   |  5G   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](classification/configs/internimage_t_1k_224.yaml) |
+| InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |   50M   |  8G   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](classification/configs/internimage_s_1k_224.yaml) |
+| InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |   97M   |  16G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](classification/configs/internimage_b_1k_224.yaml) |
+| InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M   | 108G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](classification/configs/internimage_l_22kto1k_384.yaml) |
+| InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
+| InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto1k_640.pth) \| [cfg](classification/configs/internimage_h_jointto1k_640.yaml) |
+| InternImage-G | - | 512x512 | 90.1  |  3B   | (2023/03/16)  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_jointto1k_512.pth) \| [cfg](classification/configs/internimage_g_jointto1k_512.yaml) |
+
+
+
+## COCO目标检测和实例分割
 
 |    backbone    |       method       | schd | box mAP  | mask mAP  | #param | FLOPs | Download | 
 | :------------: | :----------------: | :---------: | :-----: | :------: | :-----: | :---: | :---: | 
@@ -196,11 +204,11 @@
 | InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_xl_fpn_3x_coco.py) |
 
 |    backbone    |       method       |  box mAP (val/test) |  #param  | FLOPs | Download | 
-| :------------: | :----------------: |     :---------:     | :------: | :-----: | :---: | 
-| InternImage-H  |     DINO (TTA)     |      65.0 / 65.4     |   2.18B  | TODO |  TODO |
-| InternImage-G  |     DINO (TTA)     |      65.3 / 65.5     |    3B    | TODO |  TODO |
+| :------------: | :----------------: |     :---------:     | :------: | :-----: | :-----: |
+| InternImage-H  |     DINO (TTA)     |      65.0 / 65.4     |   2.18B  | TODO | TODO |
+| InternImage-G  |     DINO (TTA)     |      65.3 / 65.5     |    3B    | TODO | TODO |
 
-**ADE20K语义分割**
+## ADE20K语义分割
 
 |    backbone    | method     |   resolution | mIoU (ss/ms) | #param | FLOPs | Download | 
 | :------------: | :--------: | :--------: | :----------: | :-----: | :---: |   :---:  |
@@ -210,10 +218,12 @@
 | InternImage-L  |  UperNet   |  640x640   |     53.9 / 54.1     |  256M   | 2526G | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_l_640_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_l_640_160k_ade20k.py) |
 | InternImage-XL |  UperNet   |  640x640   |     55.0 / 55.3     |  368M   | 3142G | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_xl_640_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_xl_640_160k_ade20k.py) |
 | InternImage-H |  UperNet   |  896x896   |     59.9 / 60.3     |  1.12B   | 3566G | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_h_896_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_h_896_160k_ade20k.py) |
-| InternImage-H |  Mask2Former   |  896x896   |     62.5 / 62.9     |  1.31B   | 4635G | ckpt \| cfg | 
+| InternImage-H |  Mask2Former   |  896x896   |     62.5 / 62.9     |  1.31B   | 4635G | TODO | 
 
 
-**模型推理速度**
+## 模型推理速度
+
+[TensorRT](classification/export.py)
 
 |      name      | resolution | #param | FLOPs | Batch 1 FPS(TensorRT) |
 | :------------: | :--------: | :-----: | :---: | :-------------------: |
