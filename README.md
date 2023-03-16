@@ -1,4 +1,3 @@
-<p align="center">
 <p>
 	<a href="./README_EN.md">[English Version]</a>
 </p>
@@ -223,7 +222,7 @@
 
 ## 模型推理速度
 
-[TensorRT](classification/export.py)
+[[TensorRT]](classification/export.py)
 
 |      name      | resolution | #param | FLOPs | batch 1 FPS (TensorRT) |
 | :------------: | :--------: | :-----: | :---: | :-------------------: |

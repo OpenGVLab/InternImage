@@ -1,3 +1,7 @@
+<p>
+	<a href="./README.md">[中文版本]</a>
+</p>
+
 # INTERN-2.5: Multimodal Multitask General Large Model
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-coco)](https://paperswithcode.com/sota/object-detection-on-coco?p=internimage-exploring-large-scale-vision)
@@ -157,7 +161,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 - [x] InternImage-T/S/B/L/XL semantic segmentation model
 
 
-## Model Zoo
+## Related Projects
 - Object Detection and Instance Segmentation: [COCO](detection/configs/coco/)
 - Semantic Segmentation: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
 - Image-Text Retrieval, Image Captioning, and Visual Question Answering: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
@@ -222,7 +226,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 
 ## Main Results of FPS 
 
-[TensorRT](classification/export.py)
+[[TensorRT]](classification/export.py)
 
 |      name      | resolution | #param | FLOPs | batch 1 FPS (TensorRT) |
 | :------------: | :--------: | :-----: | :---: | :-------------------: |
