@@ -43,4 +43,4 @@ Mapillary 80k + Cityscapes (w/ coarse data) 80k
 
 | backbone       | resolution |  mIoU (ss/ms) | train speed | train time | #params | FLOPs | Config | Download |
 |:--------------:|:----------:|:------------:|:-----------:|:-----------:|:-------:|:-----:|:-----:|:---------:|
-| InternImage-H  | 1024x1024   | 86.37 / 86.96  | TODO       | TODO        | TODO    | TODO | [config](./mask2former_internimage_h_1024x1024_80k_mapillary2cityscapes.py) | [ckpt]() \| [log]()  |
+| InternImage-H  | 1024x1024   | 86.37 / 86.96  | TODO       | TODO        | TODO    | TODO | TODO | TODO  |

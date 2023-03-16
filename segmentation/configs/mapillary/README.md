@@ -28,4 +28,4 @@ We first pretrain our models on the Mapillary Vistas dataset, then finetune them
 
 | backbone       | resolution |  schd | train speed | train time | #params | FLOPs | Config | Download |
 |:--------------:|:----------:|:------------:|:-----------:|:-----------:|:-------:|:-----:|:-----:|:---------:|
-| InternImage-H  | 1024x1024   | 80k  | TODO       | TODO        | TODO    | TODO | [config](./mask2former_internimage_h_1024x1024_80k_mapillary.py) | [ckpt]()  |
+| InternImage-H  | 1024x1024   | 80k  | TODO       | TODO        | TODO    | TODO | TODO | TODO  |
