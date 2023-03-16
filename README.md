@@ -190,7 +190,7 @@
 
 ## COCO目标检测和实例分割
 
-|    backbone    |       method       | schd | box mAP  | mask mAP  | #param | FLOPs | Download | 
+|    backbone    |       method       | schd | box mAP  | mask mAP  | #param | FLOPs | download | 
 | :------------: | :----------------: | :---------: | :-----: | :------: | :-----: | :---: | :---: | 
 | InternImage-T  |     Mask R-CNN     |     1x      |  47.2   |   42.5   |   49M   | 270G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask_rcnn_internimage_t_fpn_1x_coco.pth) \| [cfg](detection/configs/coco/mask_rcnn_internimage_t_fpn_1x_coco.py) |
 | InternImage-T  |     Mask R-CNN     |     3x      |  49.1   |   43.7   |   49M   | 270G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask_rcnn_internimage_t_fpn_3x_coco.pth) \| [cfg](detection/configs/coco/mask_rcnn_internimage_t_fpn_3x_coco.py) |
@@ -225,7 +225,7 @@
 
 [TensorRT](classification/export.py)
 
-|      name      | resolution | #param | FLOPs | Batch 1 FPS(TensorRT) |
+|      name      | resolution | #param | FLOPs | batch 1 FPS (TensorRT) |
 | :------------: | :--------: | :-----: | :---: | :-------------------: |
 | InternImage-T  |  224x224   |   30M   |  5G   |          156          |
 | InternImage-S  |  224x224   |   50M   |  8G   |          129          |
