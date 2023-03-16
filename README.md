@@ -166,12 +166,12 @@
 - 3D感知: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
 ## 开源视觉预训练模型
-|      name      | pretrain   | pre-training  resolution |  #param | FLOPs |       model      |
-| :------------: | :--------: | :--------: | :-----: | :---: | :-----------------: |
-| InternImage-L  | ImageNet-22K |  384x384   |  223M   |  108G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)            |
-| InternImage-XL | ImageNet-22K |  384x384   |  335M   |  163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)            |
-| InternImage-H | Joint 427M |  384x384   |  1.08B   | 1478G  | (2023/03/16)            |
-| InternImage-G | - |  384x384   |   3B   | (2023/03/16)  | (2023/03/16)            | 
+|      name      | pretrain   | pre-training  resolution |  #param |       model      |
+| :------------: | :--------: | :--------: | :-----: | :-----------------: |
+| InternImage-L  | ImageNet-22K |  384x384   |  223M   |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)            |
+| InternImage-XL | ImageNet-22K |  384x384   |  335M   |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)            |
+| InternImage-H | Joint 427M |  384x384   |  1.08B   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)            |
+| InternImage-G | - |  384x384   |   3B   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth)            | 
 
 
 
