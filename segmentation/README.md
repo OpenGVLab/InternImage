@@ -4,15 +4,6 @@ This folder contains the implementation of the InternImage for semantic segmenta
 
 Our segmentation code is developed on top of [MMSegmentation v0.27.0](https://github.com/open-mmlab/mmsegmentation/tree/v0.27.0).
 
-## Model Zoo
-
-- [x] [ADE20K](configs/ade20k/)
-- [x] [Cityscapes](configs/cityscapes/)
-- [ ] COCO-Stuff-164K
-- [ ] COCO-Stuff-10K
-- [ ] Pascal Context
-- [ ] NYU Depth V2
-
 ## Usage
 
 ### Install
