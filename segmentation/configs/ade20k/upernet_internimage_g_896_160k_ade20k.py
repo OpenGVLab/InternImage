@@ -7,31 +7,31 @@ _base_ = [
     '../_base_/models/upernet_r50.py', '../_base_/datasets/ade20k.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
-# pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth'
+pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth'
 model = dict(
     backbone=dict(
         _delete_=True,
         type='InternImage',
         core_op='DCNv3',
-        channels=320,
-        depths=[6, 6, 32, 6],
-        groups=[10, 20, 40, 80],
+        channels=512,
+        depths=[2, 2, 48, 4],
+        groups=[16, 32, 64, 128],
         mlp_ratio=4.,
         drop_path_rate=0.5,
         norm_layer='LN',
         layer_scale=None,
         offset_scale=1.0,
-        post_norm=False,
+        post_norm=True,
         dw_kernel_size=5, # for InternImage-H/G
-        res_post_norm=True, # for InternImage-H/G
+        res_post_norm=False, # for InternImage-H/G
         level2_post_norm=True, # for InternImage-H/G
-        level2_post_norm_block_ids=[5, 11, 17, 23, 29], # for InternImage-H/G
+        level2_post_norm_block_ids=[5, 11, 17, 23, 29, 35, 41, 47], # for InternImage-H/G
         center_feature_scale=True, # for InternImage-H/G
-        with_cp=False,
+        with_cp=True,
         out_indices=(0, 1, 2, 3),
-        init_cfg=None), #dict(type='Pretrained', checkpoint=pretrained)),
-    decode_head=dict(num_classes=150, in_channels=[320, 640, 1280, 2560]),
-    auxiliary_head=dict(num_classes=150, in_channels=1280),
+        init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
+    decode_head=dict(num_classes=150, in_channels=[512, 1024, 2048, 4096]),
+    auxiliary_head=dict(num_classes=150, in_channels=2048),
     test_cfg=dict(mode='whole'))
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -67,8 +67,8 @@ test_pipeline = [
 optimizer = dict(
     _delete_=True, type='AdamW', lr=0.00002, betas=(0.9, 0.999), weight_decay=0.05,
     constructor='CustomLayerDecayOptimizerConstructor',
-    paramwise_cfg=dict(num_layers=50, layer_decay_rate=0.95,
-                       depths=[6, 6, 32, 6], offset_lr_scale=1.0))
+    paramwise_cfg=dict(num_layers=56, layer_decay_rate=0.95,
+                       depths=[2, 2, 48, 4], offset_lr_scale=1.0))
 lr_config = dict(_delete_=True, policy='poly',
                  warmup='linear',
                  warmup_iters=1500,
