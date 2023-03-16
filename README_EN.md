@@ -90,7 +90,7 @@ ADE20K, outperforming previous models by a large margin.
 **Segmentation Task**
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="3"> Semantic Segmentation</th><th colspan="1">Street Segmentation</th><th colspan="1">RGBD Segmentation</th>
+        <th colspan="3">Semantic Segmentation</th><th colspan="1">Street Segmentation</th><th colspan="1">RGBD Segmentation</th>
     </tr>
     <tr align="center">
         <th>ADE20K</th><th>COCO Stuff-10K</th><th>Pascal Context</th><th>CityScapes</th><th>NYU Depth V2</th>
@@ -122,7 +122,7 @@ ADE20K, outperforming previous models by a large margin.
 **Multimodal Tasks**
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="1"> Image Captioning</th><th colspan="2">Fine-tuning Image-Text Retrieval</th><th colspan="1">Zero-shot Image-Text Retrieval</th>
+        <th colspan="1">Image Captioning</th><th colspan="2">Fine-tuning Image-Text Retrieval</th><th colspan="1">Zero-shot Image-Text Retrieval</th>
     </tr>
     <tr align="center">
         <th>COCO Caption</th><th>COCO Caption</th><th>Flickr30k</th><th>Flickr30k</th>
@@ -151,8 +151,8 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 - [x] InternImage-H(1B)/G(3B)
 - [x] TensorRT inference
 - [x] Classification code of the InternImage series
-- [x] InternImage-T/S/B/L/XL ImageNet-1k pretrained model
-- [x] InternImage-L/XL ImageNet-22k pretrained model
+- [x] InternImage-T/S/B/L/XL ImageNet-1K pretrained model
+- [x] InternImage-L/XL ImageNet-22K pretrained model
 - [x] InternImage-T/S/B/L/XL detection and instance segmentation model
 - [x] InternImage-T/S/B/L/XL semantic segmentation model
 
@@ -165,12 +165,12 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 
 
 ## Open-source Visual Pretrained Models
-|      name      | pretrain   | pre-training  resolution |  #param |       download      |
-| :------------: | :--------: | :--------: | :-----: | :-----------------: |
+|      name      | pretrain     | pre-training  resolution |  #param |       download      |
+| :------------: | :--------:   | :--------: | :-----: | :-----------------: |
 | InternImage-L  | ImageNet-22K |  384x384   |  223M   |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)            |
 | InternImage-XL | ImageNet-22K |  384x384   |  335M   |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)            |
-| InternImage-H | Joint 427M |  384x384   |  1.08B   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)            |
-| InternImage-G | - |  384x384   |   3B   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth)            | 
+| InternImage-H  | Joint 427M   |  384x384   |  1.08B  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)            |
+| InternImage-G  | -            |  384x384   |   3B    |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth)            | 
 
 
 
@@ -188,7 +188,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 
 ## COCO Object Detection and Instance Segmentation
 
-|    backbone    |       method       | schd | box mAP  | mask mAP  | #param | FLOPs | Download | 
+|    backbone    |       method       | schd | box mAP  | mask mAP  | #param | FLOPs | download | 
 | :------------: | :----------------: | :---------: | :-----: | :------: | :-----: | :---: | :---: | 
 | InternImage-T  |     Mask R-CNN     |     1x      |  47.2   |   42.5   |   49M   | 270G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask_rcnn_internimage_t_fpn_1x_coco.pth) \| [cfg](detection/configs/coco/mask_rcnn_internimage_t_fpn_1x_coco.py) |
 | InternImage-T  |     Mask R-CNN     |     3x      |  49.1   |   43.7   |   49M   | 270G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask_rcnn_internimage_t_fpn_3x_coco.pth) \| [cfg](detection/configs/coco/mask_rcnn_internimage_t_fpn_3x_coco.py) |
@@ -199,9 +199,9 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 | InternImage-L  |     Cascade        |     1x      |  54.9   |   47.7   |  277M   | 1399G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_l_fpn_1x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_l_fpn_1x_coco.py) |
 | InternImage-L  |     Cascade        |     3x      |  56.1   |   48.5   |  277M   | 1399G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_l_fpn_3x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_l_fpn_3x_coco.py) |
 | InternImage-XL |     Cascade        |     1x      |  55.3   |   48.1   |  387M   | 1782G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_xl_fpn_1x_coco.py) |
-| InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_xl_fpn_3x_coco.py) |
+| InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_3x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_xl_fpn_3x_coco.py) |
 
-|    backbone    |       method       |  box mAP (val/test) |  #param  | FLOPs | Download | 
+|    backbone    |       method       |  box mAP (val/test) |  #param  | FLOPs | download | 
 | :------------: | :----------------: |     :---------:     | :------: | :-----: | :---: | 
 | InternImage-H  |     DINO (TTA)     |      65.0 / 65.4     |   2.18B  | TODO |  TODO |
 | InternImage-G  |     DINO (TTA)     |      65.3 / 65.5     |    3B    | TODO |  TODO |
@@ -209,7 +209,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 ## ADE20K Semantic Segmentation
 
 
-|    backbone    | method     |   resolution | mIoU (ss/ms) | #param | FLOPs | Download | 
+|    backbone    | method     |   resolution | mIoU (ss/ms) | #param | FLOPs | download | 
 | :------------: | :--------: | :--------: | :----------: | :-----: | :---: |   :---:  |
 | InternImage-T  |  UperNet   |   512x512   |     47.9 / 48.1     |   59M   | 944G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_t_512_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_t_512_160k_ade20k.py) |
 | InternImage-S  |  UperNet   |  512x512   |     50.1 / 50.9     |   80M   | 1017G | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_s_512_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_s_512_160k_ade20k.py) |
@@ -217,12 +217,14 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 | InternImage-L  |  UperNet   |  640x640   |     53.9 / 54.1     |  256M   | 2526G | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_l_640_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_l_640_160k_ade20k.py) |
 | InternImage-XL |  UperNet   |  640x640   |     55.0 / 55.3     |  368M   | 3142G | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_xl_640_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_xl_640_160k_ade20k.py) |
 | InternImage-H |  UperNet   |  896x896   |     59.9 / 60.3     |  1.12B   | 3566G | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_h_896_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_h_896_160k_ade20k.py) |
-| InternImage-H |  Mask2Former   |  896x896   |     62.5 / 62.9     |  1.31B   | 4635G | TODO | ckpt \| cfg
+| InternImage-H |  Mask2Former   |  896x896   |     62.5 / 62.9     |  1.31B   | 4635G | TODO |
 
 
 ## Main Results of FPS 
 
-|      name      | resolution | #params | FLOPs | Batch 1 FPS(TensorRT) |
+[TensorRT](classification/export.py)
+
+|      name      | resolution | #param | FLOPs | Batch 1 FPS(TensorRT) |
 | :------------: | :--------: | :-----: | :---: | :-------------------: |
 | InternImage-T  |  224x224   |   30M   |  5G   |          156          |
 | InternImage-S  |  224x224   |   50M   |  8G   |          129          |

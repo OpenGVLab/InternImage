@@ -93,7 +93,7 @@
 **分割任务**
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="3"> 语义分割</th><th colspan="1">街景分割</th><th colspan="1">RGBD分割</th>
+        <th colspan="3">语义分割</th><th colspan="1">街景分割</th><th colspan="1">RGBD分割</th>
     </tr>
     <tr align="center">
         <th>ADE20K</th><th>COCO Stuff-10K</th><th>Pascal Context</th><th>CityScapes</th><th>NYU Depth V2</th>
@@ -125,7 +125,7 @@
 **图文多模态任务**
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="1"> 图像描述</th><th colspan="2">微调图文检索</th><th colspan="1">零样本图文检索</th>
+        <th colspan="1">图像描述</th><th colspan="2">微调图文检索</th><th colspan="1">零样本图文检索</th>
     </tr>
     <tr align="center">
         <th>COCO Caption</th><th>COCO Caption</th><th>Flickr30k</th><th>Flickr30k</th>
@@ -201,16 +201,16 @@
 | InternImage-L  |     Cascade        |     1x      |  54.9   |   47.7   |  277M   | 1399G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_l_fpn_1x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_l_fpn_1x_coco.py) |
 | InternImage-L  |     Cascade        |     3x      |  56.1   |   48.5   |  277M   | 1399G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_l_fpn_3x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_l_fpn_3x_coco.py) |
 | InternImage-XL |     Cascade        |     1x      |  55.3   |   48.1   |  387M   | 1782G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_xl_fpn_1x_coco.py) |
-| InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_xl_fpn_3x_coco.py) |
+| InternImage-XL |     Cascade        |     3x      |  56.2   |   48.8   |  387M   | 1782G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_3x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_xl_fpn_3x_coco.py) |
 
-|    backbone    |       method       |  box mAP (val/test) |  #param  | FLOPs | Download | 
+|    backbone    |       method       |  box mAP (val/test) |  #param  | FLOPs | download |
 | :------------: | :----------------: |     :---------:     | :------: | :-----: | :-----: |
 | InternImage-H  |     DINO (TTA)     |      65.0 / 65.4     |   2.18B  | TODO | TODO |
 | InternImage-G  |     DINO (TTA)     |      65.3 / 65.5     |    3B    | TODO | TODO |
 
 ## ADE20K语义分割
 
-|    backbone    | method     |   resolution | mIoU (ss/ms) | #param | FLOPs | Download | 
+|    backbone    | method     |   resolution | mIoU (ss/ms) | #param | FLOPs | download |
 | :------------: | :--------: | :--------: | :----------: | :-----: | :---: |   :---:  |
 | InternImage-T  |  UperNet   |   512x512   |     47.9 / 48.1     |   59M   | 944G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_t_512_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_t_512_160k_ade20k.py) |
 | InternImage-S  |  UperNet   |  512x512   |     50.1 / 50.9     |   80M   | 1017G | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_s_512_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_s_512_160k_ade20k.py) |
