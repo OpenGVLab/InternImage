@@ -166,7 +166,7 @@
 - 3D感知: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
 ## 开源视觉预训练模型
-|      name      | pretrain data  | pre-training resolution |  #param | FLOPs |       model      |
+|      name      | pretrain data  | pre-training resolution |  #param | FLOPs |       Download      |
 | :------------: | :--------: | :--------: | :-----: | :---: | :-----------------: |
 | InternImage-L  | ImageNet-22K |  384x384   |  223M   |  108G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)            |
 | InternImage-XL | ImageNet-22K |  384x384   |  335M   |  163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)            |
