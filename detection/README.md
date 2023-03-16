@@ -54,7 +54,7 @@ sh ./make.sh
 python test.py
 ```
 
-## Data Preparation
+### Data Preparation
 
 Prepare COCO according to the guidelines in [MMDetection v2.28.1](https://github.com/open-mmlab/mmdetection/blob/master/docs/en/1_exist_data_model.md).
 
@@ -93,7 +93,7 @@ For example, to train `InternImage-T` with 8 GPU on 1 node, run:
 sh dist_train.sh configs/coco/mask_rcnn_internimage_t_fpn_1x_coco.py 8
 ```
 
-### Manage jobs with Srun
+### Manage Jobs with Slurm
 
 For example, to train `InternImage-L` with 32 GPU on 4 node, run:
 

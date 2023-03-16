@@ -36,11 +36,3 @@ Mapillary 80k + Cityscapes (w/ coarse data) 160k
 |:--------------:|:----------:|:------------:|:-----------:|:-----------:|:-------:|:-----:|:-----:|:---------:|
 | InternImage-L  | 512x1024   | 85.16 / 85.67  | 0.37s / iter       | 17h        | 220M    | 1580G | [config](./segformer_internimage_l_512x1024_160k_mapillary2cityscapes.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/segformer_internimage_l_512x1024_160k_mapillary2cityscapes.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/segformer_internimage_l_512x1024_160k_mapillary2cityscapes.log.json)  |
 | InternImage-XL | 512x1024   | 85.41 / 85.93  | 0.43s / iter       |  19.5h      | 330M    | 2364G | [config](./segformer_internimage_xl_512x1024_160k_mapillary2cityscapes.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/segformer_internimage_xl_512x1024_160k_mapillary2cityscapes.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/segformer_internimage_xl_512x1024_160k_mapillary2cityscapes.log.json) |
-
-### Mask2Former + InternImage (with additional data)
-
-Mapillary 80k + Cityscapes (w/ coarse data) 80k
-
-| backbone       | resolution |  mIoU (ss/ms) | train speed | train time | #params | FLOPs | Config | Download |
-|:--------------:|:----------:|:------------:|:-----------:|:-----------:|:-------:|:-----:|:-----:|:---------:|
-| InternImage-H  | 1024x1024   | 86.37 / 86.96  | TODO       | TODO        | TODO    | TODO | [config](./mask2former_internimage_h_1024x1024_80k_mapillary2cityscapes.py) | [ckpt]() \| [log]()  |

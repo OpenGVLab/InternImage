@@ -51,7 +51,7 @@ sh ./make.sh
 python test.py
 ```
 
-### Data preparation
+### Data Preparation
 
 We use standard ImageNet dataset, you can download it from http://image-net.org/. We provide the following two ways to
 load data:
@@ -128,7 +128,7 @@ load data:
 
 ### Evaluation
 
-To evaluate a pre-trained `InternImage` on ImageNet val, run:
+To evaluate a pretrained `InternImage` on ImageNet val, run:
 
 ```bash
 python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --master_port 12345 main.py --eval \
@@ -142,7 +142,7 @@ python -m torch.distributed.launch --nproc_per_node 1 --master_port 12345 main.p
 --cfg configs/internimage_b_1k_224.yaml --resume internimage_b_1k_224.pth --data-path <imagenet-path>
 ```
 
-### Training from scratch on ImageNet-1K
+### Training from Scratch on ImageNet-1K
 
 To train an `InternImage` on ImageNet from scratch, run:
 
@@ -151,7 +151,7 @@ python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --maste
 --cfg <config-file> --data-path <imagenet-path> [--batch-size <batch-size-per-gpu> --output <output-directory> --tag <job-tag>]
 ```
 
-### Manage jobs with Srun.
+### Manage Jobs with Slurm.
 
 For example, to train `InternImage` with 8 GPU on a single node for 300 epochs, run:
 
@@ -184,9 +184,9 @@ python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --maste
 --resume internimage_xl_22k_192to384.pth --eval
 ``` -->
 
-<!-- ### Fine-tuning from a ImageNet-22K pre-trained model
+<!-- ### Fine-tuning from a ImageNet-22K pretrained model
 
-For example, to fine-tune a `InternImage-XL-22k` model pre-trained on ImageNet-22K:
+For example, to fine-tune a `InternImage-XL-22k` model pretrained on ImageNet-22K:
 
 ```bashs
 GPUS=8 sh train_in1k.sh <partition> <job-name> configs/intern_image_.yaml --pretrained intern_image_b.pth --eval
