@@ -1,6 +1,5 @@
 
 .idea/
-
 .DS_Store
-
 classification/convertor/
+segmentation/convertor/
