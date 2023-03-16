@@ -224,7 +224,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 
 [TensorRT](classification/export.py)
 
-|      name      | resolution | #param | FLOPs | Batch 1 FPS(TensorRT) |
+|      name      | resolution | #param | FLOPs | batch 1 FPS (TensorRT) |
 | :------------: | :--------: | :-----: | :---: | :-------------------: |
 | InternImage-T  |  224x224   |   30M   |  5G   |          156          |
 | InternImage-S  |  224x224   |   50M   |  8G   |          129          |
