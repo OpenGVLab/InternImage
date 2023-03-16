@@ -166,7 +166,7 @@
 - 3D感知: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
 ## 开源视觉预训练模型
-|      name      | pretrain   | pre-training  resolution |  #param |       model      |
+|      name      | pretrain   | pre-training  resolution |  #param |       download      |
 | :------------: | :--------: | :--------: | :-----: | :-----------------: |
 | InternImage-L  | ImageNet-22K |  384x384   |  223M   |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)            |
 | InternImage-XL | ImageNet-22K |  384x384   |  335M   |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)            |
@@ -176,7 +176,7 @@
 
 
 ## ImageNet-1K图像分类
-|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |           1K model       |
+|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |           download       |
 | :------------: | :----------: | :--------: | :---: | :-----: | :---: |  :-----------------: |
 | InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |   30M   |  5G   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](classification/configs/internimage_t_1k_224.yaml) |
 | InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |   50M   |  8G   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](classification/configs/internimage_s_1k_224.yaml) |
