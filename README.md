@@ -183,8 +183,8 @@
 | InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |   97M   |  16G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](classification/configs/internimage_b_1k_224.yaml) |
 | InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M   | 108G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](classification/configs/internimage_l_22kto1k_384.yaml) |
 | InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M   | 163G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/internimage_xl_22kto1k_384.yaml) |
-| InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto1k_640.pth) \| [cfg](classification/configs/internimage_h_jointto1k_640.yaml) |
-| InternImage-G | - | 512x512 | 90.1  |  3B   | (2023/03/16)  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_jointto1k_512.pth) \| [cfg](classification/configs/internimage_g_jointto1k_512.yaml) |
+| InternImage-H | Joint 427M |  640x640   | 89.6  |  1.08B   | 1478G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](classification/configs/internimage_h_22kto1k_640.yaml) |
+| InternImage-G | - | 512x512 | 90.1  |  3B   | (2023/03/16)  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](classification/configs/internimage_g_22kto1k_512.yaml) |
 
 
 
