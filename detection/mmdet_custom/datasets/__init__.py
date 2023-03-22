@@ -4,5 +4,4 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
-from .models import *  # noqa: F401,F403
-from .datasets import *
+from .crowd_human import CrowdHumanDataset
