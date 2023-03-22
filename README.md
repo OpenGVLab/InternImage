@@ -1,6 +1,7 @@
 <p>
 	<a href="./README_EN.md">[English Version]</a>
 </p>
+现在issue有点多，我们团队会逐一查阅并解决，请耐心等待。
 
 # 书生2.5 - 多模态多任务通用大模型
 
