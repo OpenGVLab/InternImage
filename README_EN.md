@@ -1,6 +1,7 @@
 <p>
 	<a href="./README.md">[中文版本]</a>
 </p>
+There are a lot of issues now, our team will check and solve them one by one, please wait patiently.
 
 # INTERN-2.5: Multimodal Multitask General Large Model
 
