@@ -109,3 +109,35 @@ CUDA_VISIBLE_DEVICES=0 python image_demo.py \
   checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth  \
   --palette ade20k 
 ```
+
+### Export
+
+To export a segmentation model from PyTorch to TensorRT, run:
+```shell
+MODEL="model_name"
+CKPT_PATH="/path/to/model/ckpt.pth"
+
+python deploy.py \
+    "./deploy/configs/mmseg/segmentation_tensorrt_static-512x512.py" \
+    "./configs/ade20k/${MODEL}.py" \
+    "${CKPT_PATH}" \
+    "./deploy/demo.png" \
+    --work-dir "./work_dirs/mmseg/${MODEL}" \
+    --device cuda \
+    --dump-info
+```
+
+For example, to export `upernet_internimage_t_512_160k_ade20k` from PyTorch to TensorRT, run:
+```shell
+MODEL="upernet_internimage_t_512_160k_ade20k"
+CKPT_PATH="/path/to/model/ckpt/upernet_internimage_t_512_160k_ade20k.pth"
+
+python deploy.py \
+    "./deploy/configs/mmseg/segmentation_tensorrt_static-512x512.py" \
+    "./configs/ade20k/${MODEL}.py" \
+    "${CKPT_PATH}" \
+    "./deploy/demo.png" \
+    --work-dir "./work_dirs/mmseg/${MODEL}" \
+    --device cuda \
+    --dump-info
+```

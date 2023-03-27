@@ -100,3 +100,35 @@ For example, to train `InternImage-L` with 32 GPU on 4 node, run:
 ```bash
 GPUS=32 sh slurm_train.sh <partition> <job-name> configs/coco/cascade_internimage_xl_fpn_3x_coco.py work_dirs/cascade_internimage_xl_fpn_3x_coco
 ```
+
+### Export
+
+To export a detection model from PyTorch to TensorRT, run:
+```shell
+MODEL="model_name"
+CKPT_PATH="/path/to/model/ckpt.pth"
+
+python deploy.py \
+    "./deploy/configs/mmdet/instance-seg/instance-seg_tensorrt_dynamic-320x320-1344x1344.py" \
+    "./configs/coco/${MODEL}.py" \
+    "${CKPT_PATH}" \
+    "./deploy/demo.jpg" \
+    --work-dir "./work_dirs/mmdet/instance-seg/${MODEL}" \
+    --device cuda \
+    --dump-info
+```
+
+For example, to export `mask_rcnn_internimage_t_fpn_1x_coco` from PyTorch to TensorRT, run:
+```shell
+MODEL="mask_rcnn_internimage_t_fpn_1x_coco"
+CKPT_PATH="/path/to/model/ckpt/mask_rcnn_internimage_t_fpn_1x_coco.pth"
+
+python deploy.py \
+    "./deploy/configs/mmdet/instance-seg/instance-seg_tensorrt_dynamic-320x320-1344x1344.py" \
+    "./configs/coco/${MODEL}.py" \
+    "${CKPT_PATH}" \
+    "./deploy/demo.jpg" \
+    --work-dir "./work_dirs/mmdet/instance-seg/${MODEL}" \
+    --device cuda \
+    --dump-info
+```
