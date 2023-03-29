@@ -1,9 +1,9 @@
 <p>
-	<a href="./README.md">[中文版本]</a>
+	<a href="./README.md">[English Version]</a>
 </p>
-There are a lot of issues now, our team will check and solve them one by one, please wait patiently.
+现在issue有点多，我们团队会逐一查阅并解决，请耐心等待。
 
-# INTERN-2.5: Multimodal Multitask General Large Model
+# 书生2.5 - 多模态多任务通用大模型
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-coco)](https://paperswithcode.com/sota/object-detection-on-coco?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-coco-minival)](https://paperswithcode.com/sota/object-detection-on-coco-minival?p=internimage-exploring-large-scale-vision)
@@ -25,48 +25,46 @@ There are a lot of issues now, our team will check and solve them one by one, pl
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places205)](https://paperswithcode.com/sota/image-classification-on-places205?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-imagenet)](https://paperswithcode.com/sota/image-classification-on-imagenet?p=internimage-exploring-large-scale-vision)
 
-This repository is an official implementation of the [InternImage: Exploring Large-Scale Vision Foundation Models with
-Deformable Convolutions](https://arxiv.org/abs/2211.05778).
+这个代码仓库是[InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions](https://arxiv.org/abs/2211.05778)的官方实现。
 
-[Paper](https://arxiv.org/abs/2211.05778) \| [Blog in Chinese](https://zhuanlan.zhihu.com/p/610772005) | [Documents](./docs/)
+[论文](https://arxiv.org/abs/2211.05778) \| [知乎专栏](https://zhuanlan.zhihu.com/p/610772005) | [文档](./docs/)
+## 简介
+商汤科技与上海人工智能实验室在2023年3月14日联合发布多模态多任务通用大模型“书生2.5”。“书生2.5”在多模态多任务处理能力中斩获多项全新突破，其卓越的图文跨模态任务处理能力可为自动驾驶等通用场景任务提供高效精准的感知和理解能力支持。“书生2.5”致力于多模态多任务通用模型的构建，旨在接收处理各种不同模态的输入，并采用统一的模型架构和参数处理各种不同的任务，促进不同模态和任务之间在表示学习方面的协作，逐步实现通用人工智能领域的融会贯通。
 
-
-## Introduction
-SenseTime and Shanghai AI Laboratory jointly released the multimodal multitask general model "INTERN-2.5" on March 14, 2023. "INTERN-2.5" achieved multiple breakthroughs in multimodal multitask processing, and its excellent cross-modal task processing ability in text and image can provide efficient and accurate perception and understanding capabilities for general scenarios such as autonomous driving.
-
-## Overview
+## 概览图
 
 <div align=left>
-<img src='./docs/figs/intern_pipeline_en.png' width=900>
+<img src='./docs/figs/intern_pipeline.png' width=900>
 </div>
 
-## Highlights
-- :thumbsup: **The strongest visual universal backbone model with up to 3 billion parameters**
-- 🏆 **Achieved `90.1% Top1` accuracy in ImageNet, the most accurate among open-source models**
-- 🏆 **Achieved `65.5 mAP` on the COCO benchmark dataset for object detection, the only model that exceeded `65.0 mAP`**
 
-## News
-- `Mar 14, 2023`: 🚀 "INTERN-2.5" is released！
-- `Feb 28, 2023`: 🚀 InternImage is accepted to CVPR 2023!
-- `Nov 18, 2022`: 🚀 InternImage-XL merged into [BEVFormer v2](https://arxiv.org/abs/2211.10439) achieves state-of-the-art performance of `63.4 NDS` on nuScenes Camera Only.
-- `Nov 10, 2022`: 🚀 InternImage-H achieves a new record `65.4 mAP` on COCO detection test-dev and `62.9 mIoU` on
-ADE20K, outperforming previous models by a large margin.
+## 亮点
+- :thumbsup: **高达30亿参数的最强视觉通用主干模型**
+- 🏆 **图像分类标杆数据集ImageNet `90.1% Top1`准确率，开源模型中准确度最高**
+- 🏆 **物体检测标杆数据集COCO `65.5 mAP`，唯一超过`65 mAP`的模型**
 
-## Applications
+## 最新进展
+- 2023年3月14日: 🚀 “书生2.5”发布！
+- 2023年2月28日: 🚀 InternImage 被CVPR 2023接收!
+- 2022年11月18日: 🚀 基于 InternImage-XL 主干网络，[BEVFormer v2](https://arxiv.org/abs/2211.10439) 在nuScenes的纯视觉3D检测任务上取得了最佳性能 `63.4 NDS` ！
+- 2022年11月10日: 🚀 InternImage-H 在COCO目标检测任务上以 `65.4 mAP` 斩获冠军，是唯一突破 `65.0 mAP` 的超强物体检测模型！
+- 2022年11月10日: 🚀 InternImage-H 在ADE20K语义分割数据集上取得 `62.9 mIoU` 的SOTA性能！
 
-### 1. Performance on Image Modality Tasks
-- On the ImageNet benchmark dataset, 
-"INTERN-2.5" achieved a Top-1 accuracy of 90.1% using only publicly available data for image classification. This is the only model, besides two undisclosed models from Google and Microsoft and additional datasets, to achieve a Top-1 accuracy of over 90.0%. It is also the highest-accuracy open-source model on ImageNet and the largest model in scale in the world.
-- On the COCO object detection benchmark dataset, "INTERN-2.5" achieved a mAP of 65.5, making it the only model in the world to surpass 65 mAP.
-- "INTERN-2.5" achieved the world's best performance on 16 other important visual benchmark datasets, covering classification, detection, and segmentation tasks.
+
+## “书生2.5”的应用
+
+### 1. 图像模态任务性能
+- 在图像分类标杆数据集ImageNet上，“书生2.5”仅基于公开数据便达到了 90.1% 的Top-1准确率。这是除谷歌与微软两个未公开模型及额外数据集外，唯一准确率超过90.0%的模型，同时也是世界上开源模型中ImageNet准确度最高，规模最大的模型；
+- 在物体检测标杆数据集COCO上，“书生2.5” 取得了 65.5 的 mAP，是世界上唯一超过65 mAP的模型；
+- 在另外16个重要的视觉基础数据集（覆盖分类、检测和分割任务）上取得世界最好性能。
 
 <div align="left">
 <br>
 	
-**Classification Task**
+**分类任务**
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="1"> Image Classification</th><th colspan="2"> Scene Classification </th><th colspan="1">Long-Tail Classification</th>
+        <th colspan="1"> 图像分类</th><th colspan="2"> 场景分类 </th><th colspan="1">长尾分类</th>
     </tr>
     <tr align="center">
         <th>ImageNet</th><th>Places365</th><th>Places 205</th><th>iNaturalist 2018</th>
@@ -78,10 +76,10 @@ ADE20K, outperforming previous models by a large margin.
 <br>
 
 
-**Detection Task**
+**检测任务**
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="4"> Conventional Object Detection</th><th colspan="3">Long-Tail Object Detection </th><th colspan="1">Autonomous Driving Object Detection</th><th colspan="1">Dense Object Detection</th>
+        <th colspan="4"> 常规物体检测</th><th colspan="2">长尾物体检测 </th><th colspan="2">自动驾驶物体检测</th><th colspan="1">密集物体检测</th>
     </tr>
     <tr align="center">
         <th>COCO</th><th>VOC 2007</th><th>VOC 2012</th><th>OpenImage</th><th>LVIS minival</th><th>LVIS val</th><th>BDD100K</th><th>nuScenes</th><th>CrowdHuman</th>
@@ -92,10 +90,10 @@ ADE20K, outperforming previous models by a large margin.
 </table>
 <br>
 
-**Segmentation Task**
+**分割任务**
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="3">Semantic Segmentation</th><th colspan="1">Street Segmentation</th><th colspan="1">RGBD Segmentation</th>
+        <th colspan="3">语义分割</th><th colspan="1">街景分割</th><th colspan="1">RGBD分割</th>
     </tr>
     <tr align="center">
         <th>ADE20K</th><th>COCO Stuff-10K</th><th>Pascal Context</th><th>CityScapes</th><th>NYU Depth V2</th>
@@ -108,26 +106,26 @@ ADE20K, outperforming previous models by a large margin.
 
 </div>
 
-### 2. Cross-Modal Performance for Image and Text Tasks
+### 2. 图文跨模态任务性能
 
-- Image-Text Retrieval
+- 图文检索
 
-"INTERN-2.5" can quickly locate and retrieve the most semantically relevant images based on textual content requirements. This capability can be applied to both videos and image collections and can be further combined with object detection boxes to enable a variety of applications, helping users quickly and easily find the required image resources. For example, it can return the relevant images specified by the text in the album.
+“书生2.5”可根据文本内容需求快速定位检索出语义最相关的图像。这一能力既可应用于视频和图像集合，也可进一步结合物体检测框，具有丰富的应用模式，帮助用户更便捷、快速地找到所需图像资源, 例如可在相册中返回文本所指定的相关图像。
 
 
-- Image-To-Text
+- 以图生文
 
-"INTERN-2.5" has a strong understanding capability in various aspects of visual-to-text tasks such as image captioning, visual question answering, visual reasoning, and optical character recognition. For example, in the context of autonomous driving, it can enhance the scene perception and understanding capabilities, assist the vehicle in judging traffic signal status, road signs, and other information, and provide effective perception information support for vehicle decision-making and planning.
+“书生2.5”的“以图生文”在图像描述、视觉问答、视觉推理和文字识别等多个方面均拥有强大的理解能力。例如在自动驾驶场景下，可以提升场景感知理解能力，辅助车辆判断交通信号灯状态、道路标志牌等信息，为车辆的决策规划提供有效的感知信息支持。
 
 
 
 <div align="left">
 <br>
 	
-**Multimodal Tasks**
+**图文多模态任务**
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="1">Image Captioning</th><th colspan="2">Fine-tuning Image-Text Retrieval</th><th colspan="1">Zero-shot Image-Text Retrieval</th>
+        <th colspan="1">图像描述</th><th colspan="2">微调图文检索</th><th colspan="1">零样本图文检索</th>
     </tr>
     <tr align="center">
         <th>COCO Caption</th><th>COCO Caption</th><th>Flickr30k</th><th>Flickr30k</th>
@@ -140,10 +138,9 @@ ADE20K, outperforming previous models by a large margin.
 
 </div>
 
-## Core Technologies
-The outstanding performance of "INTERN-2.5" in the field of cross-modal learning is due to several innovations in the core technology of multi-modal multi-task general model, including the development of InternImage as the backbone network for visual perception, LLM as the large-scale text pre-training network for text processing, and Uni-Perceiver as the compatible decoding modeling for multi-task learning.
 
-InternImage, the visual backbone network of "INTERN-2.5", has a parameter size of up to 3 billion and can adaptively adjust the position and combination of convolutions based on dynamic sparse convolution operators, providing powerful representations for multi-functional visual perception. Uni-Perceiver, a versatile task decoding model, encodes data from different modalities into a unified representation space and unifies different tasks into the same task paradigm, enabling simultaneous processing of various modalities and tasks with the same task architecture and shared model parameters.
+## 核心技术
+“书生2.5”在图文跨模态领域卓越的性能表现，源自于在多模态多任务通用模型技术核心方面的多项创新，实现了视觉核心视觉感知大模型主干网络（InternImage）、用于文本核心的超大规模文本预训练网络（LLM）和用于多任务的兼容解码建模（Uni-Perceiver）的创新组合。  视觉主干网络InternImage参数量高达30亿，能够基于动态稀疏卷积算子自适应地调整卷积的位置和组合方式，从而为多功能视觉感知提供强大的表示。Uni-Perceiver通才任务解码建模通过将不同模态的数据编码到统一的表示空间，并将不同任务统一为相同的任务范式，从而能够以相同的任务架构和共享的模型参数同时处理各种模态和任务。
 
 
 <div align=left>
@@ -151,25 +148,25 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 </div>
 
 
-## Project Release
-- [ ] Model for other downstream tasks
+## 项目功能
+- [ ] 各类下游任务
+- [x] DCNv3 预编译的whl包
 - [x] InternImage-H(1B)/G(3B)
-- [x] TensorRT inference
-- [x] Classification code of the InternImage series
-- [x] InternImage-T/S/B/L/XL ImageNet-1K pretrained model
-- [x] InternImage-L/XL ImageNet-22K pretrained model
-- [x] InternImage-T/S/B/L/XL detection and instance segmentation model
-- [x] InternImage-T/S/B/L/XL semantic segmentation model
+- [x] TensorRT 推理
+- [x] InternImage 系列分类代码
+- [x] InternImage-T/S/B/L/XL ImageNet-1K 预训练模型
+- [x] InternImage-L/XL ImageNet-22K 预训练模型
+- [x] InternImage-T/S/B/L/XL 检测和实例分割模型
+- [x] InternImage-T/S/B/L/XL 语义分割模型
 
 
-## Related Projects
-- Object Detection and Instance Segmentation: [COCO](detection/configs/coco/)
-- Semantic Segmentation: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
-- Image-Text Retrieval, Image Captioning, and Visual Question Answering: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
-- 3D Perception: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
+## 相关开源项目
+- 目标检测和实例分割: [COCO](detection/configs/coco/)
+- 语义分割: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
+- 图文检索、图像描述和视觉问答: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
+- 3D感知: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
-
-## Open-source Visual Pretrained Models
+## 开源视觉预训练模型
 |      name      |   pretrain   | pre-training  resolution | #param |                                               download                                                |
 | :------------: | :----------: | :----------------------: | :----: | :---------------------------------------------------------------------------------------------------: |
 | InternImage-L  | ImageNet-22K |         384x384          |  223M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)    |
@@ -179,7 +176,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 
 
 
-## ImageNet-1K Image Classification
+## ImageNet-1K图像分类
 |      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |                                                                             download                                                                              |
 | :------------: | :----------: | :--------: | :---: | :----: | :---: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |  30M   |  5G   |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](classification/configs/internimage_t_1k_224.yaml)       |
@@ -191,7 +188,8 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 | InternImage-G  |      -       |  512x512   | 90.1  |   3B   | 2700G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](classification/configs/internimage_g_22kto1k_512.yaml)  |
 
 
-## COCO Object Detection and Instance Segmentation
+
+## COCO目标检测和实例分割
 
 |    backbone    |   method   | schd  | box mAP | mask mAP | #param | FLOPs |                                                                                     download                                                                                      |
 | :------------: | :--------: | :---: | :-----: | :------: | :----: | :---: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -211,8 +209,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 | InternImage-H | DINO (TTA) |    65.0 / 65.4     | 2.18B  | TODO  |   TODO   |
 | InternImage-G | DINO (TTA) |    65.3 / 65.5     |   3B   | TODO  |   TODO   |
 
-## ADE20K Semantic Segmentation
-
+## ADE20K语义分割
 
 |    backbone    |   method    | resolution | mIoU (ss/ms) | #param | FLOPs |                                                                                           download                                                                                           |
 | :------------: | :---------: | :--------: | :----------: | :----: | :---: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -225,7 +222,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 | InternImage-H  | Mask2Former |  896x896   | 62.5 / 62.9  | 1.31B  | 4635G |                                                                                             TODO                                                                                             |
 
 
-## Main Results of FPS 
+## 模型推理速度
 
 [export classification model from pytorch to tensorrt](classification/README.md#export)
 
@@ -241,7 +238,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 | InternImage-L  |  384x384   |  223M  | 108G  |           56           |
 | InternImage-XL |  384x384   |  335M  | 163G  |           47           |
 
-Before using `mmdeploy` to convert our PyTorch models to TensorRT, please make sure you have the DCNv3 custom operator builded correctly. You can build it with the following command:
+在使用`mmdeploy`将PyTorch模型转为TensorRT之前，请确保您已正确编译DCNv3的自定义算子，其安装方式如下：
 ```shell
 export MMDEPLOY_DIR=/the/root/path/of/MMDeploy
 
@@ -258,13 +255,13 @@ make -j$(nproc) && make install
 cd ${MMDEPLOY_DIR}
 pip install -e .
 ```
-For more details on building custom ops, please refering to [this document](https://github.com/open-mmlab/mmdeploy/blob/master/docs/en/01-how-to-build/linux-x86_64.md).
+关于`mmdeploy`编译自定义算子的更多细节，请参考这份[文档](https://github.com/open-mmlab/mmdeploy/blob/master/docs/en/01-how-to-build/linux-x86_64.md)。
 
 
 
-## Citation
+## 引用
 
-If this work is helpful for your research, please consider citing the following BibTeX entry.
+若“书生2.5”对您的研究工作有帮助，请参考如下bibtex对我们的工作进行引用。
 
 ```
 @article{wang2022internimage,
@@ -320,5 +317,6 @@ If this work is helpful for your research, please consider citing the following 
 ```
 
 <div align=left>
-<img src='./docs/figs/log.png' width=600>
+
+[//]: # (<img src='./docs/figs/log.png' width=600>)
 </div>
