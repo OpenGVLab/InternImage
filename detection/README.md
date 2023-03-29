@@ -53,6 +53,9 @@ sh ./make.sh
 # unit test (should see all checking is True)
 python test.py
 ```
+- You can also install the operator using .whl files
+
+[DCNv3-1.0-whl](DCNv3-1.0-whl)
 
 ### Data Preparation
 
