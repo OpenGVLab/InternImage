@@ -127,13 +127,6 @@ def scale_learning_rate(config, num_processes):
     logger.info('MIN_LR={}'.format(config.TRAIN.MIN_LR))
 
 
-def get_optimizer_state_str(optimizer):
-    states = []
-    for param_group in optimizer.param_groups:
-        states.append(f'name={param_group["name"]} lr={param_group["lr"]} weight_decay={param_group["weight_decay"]}')
-    return '\n'.join(states)
-
-
 def setup_autoresume(config):
     if config.MODEL.RESUME == '' and config.TRAIN.AUTO_RESUME:
         last_checkpoint = os.path.join(config.OUTPUT, 'last')
@@ -323,7 +316,6 @@ def train(config, accelerator: Accelerator):
 
     logger.info(f"Created model:{config.MODEL.TYPE}/{config.MODEL.NAME}")
     logger.info(str(model))
-    logger.info(get_optimizer_state_str(optimizer))
     logger.info("Effective Optimizer Steps: {}".format(effective_update_steps_per_epoch))
     logger.info("Start training")
     logger.info("Max accuracy: {}".format(max_acc))
