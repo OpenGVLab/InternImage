@@ -210,13 +210,14 @@ Then you could launch the training in a slurm system with 8 GPUs as follows (tin
 ```
 GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 
 GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 --eval --resume ckpt.pth
-GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_h_22kto1k_640.yaml --batch-size 16 --accumulation-steps 4 --pretrained ckpt/internimage_h_jointto22k_384.pth --disable-grad-scalar
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 --eval --resume deepspeed_ckpt_dir
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_h_22kto1k_640.yaml --batch-size 16 --accumulation-steps 4 --pretrained ckpt/internimage_h_jointto22k_384.pth
 ```
 
 
 🤗 **Huggingface Accelerate Integration of Deepspeed**
 
-Optionally, you could use our Huggingface accelerate integration to use deepspeed.
+Optionally, you could use our [Huggingface accelerate](https://github.com/huggingface/accelerate) integration to use deepspeed.
 
 ```bash
 pip install accelerate

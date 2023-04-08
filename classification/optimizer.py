@@ -37,29 +37,22 @@ def build_optimizer(config, model):
     if use_zero:
         print(f"\nUse Zero!")
         if opt_lower == 'sgd':
-            # an ugly implementation
             # https://github.com/pytorch/pytorch/issues/71347
             optimizer = ZeroRedundancyOptimizer(
-                parameters[0],
+                parameters,
                 optimizer_class=optim.SGD,
                 momentum=config.TRAIN.OPTIMIZER.MOMENTUM,
                 nesterov=True,
                 lr=config.TRAIN.BASE_LR,
                 weight_decay=config.TRAIN.WEIGHT_DECAY)
-            if len(parameters) > 0:
-                for param in parameters[1:]:
-                    optimizer.add_param_group(param)
         elif opt_lower == 'adamw':
             optimizer = ZeroRedundancyOptimizer(
-                parameters[0],
+                parameters,
                 optimizer_class=optim.AdamW,
                 eps=config.TRAIN.OPTIMIZER.EPS,
                 betas=config.TRAIN.OPTIMIZER.BETAS,
                 lr=config.TRAIN.BASE_LR,
                 weight_decay=config.TRAIN.WEIGHT_DECAY)
-            if len(parameters) > 0:
-                for param in parameters[1:]:
-                    optimizer.add_param_group(param)
     else:
         if opt_lower == 'sgd':
             optimizer = optim.SGD(parameters,
