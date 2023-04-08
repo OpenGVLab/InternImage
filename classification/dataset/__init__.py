@@ -4,4 +4,4 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
-from .build import build_loader
+from .build import build_loader, build_loader2

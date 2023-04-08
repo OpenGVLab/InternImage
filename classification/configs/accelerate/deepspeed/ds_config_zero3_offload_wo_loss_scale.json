@@ -1,0 +1,21 @@
+{
+    "fp16": {
+        "enabled": true,
+        "auto_cast": true,
+        "loss_scale": 1
+    },
+    "zero_optimization": {
+        "stage": 3,
+        "offload_optimizer": {
+            "device": "cpu"
+        },
+        "offload_param": {
+            "device": "cpu"
+        }
+    },
+    "gradient_accumulation_steps": 4,
+    "gradient_clipping": 5.0,
+    "steps_per_print": "inf",
+    "train_batch_size": "auto",
+    "train_micro_batch_size_per_gpu": "auto"
+}
