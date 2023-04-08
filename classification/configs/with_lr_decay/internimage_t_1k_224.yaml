@@ -1,0 +1,17 @@
+DATA:
+  IMG_ON_MEMORY: True
+MODEL:
+  TYPE: intern_image
+  DROP_PATH_RATE: 0.1
+  INTERN_IMAGE:
+    CORE_OP: 'DCNv3'
+    DEPTHS: [4, 4, 18, 4]
+    GROUPS: [4, 8, 16, 32]
+    CHANNELS: 64
+    OFFSET_SCALE: 1.0
+    MLP_RATIO: 4.0
+TRAIN:
+  EMA:
+    ENABLE: True
+    DECAY: 0.9999
+  BASE_LR: 5e-4

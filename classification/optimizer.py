@@ -40,30 +40,26 @@ def build_optimizer(config, model):
             # an ugly implementation
             # https://github.com/pytorch/pytorch/issues/71347
             optimizer = ZeroRedundancyOptimizer(
-                parameters[0]['params'],
+                parameters[0],
                 optimizer_class=optim.SGD,
                 momentum=config.TRAIN.OPTIMIZER.MOMENTUM,
                 nesterov=True,
                 lr=config.TRAIN.BASE_LR,
                 weight_decay=config.TRAIN.WEIGHT_DECAY)
-            if len(parameters[1]['params']) > 0:
-                optimizer.add_param_group({
-                    "params": parameters[1]['params'],
-                    'weight_decay': 0.
-                })
+            if len(parameters) > 0:
+                for param in parameters[1:]:
+                    optimizer.add_param_group(param)
         elif opt_lower == 'adamw':
             optimizer = ZeroRedundancyOptimizer(
-                parameters[0]['params'],
+                parameters[0],
                 optimizer_class=optim.AdamW,
                 eps=config.TRAIN.OPTIMIZER.EPS,
                 betas=config.TRAIN.OPTIMIZER.BETAS,
                 lr=config.TRAIN.BASE_LR,
                 weight_decay=config.TRAIN.WEIGHT_DECAY)
-            if len(parameters[1]['params']) > 0:
-                optimizer.add_param_group({
-                    "params": parameters[1]['params'],
-                    'weight_decay': 0.
-                })
+            if len(parameters) > 0:
+                for param in parameters[1:]:
+                    optimizer.add_param_group(param)
     else:
         if opt_lower == 'sgd':
             optimizer = optim.SGD(parameters,
@@ -148,7 +144,7 @@ def set_weight_decay_and_lr(
             lr_ratio_log[name] = (base_lr, ratio, wd, param.requires_grad)
         else:
             lr = base_lr
-        parameters.append({'params': [param], 'weight_decay': wd, 'lr': lr})
+        parameters.append({'params': [param], 'weight_decay': wd, 'lr': lr, 'name': name})
 
     print('no decay params: {no_decay_name}')
     if layerwise_lr:
