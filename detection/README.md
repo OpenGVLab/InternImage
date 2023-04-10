@@ -55,7 +55,7 @@ python test.py
 ```
 - You can also install the operator using .whl files
 
-[DCNv3-1.0-whl](DCNv3-1.0-whl)
+[DCNv3-1.0-whl](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
 
 ### Data Preparation
 
