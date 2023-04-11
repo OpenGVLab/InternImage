@@ -131,7 +131,7 @@ def parse_option():
         help="whether to use ZeroRedundancyOptimizer (ZeRO) to save memory")
 
     # distributed training
-    parser.add_argument("--local_rank",
+    parser.add_argument("--local-rank",
                         type=int,
                         required=True,
                         help='local rank for DistributedDataParallel')

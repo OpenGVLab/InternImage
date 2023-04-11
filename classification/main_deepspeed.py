@@ -27,7 +27,7 @@ from optimizer import set_weight_decay_and_lr
 from logger import create_logger
 from utils import load_pretrained, reduce_tensor, MyAverageMeter
 from ddp_hooks import fp16_compress_hook
-
+from ema_deepspeed import EMADeepspeed
 
 def parse_option():
     parser = argparse.ArgumentParser(
@@ -57,7 +57,7 @@ def parse_option():
     parser.add_argument('--accumulation-steps', type=int, default=1, help="gradient accumulation steps")
 
     # distributed training
-    parser.add_argument("--local_rank", type=int, required=True, help='local rank for DistributedDataParallel')
+    parser.add_argument("--local-rank", type=int, required=True, help='local rank for DistributedDataParallel')
     parser.add_argument('--disable-grad-scalar', action='store_true', help='disable Grad Scalar')
 
     args, unparsed = parser.parse_known_args()
@@ -211,7 +211,7 @@ def throughput(data_loader, model, logger):
         return
 
 
-def train_epoch(config, model, criterion, data_loader, optimizer, epoch, mixup_fn, lr_scheduler):
+def train_epoch(config, model, criterion, data_loader, optimizer, epoch, mixup_fn, lr_scheduler, model_ema=None):
     model.train()
 
     num_steps = len(data_loader)
@@ -236,6 +236,9 @@ def train_epoch(config, model, criterion, data_loader, optimizer, epoch, mixup_f
 
         model.backward(loss)
         model.step()
+
+        if model_ema is not None:
+            model_ema(model)
 
         if (idx + 1) % config.TRAIN.ACCUMULATION_STEPS == 0:
             lr_scheduler.step_update(epoch * num_steps + idx)
@@ -348,9 +351,14 @@ def train(config, ds_config):
     lr_scheduler = build_scheduler(config, optimizer, len(data_loader_train))
     criterion = build_criterion(config)
 
+    model_ema = None
+    if config.TRAIN.EMA.ENABLE:
+        model_ema = EMADeepspeed(model, config.TRAIN.EMA.DECAY)
+
     # -------------- resume ---------------- #
     
     max_accuracy = 0.0
+    max_accuracy_ema = 0.0
     client_state = {}
     if config.MODEL.RESUME == '' and config.TRAIN.AUTO_RESUME:
         if os.path.exists(os.path.join(config.OUTPUT, 'latest')):
@@ -367,6 +375,10 @@ def train(config, ds_config):
         logger.info(f'client_state={client_state.keys()}')
         lr_scheduler.load_state_dict(client_state['custom_lr_scheduler'])
         max_accuracy = client_state['max_accuracy']
+
+        if model_ema is not None:
+            max_accuracy_ema = client_state.get('max_accuracy_ema', 0.0)
+            model_ema.load_state_dict((client_state['model_ema']))
         
     # -------------- training ---------------- #
     
@@ -378,9 +390,11 @@ def train(config, ds_config):
     log_model_statistic(model_without_ddp)
 
     start_time = time.time()
-    for epoch in range(client_state.get('epoch', config.TRAIN.START_EPOCH), config.TRAIN.EPOCHS):
+    start_epoch = client_state['epoch'] + 1 if 'epoch' in client_state else config.TRAIN.START_EPOCH
+    for epoch in range(start_epoch, config.TRAIN.EPOCHS):
         data_loader_train.sampler.set_epoch(epoch)
-        train_epoch(config, model, criterion, data_loader_train, optimizer, epoch, mixup_fn, lr_scheduler)
+        train_epoch(config, model, criterion, data_loader_train, optimizer, epoch, mixup_fn, lr_scheduler,
+                    model_ema=model_ema)
 
         if epoch % config.SAVE_FREQ == 0 or epoch == config.TRAIN.EPOCHS - 1:
             model.save_checkpoint(
@@ -390,13 +404,16 @@ def train(config, ds_config):
                     'custom_lr_scheduler': lr_scheduler.state_dict(),
                     'max_accuracy': max_accuracy,
                     'epoch': epoch,
-                    'config': config
+                    'config': config,
+                    'max_accuracy_ema': max_accuracy_ema if model_ema is not None else 0.0,
+                    'model_ema': model_ema.state_dict() if model_ema is not None else None,
                 }
             )
 
         if epoch % config.EVAL_FREQ == 0:
             acc1, _, _ = eval_epoch(config, data_loader_val, model, epoch)
             logger.info(f"Accuracy of the network on the {len(dataset_val)} test images: {acc1:.1f}%")
+
             if acc1 > max_accuracy:
                 model.save_checkpoint(
                     save_dir=config.OUTPUT,
@@ -405,12 +422,21 @@ def train(config, ds_config):
                         'custom_lr_scheduler': lr_scheduler.state_dict(),
                         'max_accuracy': max_accuracy,
                         'epoch': epoch,
-                        'config': config
+                        'config': config,
+                        'max_accuracy_ema': max_accuracy_ema if model_ema is not None else 0.0,
+                        'model_ema': model_ema.state_dict() if model_ema is not None else None,
                     }
                 )
 
             max_accuracy = max(max_accuracy, acc1)
             logger.info(f'Max accuracy: {max_accuracy:.2f}%')
+
+            if model_ema is not None:
+                with model_ema.activate(model):
+                    acc1_ema, _, _ = eval_epoch(config, data_loader_val, model, epoch)
+                    logger.info(f"[EMA] Accuracy of the network on the {len(dataset_val)} test images: {acc1_ema:.1f}%")
+                    max_accuracy_ema = max(max_accuracy_ema, acc1_ema)
+                    logger.info(f'[EMA] Max accuracy: {max_accuracy_ema:.2f}%')
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
@@ -453,7 +479,7 @@ if __name__ == '__main__':
     args, config = parse_option()
 
     # init distributed env
-    if 'SLURM_PROCID' in os.environ:
+    if 'SLURM_PROCID' in os.environ and int(os.environ['SLURM_TASKS_PER_NODE']) != 1:
         print("\nDist init: SLURM")
         rank = int(os.environ['SLURM_PROCID'])
         gpu = rank % torch.cuda.device_count()
