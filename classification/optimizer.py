@@ -37,22 +37,32 @@ def build_optimizer(config, model):
     if use_zero:
         print(f"\nUse Zero!")
         if opt_lower == 'sgd':
+            # an ugly implementation
+            # this problem is fixed after torch 1.12
             # https://github.com/pytorch/pytorch/issues/71347
+
+            # before 1.12, we could only pass list to zero optimizer, so we first pass parameters[0] with its lr and weight decay,
+            # then we add other parameter via parameter group.
+
             optimizer = ZeroRedundancyOptimizer(
-                parameters,
+                parameters[0]['params'],
                 optimizer_class=optim.SGD,
-                momentum=config.TRAIN.OPTIMIZER.MOMENTUM,
-                nesterov=True,
-                lr=config.TRAIN.BASE_LR,
-                weight_decay=config.TRAIN.WEIGHT_DECAY)
+                momentum=config.TRAIN.OPTIMIZER.MOMENTUM, nesterov=True,
+                lr=parameters[0]['lr'], weight_decay=parameters[0]['weight_decay']
+            )
+            if len(parameters) > 1:
+                for param_group in parameters[1:]:
+                    optimizer.add_param_group(param_group)
         elif opt_lower == 'adamw':
             optimizer = ZeroRedundancyOptimizer(
-                parameters,
+                parameters[0]['params'],
                 optimizer_class=optim.AdamW,
-                eps=config.TRAIN.OPTIMIZER.EPS,
-                betas=config.TRAIN.OPTIMIZER.BETAS,
-                lr=config.TRAIN.BASE_LR,
-                weight_decay=config.TRAIN.WEIGHT_DECAY)
+                eps=config.TRAIN.OPTIMIZER.EPS, betas=config.TRAIN.OPTIMIZER.BETAS,
+                lr=parameters[0]['lr'], weight_decay=parameters[0]['weight_decay']
+            )
+            if len(parameters) > 1:
+                for param_group in parameters[1:]:
+                    optimizer.add_param_group(param_group)
     else:
         if opt_lower == 'sgd':
             optimizer = optim.SGD(parameters,
