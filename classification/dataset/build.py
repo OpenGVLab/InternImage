@@ -147,6 +147,58 @@ def build_loader(config):
         data_loader_val, data_loader_test, mixup_fn
 
 
+def build_loader2(config):
+    config.defrost()
+    dataset_train, config.MODEL.NUM_CLASSES = build_dataset('train',
+                                                            config=config)
+    config.freeze()
+    dataset_val, _ = build_dataset('val', config=config)
+    dataset_test, _ = build_dataset('test', config=config)
+
+    data_loader_train = torch.utils.data.DataLoader(
+        dataset_train,
+        shuffle=True,
+        batch_size=config.DATA.BATCH_SIZE,
+        num_workers=config.DATA.NUM_WORKERS,
+        pin_memory=config.DATA.PIN_MEMORY,
+        drop_last=True,
+        persistent_workers=True) if dataset_train is not None else None
+
+    data_loader_val = torch.utils.data.DataLoader(
+        dataset_val,
+        batch_size=config.DATA.BATCH_SIZE,
+        shuffle=False,
+        num_workers=config.DATA.NUM_WORKERS,
+        pin_memory=config.DATA.PIN_MEMORY,
+        drop_last=False,
+        persistent_workers=True) if dataset_val is not None else None
+
+    data_loader_test = torch.utils.data.DataLoader(
+        dataset_test,
+        batch_size=config.DATA.BATCH_SIZE,
+        shuffle=False,
+        num_workers=config.DATA.NUM_WORKERS,
+        pin_memory=config.DATA.PIN_MEMORY,
+        drop_last=False,
+        persistent_workers=True) if dataset_test is not None else None
+
+    # setup mixup / cutmix
+    mixup_fn = None
+    mixup_active = config.AUG.MIXUP > 0 or config.AUG.CUTMIX > 0. or config.AUG.CUTMIX_MINMAX is not None
+    if mixup_active:
+        mixup_fn = Mixup(mixup_alpha=config.AUG.MIXUP,
+                         cutmix_alpha=config.AUG.CUTMIX,
+                         cutmix_minmax=config.AUG.CUTMIX_MINMAX,
+                         prob=config.AUG.MIXUP_PROB,
+                         switch_prob=config.AUG.MIXUP_SWITCH_PROB,
+                         mode=config.AUG.MIXUP_MODE,
+                         label_smoothing=config.MODEL.LABEL_SMOOTHING,
+                         num_classes=config.MODEL.NUM_CLASSES)
+
+    return dataset_train, dataset_val, dataset_test, data_loader_train, \
+        data_loader_val, data_loader_test, mixup_fn
+
+
 def build_dataset(split, config):
     transform = build_transform(split == 'train', config)
     dataset = None

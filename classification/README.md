@@ -145,6 +145,8 @@ python -m torch.distributed.launch --nproc_per_node 1 --master_port 12345 main.p
 
 ### Training from Scratch on ImageNet-1K
 
+> The paper results were obtained from models trained with configs in `configs/without_lr_decay`.
+
 To train an `InternImage` on ImageNet from scratch, run:
 
 ```bash
@@ -195,6 +197,66 @@ python -m torch.distributed.launch --nproc_per_node 8 --master_port 12345  main.
 --cfg configs/.yaml --pretrained swin_base_patch4_window7_224_22k.pth \
 --data-path <imagenet-path> --batch-size 64 --accumulation-steps 2 [--use-checkpoint]
 ``` -->
+
+### Training with Deepspeed
+
+We support utilizing [Deepspeed](https://github.com/microsoft/DeepSpeed) to reduce memory costs for training large-scale models, e.g. InternImage-H with over 1 billion parameters.
+To use it, first install the requirements as
+
+```bash
+pip install deepspeed
+```
+
+Then you could launch the training in a slurm system with 8 GPUs as follows (tiny and huge as examples)
+
+```
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 --eval --resume ckpt.pth
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 --eval --resume deepspeed_ckpt_dir
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_h_22kto1k_640.yaml --batch-size 16 --accumulation-steps 4 --pretrained ckpt/internimage_h_jointto22k_384.pth
+```
+
+
+🤗 **Huggingface Accelerate Integration of Deepspeed**
+
+Optionally, you could use our [Huggingface accelerate](https://github.com/huggingface/accelerate) integration to use deepspeed.
+
+```bash
+pip install accelerate
+```
+
+```bash
+accelerate launch --config_file configs/accelerate/dist_8gpus_zero3_wo_loss_scale.yaml main_accelerate.py  --cfg configs/internimage_h_22kto1k_640.yaml --data-path /mnt/lustre/share/images --batch-size 16 --pretrained ckpt/internimage_h_jointto22k_384.pth --accumulation-steps 4
+accelerate launch --config_file configs/accelerate/dist_8gpus_zero3_offload.yaml main_accelerate.py  --cfg configs/internimage_t_1k_224.yaml --data-path /mnt/lustre/share/images --batch-size 128 --accumulation-steps 4 --output output_zero3_offload
+accelerate launch --config_file configs/accelerate/dist_8gpus_zero1.yaml main_accelerate.py  --cfg configs/internimage_t_1k_224.yaml --data-path /mnt/lustre/share/images --batch-size 128 --accumulation-steps 4
+```
+
+**Memory Costs**
+
+Here is the reference GPU memory cost for InternImage-H with 8 GPUs.
+
+- total batch size = 512, 16 batch size for each GPU, gradient accumulation steps = 4.
+
+| Resolution | Deepspeed | Cpu offloading | Memory |
+| --- | --- | --- | --- |
+| 640 | zero1 | False | 22572 |
+| 640 | zero3 | False | 20000 |
+| 640 | zero3 | True | 19144 |
+| 384 | zero1 | False | 16000 |
+| 384 | zero3 | True | 11928 |
+
+**Convert Checkpoints**
+
+To convert deepspeed checkpoints to pytorch fp32 checkpoint, you could use the following snippet.
+
+```python
+from deepspeed.utils.zero_to_fp32 import convert_zero_checkpoint_to_fp32_state_dict
+convert_zero_checkpoint_to_fp32_state_dict(checkpoint_dir, 'best.pth', tag='best')
+```
+
+Then, you could use `best.pth` as usual, e.g., `model.load_state_dict(torch.load('best.pth'))`
+
+> Due to the lack of computational resources, the deepspeed training scripts are currently only verified for the first few epochs. Please fire an issue if you have problems for reproducing the whole training.
 
 ### Export
 

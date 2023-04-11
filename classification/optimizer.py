@@ -38,32 +38,31 @@ def build_optimizer(config, model):
         print(f"\nUse Zero!")
         if opt_lower == 'sgd':
             # an ugly implementation
+            # this problem is fixed after torch 1.12
             # https://github.com/pytorch/pytorch/issues/71347
+
+            # before 1.12, we could only pass list to zero optimizer, so we first pass parameters[0] with its lr and weight decay,
+            # then we add other parameter via parameter group.
+
             optimizer = ZeroRedundancyOptimizer(
                 parameters[0]['params'],
                 optimizer_class=optim.SGD,
-                momentum=config.TRAIN.OPTIMIZER.MOMENTUM,
-                nesterov=True,
-                lr=config.TRAIN.BASE_LR,
-                weight_decay=config.TRAIN.WEIGHT_DECAY)
-            if len(parameters[1]['params']) > 0:
-                optimizer.add_param_group({
-                    "params": parameters[1]['params'],
-                    'weight_decay': 0.
-                })
+                momentum=config.TRAIN.OPTIMIZER.MOMENTUM, nesterov=True,
+                lr=parameters[0]['lr'], weight_decay=parameters[0]['weight_decay']
+            )
+            if len(parameters) > 1:
+                for param_group in parameters[1:]:
+                    optimizer.add_param_group(param_group)
         elif opt_lower == 'adamw':
             optimizer = ZeroRedundancyOptimizer(
                 parameters[0]['params'],
                 optimizer_class=optim.AdamW,
-                eps=config.TRAIN.OPTIMIZER.EPS,
-                betas=config.TRAIN.OPTIMIZER.BETAS,
-                lr=config.TRAIN.BASE_LR,
-                weight_decay=config.TRAIN.WEIGHT_DECAY)
-            if len(parameters[1]['params']) > 0:
-                optimizer.add_param_group({
-                    "params": parameters[1]['params'],
-                    'weight_decay': 0.
-                })
+                eps=config.TRAIN.OPTIMIZER.EPS, betas=config.TRAIN.OPTIMIZER.BETAS,
+                lr=parameters[0]['lr'], weight_decay=parameters[0]['weight_decay']
+            )
+            if len(parameters) > 1:
+                for param_group in parameters[1:]:
+                    optimizer.add_param_group(param_group)
     else:
         if opt_lower == 'sgd':
             optimizer = optim.SGD(parameters,
@@ -148,7 +147,7 @@ def set_weight_decay_and_lr(
             lr_ratio_log[name] = (base_lr, ratio, wd, param.requires_grad)
         else:
             lr = base_lr
-        parameters.append({'params': [param], 'weight_decay': wd, 'lr': lr})
+        parameters.append({'params': [param], 'weight_decay': wd, 'lr': lr, 'name': name})
 
     print('no decay params: {no_decay_name}')
     if layerwise_lr:
