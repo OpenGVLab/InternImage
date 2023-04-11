@@ -23,6 +23,6 @@ PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
     python -u main.py \
     --cfg ${CONFIG} \
     --accumulation-steps 1 \
-    --local_rank 0 \
+    --local-rank 0 \
     --data-path /mnt/lustre/share/images \
     --output work_dirs ${@:4}
