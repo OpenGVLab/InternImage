@@ -145,6 +145,8 @@ python -m torch.distributed.launch --nproc_per_node 1 --master_port 12345 main.p
 
 ### Training from Scratch on ImageNet-1K
 
+> The paper results were obtained from models trained with configs in `configs/without_lr_decay`.
+
 To train an `InternImage` on ImageNet from scratch, run:
 
 ```bash
