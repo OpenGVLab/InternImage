@@ -206,10 +206,12 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 | InternImage-XL |  Cascade   |  1x   |  55.3   |   48.1   |  387M  | 1782G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_xl_fpn_1x_coco.py)  |
 | InternImage-XL |  Cascade   |  3x   |  56.2   |   48.8   |  387M  | 1782G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_3x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_xl_fpn_3x_coco.py)  |
 
-|   backbone    |   method   | box mAP (val/test) | #param | FLOPs | download |
-| :-----------: | :--------: | :----------------: | :----: | :---: | :------: |
-| InternImage-H | DINO (TTA) |    65.0 / 65.4     | 2.18B  | TODO  |   TODO   |
-| InternImage-G | DINO (TTA) |    65.3 / 65.5     |   3B   | TODO  |   TODO   |
+|   backbone    |   method   | box mAP (val/test) | #param | download |
+| :-----------: | :--------: | :----------------: | :----: |  :------: |
+| InternImage-T | DINO |    54.0 / -       | 49M  |    [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.pth) \| [cfg](detection/configs/coco/dino_4scale_internimage_t_1x_coco.py)   |
+| InternImage-L | DINO |    TODO           | 241M  |    [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_l_1x_coco.pth) \| [cfg](detection/configs/coco/dino_4scale_internimage_l_1x_coco.py)   |
+| InternImage-H | DINO (TTA) |    65.0 / 65.4     | 2.18B  |    TODO   |
+| InternImage-G | DINO (TTA) |    65.3 / 65.5     |   3B   |    TODO   |
 
 ## ADE20K Semantic Segmentation
 
