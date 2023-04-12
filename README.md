@@ -46,6 +46,7 @@ SenseTime and Shanghai AI Laboratory jointly released the multimodal multitask g
 - 🏆 **Achieved `65.5 mAP` on the COCO benchmark dataset for object detection, the only model that exceeded `65.0 mAP`**
 
 ## News
+- `Apr 12, 2023`: 🚀 Integration of [Deepspeed](https://github.com/microsoft/DeepSpeed) is added to classification for low-cost training.
 - `Mar 14, 2023`: 🚀 "INTERN-2.5" is released！
 - `Feb 28, 2023`: 🚀 InternImage is accepted to CVPR 2023!
 - `Nov 18, 2022`: 🚀 InternImage-XL merged into [BEVFormer v2](https://arxiv.org/abs/2211.10439) achieves state-of-the-art performance of `63.4 NDS` on nuScenes Camera Only.
@@ -153,6 +154,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 
 ## Project Release
 - [ ] Model for other downstream tasks
+- [x] Integration of [Deepspeed](https://github.com/microsoft/DeepSpeed) for classification.
 - [x] InternImage-H(1B)/G(3B)
 - [x] TensorRT inference
 - [x] Classification code of the InternImage series
