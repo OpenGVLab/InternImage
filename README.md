@@ -208,7 +208,7 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 
 |   backbone    |   method   | box mAP (val/test) | #param | download |
 | :-----------: | :--------: | :----------------: | :----: |  :------: |
-| InternImage-T | DINO |    54.0 / -       | 49M  |    [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.pth) \| [cfg](detection/configs/coco/dino_4scale_internimage_t_1x_coco.py)   |
+| InternImage-T | DINO |    53.9 / -       | 49M  |    [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.pth) \| [cfg](detection/configs/coco/dino_4scale_internimage_t_1x_coco.py)   |
 | InternImage-L | DINO |    TODO           | 241M  |    [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_l_1x_coco.pth) \| [cfg](detection/configs/coco/dino_4scale_internimage_l_1x_coco.py)   |
 | InternImage-H | DINO (TTA) |    65.0 / 65.4     | 2.18B  |    TODO   |
 | InternImage-G | DINO (TTA) |    65.3 / 65.5     |   3B   |    TODO   |
