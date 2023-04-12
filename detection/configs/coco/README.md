@@ -41,3 +41,10 @@ Based on community feedback, in 2017 the training/validation split was changed f
 - Training speed is measured with A100 GPUs using current code and may be faster than the speed in logs.
 - Some logs are our recent newly trained ones. There might be slight differences between the results in logs and our paper.
 - Please set `with_cp=True` to save memory if you meet `out-of-memory` issues.
+
+
+### DINO + InternImage
+|    backbone    |         schd | box mAP |  train speed |	train time | #param | Config | Download |
+| :------------: |  :---------: | :-----: | :-----: | :---: | :-----: | :---: | :---: | 
+| InternImage-T  |        1x      |  54.0   |    1.50s / iter | 9.5h |  49M   | [config](./dino_4scale_internimage_t_1x_coco.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.json) |
+| InternImage-L  |        1x      |  TODO   |   2.85s / iter | 18h |  241M   |  TODO |
