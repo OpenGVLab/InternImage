@@ -46,6 +46,6 @@ Based on community feedback, in 2017 the training/validation split was changed f
 ### DINO + InternImage
 |    backbone    |         schd | box mAP |  train speed |	train time | #param | Config | Download |
 | :------------: |  :---------: | :-----: | :-----: | :---: | :-----: | :---: | :---: | 
-| InternImage-T  |        1x      |  54.0   |    1.50s / iter | 9.5h |  49M   | [config](./dino_4scale_internimage_t_1x_coco.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.json) |
+| InternImage-T  |        1x      |  53.9   |    1.50s / iter | 9.5h |  49M   | [config](./dino_4scale_internimage_t_1x_coco.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.json) |
 | InternImage-L  |        1x      |  TODO   |   2.85s / iter | 18h |  241M   |  TODO |
 - We train these models using 8xA100 GPUs with a total batch size of 8x8=64.
