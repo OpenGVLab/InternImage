@@ -1,7 +1,7 @@
 <p>
 	<a href="./README_CN.md">[中文版本]</a>
 </p>
-There are a lot of issues now, our team will check and solve them one by one, please wait patiently.
+We currently receive a bunch of issues, our team will check and solve them one by one, please stay tuned.
 
 # INTERN-2.5: Multimodal Multitask General Large Model
 
@@ -25,22 +25,23 @@ There are a lot of issues now, our team will check and solve them one by one, pl
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places205)](https://paperswithcode.com/sota/image-classification-on-places205?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-imagenet)](https://paperswithcode.com/sota/image-classification-on-imagenet?p=internimage-exploring-large-scale-vision)
 
-This repository is an official implementation of the [InternImage: Exploring Large-Scale Vision Foundation Models with
-Deformable Convolutions](https://arxiv.org/abs/2211.05778).
+The official implementation of  
 
-[Paper](https://arxiv.org/abs/2211.05778) \| [Blog in Chinese](https://zhuanlan.zhihu.com/p/610772005) | [Documents](./docs/)
+[InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions](https://arxiv.org/abs/2211.05778).
+
+[[Paper](https://arxiv.org/abs/2211.05778)]  [[Blog in Chinese](https://zhuanlan.zhihu.com/p/610772005)]  [[Documents](./docs/)]
 
 
 ## Introduction
 SenseTime and Shanghai AI Laboratory jointly released the multimodal multitask general model "INTERN-2.5" on March 14, 2023. "INTERN-2.5" achieved multiple breakthroughs in multimodal multitask processing, and its excellent cross-modal task processing ability in text and image can provide efficient and accurate perception and understanding capabilities for general scenarios such as autonomous driving.
 
-## Overview
+### Overview
 
 <div align=left>
 <img src='./docs/figs/intern_pipeline_en.png' width=900>
 </div>
 
-## Highlights
+### Highlights
 - :thumbsup: **The strongest visual universal backbone model with up to 3 billion parameters**
 - 🏆 **Achieved `90.1% Top1` accuracy in ImageNet, the most accurate among open-source models**
 - 🏆 **Achieved `65.5 mAP` on the COCO benchmark dataset for object detection, the only model that exceeded `65.0 mAP`**
@@ -55,16 +56,18 @@ ADE20K, outperforming previous models by a large margin.
 
 ## Applications
 
-### 1. Performance on Image Modality Tasks
-- On the ImageNet benchmark dataset, 
-"INTERN-2.5" achieved a Top-1 accuracy of 90.1% using only publicly available data for image classification. This is the only model, besides two undisclosed models from Google and Microsoft and additional datasets, to achieve a Top-1 accuracy of over 90.0%. It is also the highest-accuracy open-source model on ImageNet and the largest model in scale in the world.
-- On the COCO object detection benchmark dataset, "INTERN-2.5" achieved a mAP of 65.5, making it the only model in the world to surpass 65 mAP.
-- "INTERN-2.5" achieved the world's best performance on 16 other important visual benchmark datasets, covering classification, detection, and segmentation tasks.
+### 🌅 Image Modality Tasks
 
-<div align="left">
-<br>
-	
-**Classification Task**
+"INTERN-2.5" achieved an impressive Top-1 accuracy of 90.1% on the ImageNet benchmark dataset using only publicly available data for image classification. Apart from two undisclosed models trained with additional datasets by Google and Microsoft, "INTERN-2.5" is the only open-source model that achieves a Top-1 accuracy of over 90.0%, and it is also the largest model in scale worldwide.
+
+"INTERN-2.5" outperformed all other models worldwide on the COCO object detection benchmark dataset with a remarkable mAP of 65.5, making it the only model that surpasses 65 mAP in the world.
+
+"INTERN-2.5" also demonstrated world's best performance on 16 other important visual benchmark datasets, covering a wide range of tasks such as classification, detection, and segmentation, making it the top-performing model across multiple domains.
+
+
+**Performance**
+
+- Classification
 <table border="1" width="90%">
 	<tr align="center">
         <th colspan="1"> Image Classification</th><th colspan="2"> Scene Classification </th><th colspan="1">Long-Tail Classification</th>
@@ -76,10 +79,9 @@ ADE20K, outperforming previous models by a large margin.
         <th>90.1</th><th>61.2</th><th>71.7</th><th>92.3</th>
     </tr>
 </table>
-<br>
 
+- Detection
 
-**Detection Task**
 <table border="1" width="90%">
 	<tr align="center">
         <th colspan="4"> Conventional Object Detection</th><th colspan="3">Long-Tail Object Detection </th><th colspan="1">Autonomous Driving Object Detection</th><th colspan="1">Dense Object Detection</th>
@@ -91,9 +93,8 @@ ADE20K, outperforming previous models by a large margin.
         <th>65.5</th><th>94.0</th><th>97.2</th><th>74.1</th><th>65.8</th><th>63.2</th><th>38.8</th><th>64.8</th><th>97.2</th>
     </tr>
 </table>
-<br>
 
-**Segmentation Task**
+- Segmentation
 <table border="1" width="90%">
 	<tr align="center">
         <th colspan="3">Semantic Segmentation</th><th colspan="1">Street Segmentation</th><th colspan="1">RGBD Segmentation</th>
@@ -107,25 +108,16 @@ ADE20K, outperforming previous models by a large margin.
 </table>
 <br>
 
-</div>
+### 🌁 📖 Image and Text Cross-Modal Tasks
 
-### 2. Cross-Modal Performance for Image and Text Tasks
-
-- Image-Text Retrieval
-
-"INTERN-2.5" can quickly locate and retrieve the most semantically relevant images based on textual content requirements. This capability can be applied to both videos and image collections and can be further combined with object detection boxes to enable a variety of applications, helping users quickly and easily find the required image resources. For example, it can return the relevant images specified by the text in the album.
+**Image-Text Retrieval**: "INTERN-2.5" can quickly locate and retrieve the most semantically relevant images based on textual content requirements. This capability can be applied to both videos and image collections and can be further combined with object detection boxes to enable a variety of applications, helping users quickly and easily find the required image resources. For example, it can return the relevant images specified by the text in the album.
 
 
-- Image-To-Text
-
-"INTERN-2.5" has a strong understanding capability in various aspects of visual-to-text tasks such as image captioning, visual question answering, visual reasoning, and optical character recognition. For example, in the context of autonomous driving, it can enhance the scene perception and understanding capabilities, assist the vehicle in judging traffic signal status, road signs, and other information, and provide effective perception information support for vehicle decision-making and planning.
+**Image-To-Text**: "INTERN-2.5" has a strong understanding capability in various aspects of visual-to-text tasks such as image captioning, visual question answering, visual reasoning, and optical character recognition. For example, in the context of autonomous driving, it can enhance the scene perception and understanding capabilities, assist the vehicle in judging traffic signal status, road signs, and other information, and provide effective perception information support for vehicle decision-making and planning.
 
 
+**Performance**
 
-<div align="left">
-<br>
-	
-**Multimodal Tasks**
 <table border="1" width="90%">
 	<tr align="center">
         <th colspan="1">Image Captioning</th><th colspan="2">Fine-tuning Image-Text Retrieval</th><th colspan="1">Zero-shot Image-Text Retrieval</th>
@@ -139,8 +131,6 @@ ADE20K, outperforming previous models by a large margin.
 </table>
 <br>
 
-</div>
-
 ## Core Technologies
 The outstanding performance of "INTERN-2.5" in the field of cross-modal learning is due to several innovations in the core technology of multi-modal multi-task general model, including the development of InternImage as the backbone network for visual perception, LLM as the large-scale text pre-training network for text processing, and Uni-Perceiver as the compatible decoding modeling for multi-task learning.
 
@@ -151,37 +141,28 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 <img src='./docs/figs/network.png' width=900>
 </div>
 
+## Released Models
 
-## Project Release
-- [ ] Model for other downstream tasks
-- [x] Integration of [Deepspeed](https://github.com/microsoft/DeepSpeed) for classification.
-- [x] InternImage-H(1B)/G(3B)
-- [x] TensorRT inference
-- [x] Classification code of the InternImage series
-- [x] InternImage-T/S/B/L/XL ImageNet-1K pretrained model
-- [x] InternImage-L/XL ImageNet-22K pretrained model
-- [x] InternImage-T/S/B/L/XL detection and instance segmentation model
-- [x] InternImage-T/S/B/L/XL semantic segmentation model
+<details>
+<summary> Open-source Visual Pretrained Models </summary>
+<br>
+<div>
 
-
-## Related Projects
-- Object Detection and Instance Segmentation: [COCO](detection/configs/coco/)
-- Semantic Segmentation: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
-- Image-Text Retrieval, Image Captioning, and Visual Question Answering: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
-- 3D Perception: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
-
-
-## Open-source Visual Pretrained Models
 |      name      |   pretrain   | pre-training  resolution | #param |                                               download                                                |
 | :------------: | :----------: | :----------------------: | :----: | :---------------------------------------------------------------------------------------------------: |
 | InternImage-L  | ImageNet-22K |         384x384          |  223M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)    |
 | InternImage-XL | ImageNet-22K |         384x384          |  335M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)   |
 | InternImage-H  |  Joint 427M  |         384x384          | 1.08B  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)   |
 | InternImage-G  |      -       |         384x384          |   3B   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth) |
+</div>
 
+</details>
 
+<details>
+<summary> ImageNet-1K Image Classification </summary>
+<br>
+<div>
 
-## ImageNet-1K Image Classification
 |      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |                                                                             download                                                                              |
 | :------------: | :----------: | :--------: | :---: | :----: | :---: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |  30M   |  5G   |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](classification/configs/without_lr_decay/internimage_t_1k_224.yaml)       |
@@ -191,9 +172,14 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 | InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M  | 163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/without_lr_decay/internimage_xl_22kto1k_384.yaml) |
 | InternImage-H  |  Joint 427M  |  640x640   | 89.6  | 1.08B  | 1478G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](classification/configs/without_lr_decay/internimage_h_22kto1k_640.yaml)  |
 | InternImage-G  |      -       |  512x512   | 90.1  |   3B   | 2700G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](classification/configs/without_lr_decay/internimage_g_22kto1k_512.yaml)  |
+</div>
 
+</details>
 
-## COCO Object Detection and Instance Segmentation
+<details>
+<summary> COCO Object Detection and Instance Segmentation </summary>
+<br>
+<div>
 
 |    backbone    |   method   | schd  | box mAP | mask mAP | #param | FLOPs |                                                                                     download                                                                                      |
 | :------------: | :--------: | :---: | :-----: | :------: | :----: | :---: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -213,8 +199,15 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 | InternImage-H | DINO (TTA) |    65.0 / 65.4     | 2.18B  | TODO  |   TODO   |
 | InternImage-G | DINO (TTA) |    65.3 / 65.5     |   3B   | TODO  |   TODO   |
 
-## ADE20K Semantic Segmentation
+</div>
 
+</details>
+
+
+<details>
+<summary> ADE20K Semantic Segmentation </summary>
+<br>
+<div>
 
 |    backbone    |   method    | resolution | mIoU (ss/ms) | #param | FLOPs |                                                                                           download                                                                                           |
 | :------------: | :---------: | :--------: | :----------: | :----: | :---: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -226,14 +219,20 @@ InternImage, the visual backbone network of "INTERN-2.5", has a parameter size o
 | InternImage-H  |   UperNet   |  896x896   | 59.9 / 60.3  | 1.12B  | 3566G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_h_896_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_h_896_160k_ade20k.py)  |
 | InternImage-H  | Mask2Former |  896x896   | 62.5 / 62.9  | 1.31B  | 4635G |                                                                                             TODO                                                                                             |
 
+</div>
 
-## Main Results of FPS 
+</details>
 
-[export classification model from pytorch to tensorrt](classification/README.md#export)
+<details>
+<summary> Main Results of FPS  </summary>
+<br>
+<div>
 
-[export detection model from pytorch to tensorrt](detection/README.md#export)
+[Export classification model from pytorch to tensorrt](classification/README.md#export)
 
-[export segmentation model from pytorch to tensorrt](segmentation/README.md#export)
+[Export detection model from pytorch to tensorrt](detection/README.md#export)
+
+[Export segmentation model from pytorch to tensorrt](segmentation/README.md#export)
 
 |      name      | resolution | #param | FLOPs | batch 1 FPS (TensorRT) |
 | :------------: | :--------: | :----: | :---: | :--------------------: |
@@ -262,13 +261,35 @@ pip install -e .
 ```
 For more details on building custom ops, please refering to [this document](https://github.com/open-mmlab/mmdeploy/blob/master/docs/en/01-how-to-build/linux-x86_64.md).
 
+</div>
+
+</details>
 
 
-## Citation
+## History
+- [ ] Model for other downstream tasks
+- [x] Integration of [Deepspeed](https://github.com/microsoft/DeepSpeed) for classification.
+- [x] InternImage-H(1B)/G(3B)
+- [x] TensorRT inference
+- [x] Classification code of the InternImage series
+- [x] InternImage-T/S/B/L/XL ImageNet-1K pretrained model
+- [x] InternImage-L/XL ImageNet-22K pretrained model
+- [x] InternImage-T/S/B/L/XL detection and instance segmentation model
+- [x] InternImage-T/S/B/L/XL semantic segmentation model
+
+
+## Related Projects
+- Object Detection and Instance Segmentation: [COCO](detection/configs/coco/)
+- Semantic Segmentation: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
+- Image-Text Retrieval, Image Captioning, and Visual Question Answering: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
+- 3D Perception: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
+
+
+## Citations
 
 If this work is helpful for your research, please consider citing the following BibTeX entry.
 
-```
+```bibtex
 @article{wang2022internimage,
   title={InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions},
   author={Wang, Wenhai and Dai, Jifeng and Chen, Zhe and Huang, Zhenhang and Li, Zhiqi and Zhu, Xizhou and Hu, Xiaowei and Lu, Tong and Lu, Lewei and Li, Hongsheng and others},

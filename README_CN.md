@@ -27,18 +27,18 @@
 
 这个代码仓库是[InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions](https://arxiv.org/abs/2211.05778)的官方实现。
 
-[论文](https://arxiv.org/abs/2211.05778) \| [知乎专栏](https://zhuanlan.zhihu.com/p/610772005) | [文档](./docs/)
+[[论文](https://arxiv.org/abs/2211.05778)] [[知乎专栏](https://zhuanlan.zhihu.com/p/610772005)] [[文档](./docs/)]
 ## 简介
 商汤科技与上海人工智能实验室在2023年3月14日联合发布多模态多任务通用大模型“书生2.5”。“书生2.5”在多模态多任务处理能力中斩获多项全新突破，其卓越的图文跨模态任务处理能力可为自动驾驶等通用场景任务提供高效精准的感知和理解能力支持。“书生2.5”致力于多模态多任务通用模型的构建，旨在接收处理各种不同模态的输入，并采用统一的模型架构和参数处理各种不同的任务，促进不同模态和任务之间在表示学习方面的协作，逐步实现通用人工智能领域的融会贯通。
 
-## 概览图
+### 概览图
 
 <div align=left>
 <img src='./docs/figs/intern_pipeline.png' width=900>
 </div>
 
 
-## 亮点
+### 亮点
 - :thumbsup: **高达30亿参数的最强视觉通用主干模型**
 - 🏆 **图像分类标杆数据集ImageNet `90.1% Top1`准确率，开源模型中准确度最高**
 - 🏆 **物体检测标杆数据集COCO `65.5 mAP`，唯一超过`65 mAP`的模型**
@@ -148,35 +148,28 @@
 </div>
 
 
-## 项目功能
-- [ ] 各类下游任务
-- [x] DCNv3 预编译的whl包
-- [x] InternImage-H(1B)/G(3B)
-- [x] TensorRT 推理
-- [x] InternImage 系列分类代码
-- [x] InternImage-T/S/B/L/XL ImageNet-1K 预训练模型
-- [x] InternImage-L/XL ImageNet-22K 预训练模型
-- [x] InternImage-T/S/B/L/XL 检测和实例分割模型
-- [x] InternImage-T/S/B/L/XL 语义分割模型
+## 预训练模型
 
+<details>
+<summary> 开源视觉预训练模型 </summary>
+<br>
+<div>
 
-## 相关开源项目
-- 目标检测和实例分割: [COCO](detection/configs/coco/)
-- 语义分割: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
-- 图文检索、图像描述和视觉问答: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
-- 3D感知: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
-
-## 开源视觉预训练模型
 |      name      |   pretrain   | pre-training  resolution | #param |                                               download                                                |
 | :------------: | :----------: | :----------------------: | :----: | :---------------------------------------------------------------------------------------------------: |
 | InternImage-L  | ImageNet-22K |         384x384          |  223M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)    |
 | InternImage-XL | ImageNet-22K |         384x384          |  335M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)   |
 | InternImage-H  |  Joint 427M  |         384x384          | 1.08B  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)   |
 | InternImage-G  |      -       |         384x384          |   3B   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth) |
+</div>
 
+</details>
 
+<details>
+<summary> ImageNet-1K图像分类 </summary>
+<br>
+<div>
 
-## ImageNet-1K图像分类
 |      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |                                                                             download                                                                              |
 | :------------: | :----------: | :--------: | :---: | :----: | :---: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |  30M   |  5G   |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](classification/configs/without_lr_decay/internimage_t_1k_224.yaml)       |
@@ -186,10 +179,14 @@
 | InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M  | 163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/without_lr_decay/internimage_xl_22kto1k_384.yaml) |
 | InternImage-H  |  Joint 427M  |  640x640   | 89.6  | 1.08B  | 1478G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](classification/configs/without_lr_decay/internimage_h_22kto1k_640.yaml)  |
 | InternImage-G  |      -       |  512x512   | 90.1  |   3B   | 2700G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](classification/configs/without_lr_decay/internimage_g_22kto1k_512.yaml)  |
+</div>
 
+</details>
 
-
-## COCO目标检测和实例分割
+<details>
+<summary> COCO目标检测和实例分割 </summary>
+<br>
+<div>
 
 |    backbone    |   method   | schd  | box mAP | mask mAP | #param | FLOPs |                                                                                     download                                                                                      |
 | :------------: | :--------: | :---: | :-----: | :------: | :----: | :---: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -209,7 +206,15 @@
 | InternImage-H | DINO (TTA) |    65.0 / 65.4     | 2.18B  | TODO  |   TODO   |
 | InternImage-G | DINO (TTA) |    65.3 / 65.5     |   3B   | TODO  |   TODO   |
 
-## ADE20K语义分割
+</div>
+
+</details>
+
+
+<details>
+<summary> ADE20K语义分割 </summary>
+<br>
+<div>
 
 |    backbone    |   method    | resolution | mIoU (ss/ms) | #param | FLOPs |                                                                                           download                                                                                           |
 | :------------: | :---------: | :--------: | :----------: | :----: | :---: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -221,8 +226,14 @@
 | InternImage-H  |   UperNet   |  896x896   | 59.9 / 60.3  | 1.12B  | 3566G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_h_896_160k_ade20k.pth) \| [cfg](segmentation/configs/ade20k/upernet_internimage_h_896_160k_ade20k.py)  |
 | InternImage-H  | Mask2Former |  896x896   | 62.5 / 62.9  | 1.31B  | 4635G |                                                                                             TODO                                                                                             |
 
+</div>
 
-## 模型推理速度
+</details>
+
+<details>
+<summary> 模型推理速度  </summary>
+<br>
+<div>
 
 [export classification model from pytorch to tensorrt](classification/README.md#export)
 
@@ -239,6 +250,7 @@
 | InternImage-XL |  384x384   |  335M  | 163G  |           47           |
 
 在使用`mmdeploy`将PyTorch模型转为TensorRT之前，请确保您已正确编译DCNv3的自定义算子，其安装方式如下：
+
 ```shell
 export MMDEPLOY_DIR=/the/root/path/of/MMDeploy
 
@@ -255,15 +267,38 @@ make -j$(nproc) && make install
 cd ${MMDEPLOY_DIR}
 pip install -e .
 ```
+
 关于`mmdeploy`编译自定义算子的更多细节，请参考这份[文档](https://github.com/open-mmlab/mmdeploy/blob/master/docs/en/01-how-to-build/linux-x86_64.md)。
 
+</div>
+
+</details>
+
+
+## 项目功能
+- [ ] 各类下游任务
+- [x] DCNv3 预编译的whl包
+- [x] InternImage-H(1B)/G(3B)
+- [x] TensorRT 推理
+- [x] InternImage 系列分类代码
+- [x] InternImage-T/S/B/L/XL ImageNet-1K 预训练模型
+- [x] InternImage-L/XL ImageNet-22K 预训练模型
+- [x] InternImage-T/S/B/L/XL 检测和实例分割模型
+- [x] InternImage-T/S/B/L/XL 语义分割模型
+
+
+## 相关开源项目
+- 目标检测和实例分割: [COCO](detection/configs/coco/)
+- 语义分割: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
+- 图文检索、图像描述和视觉问答: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
+- 3D感知: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
 
 ## 引用
 
 若“书生2.5”对您的研究工作有帮助，请参考如下bibtex对我们的工作进行引用。
 
-```
+```bibtex
 @article{wang2022internimage,
   title={InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions},
   author={Wang, Wenhai and Dai, Jifeng and Chen, Zhe and Huang, Zhenhang and Li, Zhiqi and Zhu, Xizhou and Hu, Xiaowei and Lu, Tong and Lu, Lewei and Li, Hongsheng and others},
