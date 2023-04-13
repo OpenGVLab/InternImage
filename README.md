@@ -19,40 +19,50 @@ We currently receive a bunch of issues, our team will check and solve them one b
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-cityscapes-val)](https://paperswithcode.com/sota/semantic-segmentation-on-cityscapes-val?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-pascal-context)](https://paperswithcode.com/sota/semantic-segmentation-on-pascal-context?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-coco-stuff-test)](https://paperswithcode.com/sota/semantic-segmentation-on-coco-stuff-test?p=internimage-exploring-large-scale-vision)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/bevformer-v2-adapting-modern-image-backbones/3d-object-detection-on-nuscenes-camera-only)](https://paperswithcode.com/sota/3d-object-detection-on-nuscenes-camera-only?p=bevformer-v2-adapting-modern-image-backbones)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-inaturalist-2018)](https://paperswithcode.com/sota/image-classification-on-inaturalist-2018?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places365)](https://paperswithcode.com/sota/image-classification-on-places365?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places205)](https://paperswithcode.com/sota/image-classification-on-places205?p=internimage-exploring-large-scale-vision)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/bevformer-v2-adapting-modern-image-backbones/3d-object-detection-on-nuscenes-camera-only)](https://paperswithcode.com/sota/3d-object-detection-on-nuscenes-camera-only?p=bevformer-v2-adapting-modern-image-backbones)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-imagenet)](https://paperswithcode.com/sota/image-classification-on-imagenet?p=internimage-exploring-large-scale-vision)
 
 The official implementation of  
 
 [InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions](https://arxiv.org/abs/2211.05778).
 
-[[Paper](https://arxiv.org/abs/2211.05778)]  [[Blog in Chinese](https://zhuanlan.zhihu.com/p/610772005)]  [[Documents](./docs/)]
+[[Paper](https://arxiv.org/abs/2211.05778)]  [[Blog in Chinese](https://zhuanlan.zhihu.com/p/610772005)]
 
-
-## Introduction
-SenseTime and Shanghai AI Laboratory jointly released the multimodal multitask general model "INTERN-2.5" on March 14, 2023. "INTERN-2.5" achieved multiple breakthroughs in multimodal multitask processing, and its excellent cross-modal task processing ability in text and image can provide efficient and accurate perception and understanding capabilities for general scenarios such as autonomous driving.
-
-### Overview
-
-<div align=left>
-<img src='./docs/figs/intern_pipeline_en.png' width=900>
-</div>
-
-### Highlights
-- :thumbsup: **The strongest visual universal backbone model with up to 3 billion parameters**
+## Highlights
+- :thumbsup: **The strongest open-source visual universal backbone model with up to 3 billion parameters**
 - 🏆 **Achieved `90.1% Top1` accuracy in ImageNet, the most accurate among open-source models**
 - 🏆 **Achieved `65.5 mAP` on the COCO benchmark dataset for object detection, the only model that exceeded `65.0 mAP`**
 
 ## News
-- `Apr 12, 2023`: 🚀 Integration of [Deepspeed](https://github.com/microsoft/DeepSpeed) is added to classification for low-cost training.
 - `Mar 14, 2023`: 🚀 "INTERN-2.5" is released！
 - `Feb 28, 2023`: 🚀 InternImage is accepted to CVPR 2023!
 - `Nov 18, 2022`: 🚀 InternImage-XL merged into [BEVFormer v2](https://arxiv.org/abs/2211.10439) achieves state-of-the-art performance of `63.4 NDS` on nuScenes Camera Only.
 - `Nov 10, 2022`: 🚀 InternImage-H achieves a new record `65.4 mAP` on COCO detection test-dev and `62.9 mIoU` on
 ADE20K, outperforming previous models by a large margin.
+
+## History
+- [ ] Models/APIs for other downstream tasks
+- [ ] Support [CVPR 2023 Workshop on End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23), see [here](https://github.com/OpenGVLab/InternImage/tree/master/autonomous_driving)
+- [ ] Support Segment Anything
+- [x] Low-cost training with [DeepSpeed](https://github.com/microsoft/DeepSpeed), see [here](https://github.com/OpenGVLab/InternImage/tree/master/classification)
+- [x] Compiling-free .whl package of DCNv3 operator, see [here](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
+- [x] InternImage-H(1B)/G(3B)
+- [x] TensorRT inference for classification/detection/segmentation models
+- [x] Classification code of the InternImage series
+- [x] InternImage-T/S/B/L/XL ImageNet-1K pretrained model
+- [x] InternImage-L/XL ImageNet-22K pretrained model
+- [x] InternImage-T/S/B/L/XL detection and instance segmentation model
+- [x] InternImage-T/S/B/L/XL semantic segmentation model
+
+## Introduction
+"INTERN-2.5" is a powerful multimodal multitask general model jointly released by SenseTime and Shanghai AI Laboratory. It consists of large-scale vision foundation model "InternImage", pre-training method "M3I-Pretraining", generic decoder "Uni-Perceiver" series, and generic encoder for autonomous driving perception "BEVFormer" series.
+
+<div align=left>
+<img src='./docs/figs/intern_pipeline_en.png' width=900>
+</div>
 
 ## Applications
 
@@ -130,16 +140,6 @@ ADE20K, outperforming previous models by a large margin.
     </tr>
 </table>
 <br>
-
-## Core Technologies
-The outstanding performance of "INTERN-2.5" in the field of cross-modal learning is due to several innovations in the core technology of multi-modal multi-task general model, including the development of InternImage as the backbone network for visual perception, LLM as the large-scale text pre-training network for text processing, and Uni-Perceiver as the compatible decoding modeling for multi-task learning.
-
-InternImage, the visual backbone network of "INTERN-2.5", has a parameter size of up to 3 billion and can adaptively adjust the position and combination of convolutions based on dynamic sparse convolution operators, providing powerful representations for multi-functional visual perception. Uni-Perceiver, a versatile task decoding model, encodes data from different modalities into a unified representation space and unifies different tasks into the same task paradigm, enabling simultaneous processing of various modalities and tasks with the same task architecture and shared model parameters.
-
-
-<div align=left>
-<img src='./docs/figs/network.png' width=900>
-</div>
 
 ## Released Models
 
@@ -266,21 +266,8 @@ For more details on building custom ops, please refering to [this document](http
 </details>
 
 
-## History
-- [ ] Model for other downstream tasks
-- [x] Integration of [Deepspeed](https://github.com/microsoft/DeepSpeed) for classification.
-- [x] InternImage-H(1B)/G(3B)
-- [x] TensorRT inference
-- [x] Classification code of the InternImage series
-- [x] InternImage-T/S/B/L/XL ImageNet-1K pretrained model
-- [x] InternImage-L/XL ImageNet-22K pretrained model
-- [x] InternImage-T/S/B/L/XL detection and instance segmentation model
-- [x] InternImage-T/S/B/L/XL semantic segmentation model
-
-
 ## Related Projects
-- Object Detection and Instance Segmentation: [COCO](detection/configs/coco/)
-- Semantic Segmentation: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
+- Pre-training: [M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining)
 - Image-Text Retrieval, Image Captioning, and Visual Question Answering: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
 - 3D Perception: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
@@ -341,8 +328,3 @@ If this work is helpful for your research, please consider citing the following 
   year={2022},
 }
 ```
-
-<div align=left>
-
-[//]: # (<img src='./docs/figs/log.png' width=600>)
-</div>

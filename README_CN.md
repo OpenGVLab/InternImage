@@ -19,26 +19,17 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-cityscapes-val)](https://paperswithcode.com/sota/semantic-segmentation-on-cityscapes-val?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-pascal-context)](https://paperswithcode.com/sota/semantic-segmentation-on-pascal-context?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-coco-stuff-test)](https://paperswithcode.com/sota/semantic-segmentation-on-coco-stuff-test?p=internimage-exploring-large-scale-vision)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/bevformer-v2-adapting-modern-image-backbones/3d-object-detection-on-nuscenes-camera-only)](https://paperswithcode.com/sota/3d-object-detection-on-nuscenes-camera-only?p=bevformer-v2-adapting-modern-image-backbones)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-inaturalist-2018)](https://paperswithcode.com/sota/image-classification-on-inaturalist-2018?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places365)](https://paperswithcode.com/sota/image-classification-on-places365?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places205)](https://paperswithcode.com/sota/image-classification-on-places205?p=internimage-exploring-large-scale-vision)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/bevformer-v2-adapting-modern-image-backbones/3d-object-detection-on-nuscenes-camera-only)](https://paperswithcode.com/sota/3d-object-detection-on-nuscenes-camera-only?p=bevformer-v2-adapting-modern-image-backbones)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-imagenet)](https://paperswithcode.com/sota/image-classification-on-imagenet?p=internimage-exploring-large-scale-vision)
 
 这个代码仓库是[InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions](https://arxiv.org/abs/2211.05778)的官方实现。
 
-[[论文](https://arxiv.org/abs/2211.05778)] [[知乎专栏](https://zhuanlan.zhihu.com/p/610772005)] [[文档](./docs/)]
-## 简介
-商汤科技与上海人工智能实验室在2023年3月14日联合发布多模态多任务通用大模型“书生2.5”。“书生2.5”在多模态多任务处理能力中斩获多项全新突破，其卓越的图文跨模态任务处理能力可为自动驾驶等通用场景任务提供高效精准的感知和理解能力支持。“书生2.5”致力于多模态多任务通用模型的构建，旨在接收处理各种不同模态的输入，并采用统一的模型架构和参数处理各种不同的任务，促进不同模态和任务之间在表示学习方面的协作，逐步实现通用人工智能领域的融会贯通。
+[[论文](https://arxiv.org/abs/2211.05778)] [[知乎专栏](https://zhuanlan.zhihu.com/p/610772005)]
 
-### 概览图
-
-<div align=left>
-<img src='./docs/figs/intern_pipeline.png' width=900>
-</div>
-
-
-### 亮点
+## 亮点
 - :thumbsup: **高达30亿参数的最强视觉通用主干模型**
 - 🏆 **图像分类标杆数据集ImageNet `90.1% Top1`准确率，开源模型中准确度最高**
 - 🏆 **物体检测标杆数据集COCO `65.5 mAP`，唯一超过`65 mAP`的模型**
@@ -49,6 +40,28 @@
 - 2022年11月18日: 🚀 基于 InternImage-XL 主干网络，[BEVFormer v2](https://arxiv.org/abs/2211.10439) 在nuScenes的纯视觉3D检测任务上取得了最佳性能 `63.4 NDS` ！
 - 2022年11月10日: 🚀 InternImage-H 在COCO目标检测任务上以 `65.4 mAP` 斩获冠军，是唯一突破 `65.0 mAP` 的超强物体检测模型！
 - 2022年11月10日: 🚀 InternImage-H 在ADE20K语义分割数据集上取得 `62.9 mIoU` 的SOTA性能！
+
+## 项目功能
+- [ ] 各类下游任务
+- [ ] 支持[CVPR 2023 Workshop on End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23)，[详见](https://github.com/OpenGVLab/InternImage/tree/master/autonomous_driving)
+- [ ] 支持Segment Anything
+- [x] 支持基于[DeepSpeed](https://github.com/microsoft/DeepSpeed)的低成本训练，[详见](https://github.com/OpenGVLab/InternImage/tree/master/classification)
+- [x] DCNv3算子预编译.whl包，[详见](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
+- [x] InternImage-H(1B)/G(3B)
+- [x] 支持分类/检测/分割TensorRT推理
+- [x] InternImage 系列分类代码
+- [x] InternImage-T/S/B/L/XL ImageNet-1K 预训练模型
+- [x] InternImage-L/XL ImageNet-22K 预训练模型
+- [x] InternImage-T/S/B/L/XL 检测和实例分割模型
+- [x] InternImage-T/S/B/L/XL 语义分割模型
+
+
+## 简介
+"书生2.5"是商汤科技与上海人工智能实验室联合发布的多模态多任务通用大模型。"书生2.5"包括大规模视觉基础模型"InternImage"，预训练算法"M3I-Pretraining"，通用解码器"Uni-Perceiver"系列，以及自动驾驶感知通用编码器"BEVFormer"系列。
+
+<div align=left>
+<img src='./docs/figs/intern_pipeline.png' width=900>
+</div>
 
 
 ## “书生2.5”的应用
@@ -136,15 +149,6 @@
 </table>
 <br>
 
-</div>
-
-
-## 核心技术
-“书生2.5”在图文跨模态领域卓越的性能表现，源自于在多模态多任务通用模型技术核心方面的多项创新，实现了视觉核心视觉感知大模型主干网络（InternImage）、用于文本核心的超大规模文本预训练网络（LLM）和用于多任务的兼容解码建模（Uni-Perceiver）的创新组合。  视觉主干网络InternImage参数量高达30亿，能够基于动态稀疏卷积算子自适应地调整卷积的位置和组合方式，从而为多功能视觉感知提供强大的表示。Uni-Perceiver通才任务解码建模通过将不同模态的数据编码到统一的表示空间，并将不同任务统一为相同的任务范式，从而能够以相同的任务架构和共享的模型参数同时处理各种模态和任务。
-
-
-<div align=left>
-<img src='./docs/figs/network.png' width=900>
 </div>
 
 
@@ -275,21 +279,8 @@ pip install -e .
 </details>
 
 
-## 项目功能
-- [ ] 各类下游任务
-- [x] DCNv3 预编译的whl包
-- [x] InternImage-H(1B)/G(3B)
-- [x] TensorRT 推理
-- [x] InternImage 系列分类代码
-- [x] InternImage-T/S/B/L/XL ImageNet-1K 预训练模型
-- [x] InternImage-L/XL ImageNet-22K 预训练模型
-- [x] InternImage-T/S/B/L/XL 检测和实例分割模型
-- [x] InternImage-T/S/B/L/XL 语义分割模型
-
-
 ## 相关开源项目
-- 目标检测和实例分割: [COCO](detection/configs/coco/)
-- 语义分割: [ADE20K](segmentation/configs/ade20k/), [Cityscapes](segmentation/configs/cityscapes/)
+- 预训练：[M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining)
 - 图文检索、图像描述和视觉问答: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
 - 3D感知: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
