@@ -23,7 +23,7 @@ model = dict(
         layer_scale=1.0,
         offset_scale=2.0,
         post_norm=True,
-        with_cp=True,
+        with_cp=False,
         out_indices=(1, 2, 3),
         init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
     neck=dict(
@@ -151,16 +151,17 @@ train_pipeline = [
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
 ]
-# By default, models are trained on 8 GPUs with 8 images per GPU
+# By default, models are trained on 8 GPUs with 2 images per GPU
 data = dict(
-    samples_per_gpu=8,
+    samples_per_gpu=2,
     train=dict(pipeline=train_pipeline))
 # optimizer
 optimizer = dict(
-    _delete_=True, type='AdamW', lr=0.0004, weight_decay=0.0001,
-    constructor='CustomLayerDecayOptimizerConstructor',
-    paramwise_cfg=dict(num_layers=37, layer_decay_rate=0.94,
-                       depths=[5, 5, 22, 5]))
+    _delete_=True, type='AdamW', lr=0.0001, weight_decay=0.05,
+    paramwise_cfg=dict(
+        custom_keys={
+            'backbone': dict(lr_mult=0.1),
+}))
 optimizer_config = dict(_delete_=True, grad_clip=dict(max_norm=0.1, norm_type=2))
 # learning policy
 lr_config = dict(
