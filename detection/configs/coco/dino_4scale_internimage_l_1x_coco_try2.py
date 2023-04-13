@@ -157,11 +157,10 @@ data = dict(
     train=dict(pipeline=train_pipeline))
 # optimizer
 optimizer = dict(
-    _delete_=True, type='AdamW', lr=0.0001, weight_decay=0.05,
-    paramwise_cfg=dict(
-        custom_keys={
-            'backbone': dict(lr_mult=0.1),
-}))
+    _delete_=True, type='AdamW', lr=0.0001, weight_decay=0.0001,
+    constructor='CustomLayerDecayOptimizerConstructor',
+    paramwise_cfg=dict(num_layers=37, layer_decay_rate=0.94,
+                       depths=[5, 5, 22, 5]))
 optimizer_config = dict(_delete_=True, grad_clip=dict(max_norm=0.1, norm_type=2))
 # learning policy
 lr_config = dict(

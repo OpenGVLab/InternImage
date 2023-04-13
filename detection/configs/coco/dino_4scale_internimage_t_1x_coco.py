@@ -102,7 +102,7 @@ model = dict(
             cls_cost=dict(type='FocalLossCost', weight=2.0),
             reg_cost=dict(type='BBoxL1Cost', weight=5.0, box_format='xywh'),
             iou_cost=dict(type='IoUCost', iou_mode='giou', weight=2.0))),
-    test_cfg=dict(max_per_img=300))  # TODO: Originally 100
+    test_cfg=dict(max_per_img=100))
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 # train_pipeline, NOTE the img_scale and the Pad's size_divisor is different
@@ -151,13 +151,13 @@ train_pipeline = [
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
 ]
-# By default, models are trained on 8 GPUs with 8 images per GPU
+# By default, models are trained on 8 GPUs with 2 images per GPU
 data = dict(
-    samples_per_gpu=8,
+    samples_per_gpu=2,
     train=dict(pipeline=train_pipeline))
 # optimizer
 optimizer = dict(
-    _delete_=True, type='AdamW', lr=0.0004, weight_decay=0.0001,
+    _delete_=True, type='AdamW', lr=0.0001, weight_decay=0.0001,
     constructor='CustomLayerDecayOptimizerConstructor',
     paramwise_cfg=dict(num_layers=30, layer_decay_rate=0.9,
                        depths=[4, 4, 18, 4]))
