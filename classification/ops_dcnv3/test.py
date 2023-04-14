@@ -19,8 +19,9 @@ from functions.dcnv3_func import DCNv3Function, dcnv3_core_pytorch
 H_in, W_in = 8, 8
 N, M, D = 2, 4, 16
 Kh, Kw = 3, 3
-P = Kh * Kw
+P = Kh * Kw - 1
 offset_scale = 2.0
+remove_center = True
 pad = 1
 dilation = 1
 stride = 1
@@ -42,7 +43,7 @@ def check_forward_equal_with_pytorch_double():
         input.double(),
         offset.double(),
         mask.double(),
-        Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale).detach().cpu()
+        Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale, remove_center).detach().cpu()
 
     im2col_step = 2
     output_cuda = DCNv3Function.apply(
@@ -50,7 +51,7 @@ def check_forward_equal_with_pytorch_double():
         offset.double(),
         mask.double(),
         Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale,
-        im2col_step).detach().cpu()
+        im2col_step, remove_center).detach().cpu()
 
     fwdok = torch.allclose(output_cuda, output_pytorch)
     max_abs_err = (output_cuda - output_pytorch).abs().max()
@@ -72,7 +73,7 @@ def check_forward_equal_with_pytorch_float():
         input,
         offset,
         mask,
-        Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale).detach().cpu()
+        Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale, remove_center).detach().cpu()
 
     im2col_step = 2
     output_cuda = DCNv3Function.apply(
@@ -80,7 +81,7 @@ def check_forward_equal_with_pytorch_float():
         offset,
         mask,
         Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale,
-        im2col_step).detach().cpu()
+        im2col_step, remove_center).detach().cpu()
 
     fwdok = torch.allclose(output_cuda, output_pytorch, rtol=1e-2, atol=1e-3)
     max_abs_err = (output_cuda - output_pytorch).abs().max()
@@ -111,7 +112,7 @@ def check_backward_equal_with_pytorch_double(channels=4, grad_input=True, grad_o
         input0.double(),
         offset0.double(),
         mask0.double(),
-        Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale)
+        Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale, remove_center)
     output_pytorch.sum().backward()
 
     input1 = input0.detach()
@@ -127,7 +128,7 @@ def check_backward_equal_with_pytorch_double(channels=4, grad_input=True, grad_o
         offset1.double(),
         mask1.double(),
         Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale,
-        im2col_step)
+        im2col_step, remove_center)
     output_cuda.sum().backward()
 
     print(f'>>> backward double: channels {D}')
@@ -174,7 +175,7 @@ def check_backward_equal_with_pytorch_float(channels=4, grad_input=True, grad_of
         input0,
         offset0,
         mask0,
-        Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale)
+        Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale, remove_center)
     output_pytorch.sum().backward()
 
     input1 = input0.detach()
@@ -190,7 +191,7 @@ def check_backward_equal_with_pytorch_float(channels=4, grad_input=True, grad_of
         offset1,
         mask1,
         Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, offset_scale,
-        im2col_step)
+        im2col_step, remove_center)
     output_cuda.sum().backward()
 
     print(f'>>> backward float: channels {D}')
@@ -237,7 +238,7 @@ def check_time_cost(im2col_step=128):
             offset,
             mask,
             Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, 1.0,
-            im2col_step)
+            im2col_step, remove_center)
     torch.cuda.synchronize()
     start = time.time()
     for i in range(repeat):
@@ -246,7 +247,7 @@ def check_time_cost(im2col_step=128):
             offset,
             mask,
             Kh, Kw, stride, stride, Kh // 2, Kw // 2, dilation, dilation, M, D, 1.0,
-            im2col_step)
+            im2col_step, remove_center)
     torch.cuda.synchronize()
     print(f'foward time cost: {(time.time() - start) / repeat}')
 
