@@ -41,3 +41,12 @@ Based on community feedback, in 2017 the training/validation split was changed f
 - Training speed is measured with A100 GPUs using current code and may be faster than the speed in logs.
 - Some logs are our recent newly trained ones. There might be slight differences between the results in logs and our paper.
 - Please set `with_cp=True` to save memory if you meet `out-of-memory` issues.
+
+
+### DINO + InternImage
+|    backbone    |  lr type     | pretrain    |       schd | box mAP | 	train time | #param | Config | Download |
+| :------------: |  :---------: |:---------: | :---------: | :-----: |  :---: | :-----: | :---: | :---: | 
+| InternImage-T  | layer-wise lr    | ImageNet-1K  |     1x      |  53.9   |  9.5h |  49M    | [config](./dino_4scale_internimage_t_1x_coco_layer_wise_lr.py)     | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.json) |
+| InternImage-L  | layer-wise lr    | ImageNet-22K |     1x      |  57.5   |   18h |  241M   |  [config](./dino_4scale_internimage_l_1x_coco_layer_wise_lr.py)    | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_l_1x_coco_layer_wise_lr.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_l_1x_coco_layer_wise_lr.log.json) |
+| InternImage-L  | 0.1x backbone lr | ImageNet-22K |     1x      |  57.6   |   18h |  241M   |  [config](./dino_4scale_internimage_l_1x_coco_0.1x_backbone_lr.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_l_1x_coco_0.1x_backbone_lr.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_l_1x_coco_0.1x_backbone_lr.log.json) |
+
