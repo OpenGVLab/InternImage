@@ -159,7 +159,7 @@ data = dict(
 optimizer = dict(
     _delete_=True, type='AdamW', lr=0.0001, weight_decay=0.0001,
     constructor='CustomLayerDecayOptimizerConstructor',
-    paramwise_cfg=dict(num_layers=37, layer_decay_rate=0.94,
+    paramwise_cfg=dict(num_layers=37, layer_decay_rate=0.90,
                        depths=[5, 5, 22, 5]))
 optimizer_config = dict(_delete_=True, grad_clip=dict(max_norm=0.1, norm_type=2))
 # learning policy
