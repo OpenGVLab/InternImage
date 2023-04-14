@@ -101,7 +101,9 @@ class DCNv3_pytorch(nn.Module):
             offset_scale=1.0,
             act_layer='GELU',
             norm_layer='LN',
-            center_feature_scale=False):
+            center_feature_scale=False,
+            remove_center=False,
+    ):
         """
         DCNv3 Module
         :param channels
@@ -137,6 +139,7 @@ class DCNv3_pytorch(nn.Module):
         self.group_channels = channels // group
         self.offset_scale = offset_scale
         self.center_feature_scale = center_feature_scale
+        self.remove_center = int(remove_center)
 
         self.dw_conv = nn.Sequential(
             nn.Conv2d(
@@ -154,10 +157,10 @@ class DCNv3_pytorch(nn.Module):
             build_act_layer(act_layer))
         self.offset = nn.Linear(
             channels,
-            group * kernel_size * kernel_size * 2)
+            group * (kernel_size * kernel_size - remove_center) * 2)
         self.mask = nn.Linear(
             channels,
-            group * kernel_size * kernel_size)
+            group * (kernel_size * kernel_size - remove_center))
         self.input_proj = nn.Linear(channels, channels)
         self.output_proj = nn.Linear(channels, channels)
         self._reset_parameters()
@@ -202,7 +205,7 @@ class DCNv3_pytorch(nn.Module):
             self.pad, self.pad,
             self.dilation, self.dilation,
             self.group, self.group_channels,
-            self.offset_scale)
+            self.offset_scale, self.remove_center)
         if self.center_feature_scale:
             center_feature_scale = self.center_feature_scale_module(
                 x1, self.center_feature_scale_proj_weight, self.center_feature_scale_proj_bias)
