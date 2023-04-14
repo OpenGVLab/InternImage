@@ -582,7 +582,7 @@ if __name__ == '__main__':
         assert has_native_amp, "Please update pytorch(1.6+) to support amp!"
 
     # init distributed env
-    if 'SLURM_PROCID' in os.environ and int(os.environ['SLURM_NNODES']) != 1:
+    if 'SLURM_PROCID' in os.environ and int(os.environ['SLURM_TASKS_PER_NODE']) != 1:
         print("\nDist init: SLURM")
         rank = int(os.environ['SLURM_PROCID'])
         gpu = rank % torch.cuda.device_count()
