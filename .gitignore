@@ -1,5 +1,6 @@
 
 .idea/
 .DS_Store
+__pycache__/
 classification/convertor/
 segmentation/convertor/

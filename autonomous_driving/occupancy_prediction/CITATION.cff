@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - name: "OpenOccupancy Benchmark Contributors"
+title: "OpenOccupancy: 3D Occupancy Benchmark for Scene Perception in Autonomous Driving"
+date-released: 2023-02-10
+url: "https://github.com/CVPR2023-Occupancy-Prediction-Challenge/CVPR2023-Occupancy-Prediction-Challenge"
+license: Apache-2.0
