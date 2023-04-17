@@ -179,11 +179,12 @@ def dcnv3_core_pytorch(
         repeat(1, 1, 1, group*(kernel_h*kernel_w-remove_center)).to(input.device)
 
     sampling_locations = (ref + grid * offset_scale).repeat(N_, 1, 1, 1, 1)
-    sampling_locations = remove_center_sampling_locations(sampling_locations, kernel_w=kernel_w, kernel_h=kernel_h)
+    if remove_center:
+        sampling_locations = remove_center_sampling_locations(sampling_locations, kernel_w=kernel_w, kernel_h=kernel_h)
     sampling_locations = sampling_locations.flatten(3, 4)
     sampling_locations = sampling_locations + offset * offset_scale / spatial_norm
 
-    P_ = kernel_h * kernel_w - 1
+    P_ = kernel_h * kernel_w - remove_center
     sampling_grids = 2 * sampling_locations - 1
     # N_, H_in, W_in, group*group_channels -> N_, H_in*W_in, group*group_channels -> N_, group*group_channels, H_in*W_in -> N_*group, group_channels, H_in, W_in
     input_ = input.view(N_, H_in*W_in, group*group_channels).transpose(1, 2).\
