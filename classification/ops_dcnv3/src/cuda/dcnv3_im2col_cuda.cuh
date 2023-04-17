@@ -221,7 +221,7 @@ __global__ void dcnv3_im2col_gpu_kernel(
     const int pad_w, const int dilation_h, const int dilation_w,
     const int group, const int group_channels, const int height_in,
     const int width_in, const int height_out, const int width_out,
-    const opmath_t offset_scale) {
+    const opmath_t offset_scale, const int remove_center) {
     CUDA_KERNEL_LOOP(index, num_kernels) {
         int _temp = index;
         const int c_col = _temp % group_channels;
@@ -239,7 +239,7 @@ __global__ void dcnv3_im2col_gpu_kernel(
 
         const int input_size = height_in * width_in;
         scalar_t *data_col_ptr = data_col + index;
-        const int kernel_size = kernel_h * kernel_w;
+        const int kernel_size = kernel_h * kernel_w - remove_center;
         int data_weight_ptr = sampling_index * kernel_size;
         int data_loc_w_ptr = data_weight_ptr << 1;
         const int qid_stride = group * group_channels;
@@ -250,24 +250,31 @@ __global__ void dcnv3_im2col_gpu_kernel(
             p0_w - ((dilation_w * (kernel_w - 1)) >> 1) * offset_scale;
         const opmath_t p0_h_ =
             p0_h - ((dilation_h * (kernel_h - 1)) >> 1) * offset_scale;
+
+        const int center_h = kernel_h / 2;
+        const int center_w = kernel_w / 2;
+
         for (int i = 0; i < kernel_w; ++i) {
             for (int j = 0; j < kernel_h; ++j) {
-                const opmath_t offset_w = data_offset[data_loc_w_ptr];
-                const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
-                const opmath_t loc_w =
-                    p0_w_ + (i * dilation_w + offset_w) * offset_scale;
-                const opmath_t loc_h =
-                    p0_h_ + (j * dilation_h + offset_h) * offset_scale;
-                const opmath_t weight = data_mask[data_weight_ptr];
-                if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
-                    loc_w < width_in) {
-                    col += dcnv3_im2col_bilinear(
-                               data_im_ptr, height_in, width_in, group,
-                               group_channels, loc_h, loc_w, g_col, c_col) *
-                           weight;
+                // if not remove center, or remove center and not the center
+                if (i!=center_w || j!=center_h || !remove_center) {
+                    const opmath_t offset_w = data_offset[data_loc_w_ptr];
+                    const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
+                    const opmath_t loc_w =
+                        p0_w_ + (i * dilation_w + offset_w) * offset_scale;
+                    const opmath_t loc_h =
+                        p0_h_ + (j * dilation_h + offset_h) * offset_scale;
+                    const opmath_t weight = data_mask[data_weight_ptr];
+                    if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
+                        loc_w < width_in) {
+                        col += dcnv3_im2col_bilinear(
+                                data_im_ptr, height_in, width_in, group,
+                                group_channels, loc_h, loc_w, g_col, c_col) *
+                            weight;
+                    }
+                    data_weight_ptr += 1;
+                    data_loc_w_ptr += 2;
                 }
-                data_weight_ptr += 1;
-                data_loc_w_ptr += 2;
             }
         }
         *data_col_ptr = col;
@@ -283,7 +290,7 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_blocksize_aware_reduce_v1(
     const int pad_w, const int dilation_h, const int dilation_w,
     const int group, const int group_channels, const int height_in,
     const int width_in, const int height_out, const int width_out,
-    const opmath_t offset_scale, opmath_t *grad_im, opmath_t *grad_offset,
+    const opmath_t offset_scale, const int remove_center, opmath_t *grad_im, opmath_t *grad_offset,
     opmath_t *grad_mask) {
     CUDA_KERNEL_LOOP(index, num_kernels) {
         __shared__ opmath_t cache_grad_offset[blockSize * 2];
@@ -305,7 +312,7 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_blocksize_aware_reduce_v1(
 
         const opmath_t top_grad = grad_col[index];
         const int input_size = height_in * width_in;
-        const int kernel_size = kernel_h * kernel_w;
+        const int kernel_size = kernel_h * kernel_w - remove_center;
         int data_weight_ptr = sampling_index * kernel_size;
         int data_loc_w_ptr = data_weight_ptr << 1;
         const int grad_sampling_ptr = data_weight_ptr;
@@ -319,51 +326,58 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_blocksize_aware_reduce_v1(
             p0_w - ((dilation_w * (kernel_w - 1)) >> 1) * offset_scale;
         const opmath_t p0_h_ =
             p0_h - ((dilation_h * (kernel_h - 1)) >> 1) * offset_scale;
+
+        const int center_h = kernel_h / 2;
+        const int center_w = kernel_w / 2;
+
         for (int i = 0; i < kernel_w; ++i) {
             for (int j = 0; j < kernel_h; ++j) {
-                const opmath_t offset_w = data_offset[data_loc_w_ptr];
-                const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
-                const opmath_t loc_w =
-                    p0_w_ + (i * dilation_w + offset_w) * offset_scale;
-                const opmath_t loc_h =
-                    p0_h_ + (j * dilation_h + offset_h) * offset_scale;
-                const opmath_t weight = data_mask[data_weight_ptr];
-                *(cache_grad_offset + (threadIdx.x << 1)) = 0;
-                *(cache_grad_offset + ((threadIdx.x << 1) + 1)) = 0;
-                *(cache_grad_mask + threadIdx.x) = 0;
-                if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
-                    loc_w < width_in) {
-                    dcnv3_col2im_bilinear(
-                        data_im_ptr, height_in, width_in, group, group_channels,
-                        loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
-                        weight, grad_im_ptr,
-                        cache_grad_offset + (threadIdx.x << 1),
-                        cache_grad_mask + threadIdx.x);
-                }
-
-                __syncthreads();
-                if (tid == 0) {
-                    opmath_t _grad_w = cache_grad_offset[0],
-                             _grad_h = cache_grad_offset[1],
-                             _grad_a = cache_grad_mask[0];
-                    int sid = 2;
-                    for (unsigned int tid = 1; tid < blockSize; ++tid) {
-                        _grad_w += cache_grad_offset[sid];
-                        _grad_h += cache_grad_offset[sid + 1];
-                        _grad_a += cache_grad_mask[tid];
-                        sid += 2;
+                // if not remove center, or remove center and not the center
+                if (i!=center_w || j!=center_h || !remove_center) {
+                    const opmath_t offset_w = data_offset[data_loc_w_ptr];
+                    const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
+                    const opmath_t loc_w =
+                        p0_w_ + (i * dilation_w + offset_w) * offset_scale;
+                    const opmath_t loc_h =
+                        p0_h_ + (j * dilation_h + offset_h) * offset_scale;
+                    const opmath_t weight = data_mask[data_weight_ptr];
+                    *(cache_grad_offset + (threadIdx.x << 1)) = 0;
+                    *(cache_grad_offset + ((threadIdx.x << 1) + 1)) = 0;
+                    *(cache_grad_mask + threadIdx.x) = 0;
+                    if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
+                        loc_w < width_in) {
+                        dcnv3_col2im_bilinear(
+                            data_im_ptr, height_in, width_in, group, group_channels,
+                            loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
+                            weight, grad_im_ptr,
+                            cache_grad_offset + (threadIdx.x << 1),
+                            cache_grad_mask + threadIdx.x);
                     }
 
-                    *grad_offset = _grad_w;
-                    *(grad_offset + 1) = _grad_h;
-                    *grad_mask = _grad_a;
-                }
-                __syncthreads();
+                    __syncthreads();
+                    if (tid == 0) {
+                        opmath_t _grad_w = cache_grad_offset[0],
+                                 _grad_h = cache_grad_offset[1],
+                                 _grad_a = cache_grad_mask[0];
+                        int sid = 2;
+                        for (unsigned int tid = 1; tid < blockSize; ++tid) {
+                            _grad_w += cache_grad_offset[sid];
+                            _grad_h += cache_grad_offset[sid + 1];
+                            _grad_a += cache_grad_mask[tid];
+                            sid += 2;
+                        }
 
-                data_weight_ptr += 1;
-                data_loc_w_ptr += 2;
-                grad_mask += 1;
-                grad_offset += 2;
+                        *grad_offset = _grad_w;
+                        *(grad_offset + 1) = _grad_h;
+                        *grad_mask = _grad_a;
+                    }
+                    __syncthreads();
+
+                    data_weight_ptr += 1;
+                    data_loc_w_ptr += 2;
+                    grad_mask += 1;
+                    grad_offset += 2;
+                }
             }
         }
     }
@@ -377,7 +391,7 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_blocksize_aware_reduce_v2(
     const int pad_w, const int dilation_h, const int dilation_w,
     const int group, const int group_channels, const int height_in,
     const int width_in, const int height_out, const int width_out,
-    const opmath_t offset_scale, opmath_t *grad_im, opmath_t *grad_offset,
+    const opmath_t offset_scale, const int remove_center, opmath_t *grad_im, opmath_t *grad_offset,
     opmath_t *grad_mask) {
     CUDA_KERNEL_LOOP(index, num_kernels) {
         __shared__ opmath_t cache_grad_offset[blockSize * 2];
@@ -399,7 +413,7 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_blocksize_aware_reduce_v2(
 
         const opmath_t top_grad = grad_col[index];
         const int input_size = height_in * width_in;
-        const int kernel_size = kernel_h * kernel_w;
+        const int kernel_size = kernel_h * kernel_w - remove_center;
         int data_weight_ptr = sampling_index * kernel_size;
         int data_loc_w_ptr = data_weight_ptr << 1;
         const int grad_sampling_ptr = data_weight_ptr;
@@ -413,53 +427,60 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_blocksize_aware_reduce_v2(
             p0_w - ((dilation_w * (kernel_w - 1)) >> 1) * offset_scale;
         const opmath_t p0_h_ =
             p0_h - ((dilation_h * (kernel_h - 1)) >> 1) * offset_scale;
+
+        const int center_h = kernel_h / 2;
+        const int center_w = kernel_w / 2;
+
         for (int i = 0; i < kernel_w; ++i) {
             for (int j = 0; j < kernel_h; ++j) {
-                const opmath_t offset_w = data_offset[data_loc_w_ptr];
-                const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
-                const opmath_t loc_w =
-                    p0_w_ + (i * dilation_w + offset_w) * offset_scale;
-                const opmath_t loc_h =
-                    p0_h_ + (j * dilation_h + offset_h) * offset_scale;
-                const opmath_t weight = data_mask[data_weight_ptr];
-                *(cache_grad_offset + (threadIdx.x << 1)) = 0;
-                *(cache_grad_offset + ((threadIdx.x << 1) + 1)) = 0;
-                *(cache_grad_mask + threadIdx.x) = 0;
-                if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
-                    loc_w < width_in) {
-                    dcnv3_col2im_bilinear(
-                        data_im_ptr, height_in, width_in, group, group_channels,
-                        loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
-                        weight, grad_im_ptr,
-                        cache_grad_offset + (threadIdx.x << 1),
-                        cache_grad_mask + threadIdx.x);
-                }
+                // if not remove center, or remove center and not the center
+                if (i!=center_w || j!=center_h || !remove_center) {
+                    const opmath_t offset_w = data_offset[data_loc_w_ptr];
+                    const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
+                    const opmath_t loc_w =
+                        p0_w_ + (i * dilation_w + offset_w) * offset_scale;
+                    const opmath_t loc_h =
+                        p0_h_ + (j * dilation_h + offset_h) * offset_scale;
+                    const opmath_t weight = data_mask[data_weight_ptr];
+                    *(cache_grad_offset + (threadIdx.x << 1)) = 0;
+                    *(cache_grad_offset + ((threadIdx.x << 1) + 1)) = 0;
+                    *(cache_grad_mask + threadIdx.x) = 0;
+                    if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
+                        loc_w < width_in) {
+                        dcnv3_col2im_bilinear(
+                            data_im_ptr, height_in, width_in, group, group_channels,
+                            loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
+                            weight, grad_im_ptr,
+                            cache_grad_offset + (threadIdx.x << 1),
+                            cache_grad_mask + threadIdx.x);
+                    }
 
-                __syncthreads();
+                    __syncthreads();
 
-                for (unsigned int s = blockSize / 2; s > 0; s >>= 1) {
-                    if (tid < s) {
-                        const unsigned int xid1 = tid << 1;
-                        const unsigned int xid2 = (tid + s) << 1;
-                        cache_grad_mask[tid] += cache_grad_mask[tid + s];
-                        cache_grad_offset[xid1] += cache_grad_offset[xid2];
-                        cache_grad_offset[xid1 + 1] +=
-                            cache_grad_offset[xid2 + 1];
+                    for (unsigned int s = blockSize / 2; s > 0; s >>= 1) {
+                        if (tid < s) {
+                            const unsigned int xid1 = tid << 1;
+                            const unsigned int xid2 = (tid + s) << 1;
+                            cache_grad_mask[tid] += cache_grad_mask[tid + s];
+                            cache_grad_offset[xid1] += cache_grad_offset[xid2];
+                            cache_grad_offset[xid1 + 1] +=
+                                cache_grad_offset[xid2 + 1];
+                        }
+                        __syncthreads();
+                    }
+
+                    if (tid == 0) {
+                        *grad_offset = cache_grad_offset[0];
+                        *(grad_offset + 1) = cache_grad_offset[1];
+                        *grad_mask = cache_grad_mask[0];
                     }
                     __syncthreads();
-                }
 
-                if (tid == 0) {
-                    *grad_offset = cache_grad_offset[0];
-                    *(grad_offset + 1) = cache_grad_offset[1];
-                    *grad_mask = cache_grad_mask[0];
+                    data_weight_ptr += 1;
+                    data_loc_w_ptr += 2;
+                    grad_mask += 1;
+                    grad_offset += 2;
                 }
-                __syncthreads();
-
-                data_weight_ptr += 1;
-                data_loc_w_ptr += 2;
-                grad_mask += 1;
-                grad_offset += 2;
             }
         }
     }
@@ -473,7 +494,7 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_reduce_v1(
     const int pad_w, const int dilation_h, const int dilation_w,
     const int group, const int group_channels, const int height_in,
     const int width_in, const int height_out, const int width_out,
-    const opmath_t offset_scale, opmath_t *grad_im, opmath_t *grad_offset,
+    const opmath_t offset_scale, const int remove_center, opmath_t *grad_im, opmath_t *grad_offset,
     opmath_t *grad_mask) {
     CUDA_KERNEL_LOOP(index, num_kernels) {
         extern __shared__ int _s[];
@@ -496,7 +517,7 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_reduce_v1(
 
         const opmath_t top_grad = grad_col[index];
         const int input_size = height_in * width_in;
-        const int kernel_size = kernel_h * kernel_w;
+        const int kernel_size = kernel_h * kernel_w - remove_center;
         int data_weight_ptr = sampling_index * kernel_size;
         int data_loc_w_ptr = data_weight_ptr << 1;
         const int grad_sampling_ptr = data_weight_ptr;
@@ -510,51 +531,58 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_reduce_v1(
             p0_w - ((dilation_w * (kernel_w - 1)) >> 1) * offset_scale;
         const opmath_t p0_h_ =
             p0_h - ((dilation_h * (kernel_h - 1)) >> 1) * offset_scale;
+
+        const int center_h = kernel_h / 2;
+        const int center_w = kernel_w / 2;
+
         for (int i = 0; i < kernel_w; ++i) {
             for (int j = 0; j < kernel_h; ++j) {
-                const opmath_t offset_w = data_offset[data_loc_w_ptr];
-                const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
-                const opmath_t loc_w =
-                    p0_w_ + (i * dilation_w + offset_w) * offset_scale;
-                const opmath_t loc_h =
-                    p0_h_ + (j * dilation_h + offset_h) * offset_scale;
-                const opmath_t weight = data_mask[data_weight_ptr];
-                *(cache_grad_offset + (threadIdx.x << 1)) = 0;
-                *(cache_grad_offset + ((threadIdx.x << 1) + 1)) = 0;
-                *(cache_grad_mask + threadIdx.x) = 0;
-                if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
-                    loc_w < width_in) {
-                    dcnv3_col2im_bilinear(
-                        data_im_ptr, height_in, width_in, group, group_channels,
-                        loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
-                        weight, grad_im_ptr,
-                        cache_grad_offset + (threadIdx.x << 1),
-                        cache_grad_mask + threadIdx.x);
-                }
-
-                __syncthreads();
-                if (tid == 0) {
-                    opmath_t _grad_w = cache_grad_offset[0],
-                             _grad_h = cache_grad_offset[1],
-                             _grad_a = cache_grad_mask[0];
-                    int sid = 2;
-                    for (unsigned int tid = 1; tid < blockDim.x; ++tid) {
-                        _grad_w += cache_grad_offset[sid];
-                        _grad_h += cache_grad_offset[sid + 1];
-                        _grad_a += cache_grad_mask[tid];
-                        sid += 2;
+                // if not remove center, or remove center and not the center
+                if (i!=center_w || j!=center_h || !remove_center) {
+                    const opmath_t offset_w = data_offset[data_loc_w_ptr];
+                    const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
+                    const opmath_t loc_w =
+                        p0_w_ + (i * dilation_w + offset_w) * offset_scale;
+                    const opmath_t loc_h =
+                        p0_h_ + (j * dilation_h + offset_h) * offset_scale;
+                    const opmath_t weight = data_mask[data_weight_ptr];
+                    *(cache_grad_offset + (threadIdx.x << 1)) = 0;
+                    *(cache_grad_offset + ((threadIdx.x << 1) + 1)) = 0;
+                    *(cache_grad_mask + threadIdx.x) = 0;
+                    if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
+                        loc_w < width_in) {
+                        dcnv3_col2im_bilinear(
+                            data_im_ptr, height_in, width_in, group, group_channels,
+                            loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
+                            weight, grad_im_ptr,
+                            cache_grad_offset + (threadIdx.x << 1),
+                            cache_grad_mask + threadIdx.x);
                     }
 
-                    *grad_offset = _grad_w;
-                    *(grad_offset + 1) = _grad_h;
-                    *grad_mask = _grad_a;
-                }
-                __syncthreads();
+                    __syncthreads();
+                    if (tid == 0) {
+                        opmath_t _grad_w = cache_grad_offset[0],
+                                 _grad_h = cache_grad_offset[1],
+                                 _grad_a = cache_grad_mask[0];
+                        int sid = 2;
+                        for (unsigned int tid = 1; tid < blockDim.x; ++tid) {
+                            _grad_w += cache_grad_offset[sid];
+                            _grad_h += cache_grad_offset[sid + 1];
+                            _grad_a += cache_grad_mask[tid];
+                            sid += 2;
+                        }
 
-                data_weight_ptr += 1;
-                data_loc_w_ptr += 2;
-                grad_mask += 1;
-                grad_offset += 2;
+                        *grad_offset = _grad_w;
+                        *(grad_offset + 1) = _grad_h;
+                        *grad_mask = _grad_a;
+                    }
+                    __syncthreads();
+
+                    data_weight_ptr += 1;
+                    data_loc_w_ptr += 2;
+                    grad_mask += 1;
+                    grad_offset += 2;
+                }
             }
         }
     }
@@ -568,7 +596,7 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_reduce_v2(
     const int pad_w, const int dilation_h, const int dilation_w,
     const int group, const int group_channels, const int height_in,
     const int width_in, const int height_out, const int width_out,
-    const opmath_t offset_scale, opmath_t *grad_im, opmath_t *grad_offset,
+    const opmath_t offset_scale, const int remove_center, opmath_t *grad_im, opmath_t *grad_offset,
     opmath_t *grad_mask) {
     CUDA_KERNEL_LOOP(index, num_kernels) {
         extern __shared__ int _s[];
@@ -591,7 +619,7 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_reduce_v2(
 
         const opmath_t top_grad = grad_col[index];
         const int input_size = height_in * width_in;
-        const int kernel_size = kernel_h * kernel_w;
+        const int kernel_size = kernel_h * kernel_w - remove_center;
         int data_weight_ptr = sampling_index * kernel_size;
         int data_loc_w_ptr = data_weight_ptr << 1;
         const int grad_sampling_ptr = data_weight_ptr;
@@ -605,62 +633,69 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_reduce_v2(
             p0_w - ((dilation_w * (kernel_w - 1)) >> 1) * offset_scale;
         const opmath_t p0_h_ =
             p0_h - ((dilation_h * (kernel_h - 1)) >> 1) * offset_scale;
+
+        const int center_h = kernel_h / 2;
+        const int center_w = kernel_w / 2;
+
         for (int i = 0; i < kernel_w; ++i) {
             for (int j = 0; j < kernel_h; ++j) {
-                const opmath_t offset_w = data_offset[data_loc_w_ptr];
-                const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
-                const opmath_t loc_w =
-                    p0_w_ + (i * dilation_w + offset_w) * offset_scale;
-                const opmath_t loc_h =
-                    p0_h_ + (j * dilation_h + offset_h) * offset_scale;
-                const opmath_t weight = data_mask[data_weight_ptr];
-                *(cache_grad_offset + (threadIdx.x << 1)) = 0;
-                *(cache_grad_offset + ((threadIdx.x << 1) + 1)) = 0;
-                *(cache_grad_mask + threadIdx.x) = 0;
-                if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
-                    loc_w < width_in) {
-                    dcnv3_col2im_bilinear(
-                        data_im_ptr, height_in, width_in, group, group_channels,
-                        loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
-                        weight, grad_im_ptr,
-                        cache_grad_offset + (threadIdx.x << 1),
-                        cache_grad_mask + threadIdx.x);
-                }
+                // if not remove center, or remove center and not the center
+                if (i!=center_w || j!=center_h || !remove_center) {
+                    const opmath_t offset_w = data_offset[data_loc_w_ptr];
+                    const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
+                    const opmath_t loc_w =
+                        p0_w_ + (i * dilation_w + offset_w) * offset_scale;
+                    const opmath_t loc_h =
+                        p0_h_ + (j * dilation_h + offset_h) * offset_scale;
+                    const opmath_t weight = data_mask[data_weight_ptr];
+                    *(cache_grad_offset + (threadIdx.x << 1)) = 0;
+                    *(cache_grad_offset + ((threadIdx.x << 1) + 1)) = 0;
+                    *(cache_grad_mask + threadIdx.x) = 0;
+                    if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
+                        loc_w < width_in) {
+                        dcnv3_col2im_bilinear(
+                            data_im_ptr, height_in, width_in, group, group_channels,
+                            loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
+                            weight, grad_im_ptr,
+                            cache_grad_offset + (threadIdx.x << 1),
+                            cache_grad_mask + threadIdx.x);
+                    }
 
-                __syncthreads();
+                    __syncthreads();
 
-                for (unsigned int s = blockDim.x / 2, spre = blockDim.x; s > 0;
-                     s >>= 1, spre >>= 1) {
-                    if (tid < s) {
-                        const unsigned int xid1 = tid << 1;
-                        const unsigned int xid2 = (tid + s) << 1;
-                        cache_grad_mask[tid] += cache_grad_mask[tid + s];
-                        cache_grad_offset[xid1] += cache_grad_offset[xid2];
-                        cache_grad_offset[xid1 + 1] +=
-                            cache_grad_offset[xid2 + 1];
-                        if (tid + (s << 1) < spre) {
-                            cache_grad_mask[tid] +=
-                                cache_grad_mask[tid + (s << 1)];
-                            cache_grad_offset[xid1] +=
-                                cache_grad_offset[xid2 + (s << 1)];
+                    for (unsigned int s = blockDim.x / 2, spre = blockDim.x; s > 0;
+                         s >>= 1, spre >>= 1) {
+                        if (tid < s) {
+                            const unsigned int xid1 = tid << 1;
+                            const unsigned int xid2 = (tid + s) << 1;
+                            cache_grad_mask[tid] += cache_grad_mask[tid + s];
+                            cache_grad_offset[xid1] += cache_grad_offset[xid2];
                             cache_grad_offset[xid1 + 1] +=
-                                cache_grad_offset[xid2 + 1 + (s << 1)];
+                                cache_grad_offset[xid2 + 1];
+                            if (tid + (s << 1) < spre) {
+                                cache_grad_mask[tid] +=
+                                    cache_grad_mask[tid + (s << 1)];
+                                cache_grad_offset[xid1] +=
+                                    cache_grad_offset[xid2 + (s << 1)];
+                                cache_grad_offset[xid1 + 1] +=
+                                    cache_grad_offset[xid2 + 1 + (s << 1)];
+                            }
                         }
+                        __syncthreads();
+                    }
+
+                    if (tid == 0) {
+                        *grad_offset = cache_grad_offset[0];
+                        *(grad_offset + 1) = cache_grad_offset[1];
+                        *grad_mask = cache_grad_mask[0];
                     }
                     __syncthreads();
-                }
 
-                if (tid == 0) {
-                    *grad_offset = cache_grad_offset[0];
-                    *(grad_offset + 1) = cache_grad_offset[1];
-                    *grad_mask = cache_grad_mask[0];
+                    data_weight_ptr += 1;
+                    data_loc_w_ptr += 2;
+                    grad_mask += 1;
+                    grad_offset += 2;
                 }
-                __syncthreads();
-
-                data_weight_ptr += 1;
-                data_loc_w_ptr += 2;
-                grad_mask += 1;
-                grad_offset += 2;
             }
         }
     }
@@ -674,7 +709,7 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_reduce_v2_multi_blocks(
     const int pad_w, const int dilation_h, const int dilation_w,
     const int group, const int group_channels, const int height_in,
     const int width_in, const int height_out, const int width_out,
-    const opmath_t offset_scale, opmath_t *grad_im, opmath_t *grad_offset,
+    const opmath_t offset_scale, const int remove_center, opmath_t *grad_im, opmath_t *grad_offset,
     opmath_t *grad_mask) {
     CUDA_KERNEL_LOOP(index, num_kernels) {
         extern __shared__ int _s[];
@@ -697,7 +732,7 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_reduce_v2_multi_blocks(
 
         const opmath_t top_grad = grad_col[index];
         const int input_size = height_in * width_in;
-        const int kernel_size = kernel_h * kernel_w;
+        const int kernel_size = kernel_h * kernel_w - remove_center;
         int data_weight_ptr = sampling_index * kernel_size;
         int data_loc_w_ptr = data_weight_ptr << 1;
         const int grad_sampling_ptr = data_weight_ptr;
@@ -711,62 +746,69 @@ __global__ void dcnv3_col2im_gpu_kernel_shm_reduce_v2_multi_blocks(
             p0_w - ((dilation_w * (kernel_w - 1)) >> 1) * offset_scale;
         const opmath_t p0_h_ =
             p0_h - ((dilation_h * (kernel_h - 1)) >> 1) * offset_scale;
+
+        const int center_h = kernel_h / 2;
+        const int center_w = kernel_w / 2;
+
         for (int i = 0; i < kernel_w; ++i) {
             for (int j = 0; j < kernel_h; ++j) {
-                const opmath_t offset_w = data_offset[data_loc_w_ptr];
-                const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
-                const opmath_t loc_w =
-                    p0_w_ + (i * dilation_w + offset_w) * offset_scale;
-                const opmath_t loc_h =
-                    p0_h_ + (j * dilation_h + offset_h) * offset_scale;
-                const opmath_t weight = data_mask[data_weight_ptr];
-                *(cache_grad_offset + (threadIdx.x << 1)) = 0;
-                *(cache_grad_offset + ((threadIdx.x << 1) + 1)) = 0;
-                *(cache_grad_mask + threadIdx.x) = 0;
-                if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
-                    loc_w < width_in) {
-                    dcnv3_col2im_bilinear(
-                        data_im_ptr, height_in, width_in, group, group_channels,
-                        loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
-                        weight, grad_im_ptr,
-                        cache_grad_offset + (threadIdx.x << 1),
-                        cache_grad_mask + threadIdx.x);
-                }
+                // if not remove center, or remove center and not the center
+                if (i!=center_w || j!=center_h || !remove_center) {
+                    const opmath_t offset_w = data_offset[data_loc_w_ptr];
+                    const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
+                    const opmath_t loc_w =
+                        p0_w_ + (i * dilation_w + offset_w) * offset_scale;
+                    const opmath_t loc_h =
+                        p0_h_ + (j * dilation_h + offset_h) * offset_scale;
+                    const opmath_t weight = data_mask[data_weight_ptr];
+                    *(cache_grad_offset + (threadIdx.x << 1)) = 0;
+                    *(cache_grad_offset + ((threadIdx.x << 1) + 1)) = 0;
+                    *(cache_grad_mask + threadIdx.x) = 0;
+                    if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
+                        loc_w < width_in) {
+                        dcnv3_col2im_bilinear(
+                            data_im_ptr, height_in, width_in, group, group_channels,
+                            loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
+                            weight, grad_im_ptr,
+                            cache_grad_offset + (threadIdx.x << 1),
+                            cache_grad_mask + threadIdx.x);
+                    }
 
-                __syncthreads();
+                    __syncthreads();
 
-                for (unsigned int s = blockDim.x / 2, spre = blockDim.x; s > 0;
-                     s >>= 1, spre >>= 1) {
-                    if (tid < s) {
-                        const unsigned int xid1 = tid << 1;
-                        const unsigned int xid2 = (tid + s) << 1;
-                        cache_grad_mask[tid] += cache_grad_mask[tid + s];
-                        cache_grad_offset[xid1] += cache_grad_offset[xid2];
-                        cache_grad_offset[xid1 + 1] +=
-                            cache_grad_offset[xid2 + 1];
-                        if (tid + (s << 1) < spre) {
-                            cache_grad_mask[tid] +=
-                                cache_grad_mask[tid + (s << 1)];
-                            cache_grad_offset[xid1] +=
-                                cache_grad_offset[xid2 + (s << 1)];
+                    for (unsigned int s = blockDim.x / 2, spre = blockDim.x; s > 0;
+                         s >>= 1, spre >>= 1) {
+                        if (tid < s) {
+                            const unsigned int xid1 = tid << 1;
+                            const unsigned int xid2 = (tid + s) << 1;
+                            cache_grad_mask[tid] += cache_grad_mask[tid + s];
+                            cache_grad_offset[xid1] += cache_grad_offset[xid2];
                             cache_grad_offset[xid1 + 1] +=
-                                cache_grad_offset[xid2 + 1 + (s << 1)];
+                                cache_grad_offset[xid2 + 1];
+                            if (tid + (s << 1) < spre) {
+                                cache_grad_mask[tid] +=
+                                    cache_grad_mask[tid + (s << 1)];
+                                cache_grad_offset[xid1] +=
+                                    cache_grad_offset[xid2 + (s << 1)];
+                                cache_grad_offset[xid1 + 1] +=
+                                    cache_grad_offset[xid2 + 1 + (s << 1)];
+                            }
                         }
+                        __syncthreads();
+                    }
+
+                    if (tid == 0) {
+                        atomicAdd(grad_offset, cache_grad_offset[0]);
+                        atomicAdd(grad_offset + 1, cache_grad_offset[1]);
+                        atomicAdd(grad_mask, cache_grad_mask[0]);
                     }
                     __syncthreads();
-                }
 
-                if (tid == 0) {
-                    atomicAdd(grad_offset, cache_grad_offset[0]);
-                    atomicAdd(grad_offset + 1, cache_grad_offset[1]);
-                    atomicAdd(grad_mask, cache_grad_mask[0]);
+                    data_weight_ptr += 1;
+                    data_loc_w_ptr += 2;
+                    grad_mask += 1;
+                    grad_offset += 2;
                 }
-                __syncthreads();
-
-                data_weight_ptr += 1;
-                data_loc_w_ptr += 2;
-                grad_mask += 1;
-                grad_offset += 2;
             }
         }
     }
@@ -780,7 +822,7 @@ __global__ void dcnv3_col2im_gpu_kernel_gm(
     const int pad_w, const int dilation_h, const int dilation_w,
     const int group, const int group_channels, const int height_in,
     const int width_in, const int height_out, const int width_out,
-    const opmath_t offset_scale, opmath_t *grad_im, opmath_t *grad_offset,
+    const opmath_t offset_scale, const int remove_center, opmath_t *grad_im, opmath_t *grad_offset,
     opmath_t *grad_mask) {
     CUDA_KERNEL_LOOP(index, num_kernels) {
         int _temp = index;
@@ -799,7 +841,7 @@ __global__ void dcnv3_col2im_gpu_kernel_gm(
 
         const opmath_t top_grad = grad_col[index];
         const int input_size = height_in * width_in;
-        const int kernel_size = kernel_h * kernel_w;
+        const int kernel_size = kernel_h * kernel_w - remove_center;
         int data_weight_ptr = sampling_index * kernel_size;
         int data_loc_w_ptr = data_weight_ptr << 1;
         const int grad_sampling_ptr = data_weight_ptr;
@@ -813,26 +855,33 @@ __global__ void dcnv3_col2im_gpu_kernel_gm(
             p0_w - ((dilation_w * (kernel_w - 1)) >> 1) * offset_scale;
         const opmath_t p0_h_ =
             p0_h - ((dilation_h * (kernel_h - 1)) >> 1) * offset_scale;
+
+        const int center_h = kernel_h / 2;
+        const int center_w = kernel_w / 2;
+
         for (int i = 0; i < kernel_w; ++i) {
             for (int j = 0; j < kernel_h; ++j) {
-                const opmath_t offset_w = data_offset[data_loc_w_ptr];
-                const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
-                const opmath_t loc_w =
-                    p0_w_ + (i * dilation_w + offset_w) * offset_scale;
-                const opmath_t loc_h =
-                    p0_h_ + (j * dilation_h + offset_h) * offset_scale;
-                const opmath_t weight = data_mask[data_weight_ptr];
-                if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
-                    loc_w < width_in) {
-                    dcnv3_col2im_bilinear_gm(
-                        data_im_ptr, height_in, width_in, group, group_channels,
-                        loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
-                        weight, grad_im_ptr, grad_offset, grad_mask);
+                // if not remove center, or remove center and not the center
+                if (i!=center_w || j!=center_h || !remove_center) {
+                    const opmath_t offset_w = data_offset[data_loc_w_ptr];
+                    const opmath_t offset_h = data_offset[data_loc_w_ptr + 1];
+                    const opmath_t loc_w =
+                        p0_w_ + (i * dilation_w + offset_w) * offset_scale;
+                    const opmath_t loc_h =
+                        p0_h_ + (j * dilation_h + offset_h) * offset_scale;
+                    const opmath_t weight = data_mask[data_weight_ptr];
+                    if (loc_h > -1 && loc_w > -1 && loc_h < height_in &&
+                        loc_w < width_in) {
+                        dcnv3_col2im_bilinear_gm(
+                            data_im_ptr, height_in, width_in, group, group_channels,
+                            loc_h, loc_w, g_col, c_col, offset_scale, top_grad,
+                            weight, grad_im_ptr, grad_offset, grad_mask);
+                    }
+                    data_weight_ptr += 1;
+                    data_loc_w_ptr += 2;
+                    grad_mask += 1;
+                    grad_offset += 2;
                 }
-                data_weight_ptr += 1;
-                data_loc_w_ptr += 2;
-                grad_mask += 1;
-                grad_offset += 2;
             }
         }
     }
@@ -848,7 +897,7 @@ void dcnv3_im2col_cuda(cudaStream_t stream, const scalar_t *data_im,
                        const int group, const int group_channels,
                        const int batch_n, const int height_in,
                        const int width_in, const int height_out,
-                       const int width_out, const opmath_t offset_scale) {
+                       const int width_out, const opmath_t offset_scale, const int remove_center) {
     const int num_kernels =
         batch_n * height_out * width_out * group * group_channels;
     const int num_actual_kernels =
@@ -859,7 +908,7 @@ void dcnv3_im2col_cuda(cudaStream_t stream, const scalar_t *data_im,
            stream>>>(num_kernels, data_im, data_offset, data_mask, data_col,
                      kernel_h, kernel_w, stride_h, stride_w, pad_h, pad_w,
                      dilation_h, dilation_w, group, group_channels, height_in,
-                     width_in, height_out, width_out, offset_scale);
+                     width_in, height_out, width_out, offset_scale, remove_center);
 
     cudaError_t err = cudaGetLastError();
     if (err != cudaSuccess) {
@@ -875,8 +924,8 @@ void dcnv3_col2im_cuda(
     const int pad_w, const int dilation_h, const int dilation_w,
     const int group, const int group_channels, const int batch_n,
     const int height_in, const int width_in, const int height_out,
-    const int width_out, const opmath_t offset_scale, opmath_t *grad_im,
-    opmath_t *grad_offset, opmath_t *grad_mask) {
+    const int width_out, const opmath_t offset_scale, const int remove_center,
+    opmath_t *grad_im, opmath_t *grad_offset, opmath_t *grad_mask) {
     const int num_threads =
         (group_channels > CUDA_NUM_THREADS) ? CUDA_NUM_THREADS : group_channels;
     const int num_kernels =
@@ -891,7 +940,7 @@ void dcnv3_col2im_cuda(
                     num_kernels, grad_col, data_im, data_offset, data_mask,
                     kernel_h, kernel_w, stride_h, stride_w, pad_h, pad_w,
                     dilation_h, dilation_w, group, group_channels, height_in,
-                    width_in, height_out, width_out, offset_scale, grad_im,
+                    width_in, height_out, width_out, offset_scale, remove_center, grad_im,
                     grad_offset, grad_mask);
         } else {
             dcnv3_col2im_gpu_kernel_gm<scalar_t>
@@ -900,7 +949,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
         }
     } else {
@@ -912,7 +961,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
             break;
         case 2:
@@ -922,7 +971,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
             break;
         case 4:
@@ -932,7 +981,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
             break;
         case 8:
@@ -942,7 +991,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
             break;
         case 16:
@@ -952,7 +1001,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
             break;
         case 32:
@@ -962,7 +1011,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
             break;
         case 64:
@@ -972,7 +1021,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
             break;
         case 128:
@@ -982,7 +1031,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
             break;
         case 256:
@@ -992,7 +1041,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
             break;
         case 512:
@@ -1002,7 +1051,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
             break;
         case 1024:
@@ -1013,7 +1062,7 @@ void dcnv3_col2im_cuda(
                              data_mask, kernel_h, kernel_w, stride_h, stride_w,
                              pad_h, pad_w, dilation_h, dilation_w, group,
                              group_channels, height_in, width_in, height_out,
-                             width_out, offset_scale, grad_im, grad_offset,
+                             width_out, offset_scale, remove_center, grad_im, grad_offset,
                              grad_mask);
             break;
         default:
@@ -1025,7 +1074,7 @@ void dcnv3_col2im_cuda(
                         kernel_h, kernel_w, stride_h, stride_w, pad_h, pad_w,
                         dilation_h, dilation_w, group, group_channels,
                         height_in, width_in, height_out, width_out,
-                        offset_scale, grad_im, grad_offset, grad_mask);
+                        offset_scale, remove_center, grad_im, grad_offset, grad_mask);
             } else {
                 dcnv3_col2im_gpu_kernel_shm_reduce_v2<scalar_t>
                     <<<GET_BLOCKS(num_actual_kernels, num_threads), num_threads,
@@ -1034,7 +1083,7 @@ void dcnv3_col2im_cuda(
                         kernel_h, kernel_w, stride_h, stride_w, pad_h, pad_w,
                         dilation_h, dilation_w, group, group_channels,
                         height_in, width_in, height_out, width_out,
-                        offset_scale, grad_im, grad_offset, grad_mask);
+                        offset_scale, remove_center, grad_im, grad_offset, grad_mask);
             }
         }
     }
