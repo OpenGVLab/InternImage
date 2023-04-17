@@ -19,9 +19,9 @@ from functions.dcnv3_func import DCNv3Function, dcnv3_core_pytorch
 H_in, W_in = 8, 8
 N, M, D = 2, 4, 16
 Kh, Kw = 3, 3
-P = Kh * Kw - 1
+remove_center = False
+P = Kh * Kw - remove_center
 offset_scale = 2.0
-remove_center = True
 pad = 1
 dilation = 1
 stride = 1
