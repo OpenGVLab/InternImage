@@ -58,6 +58,7 @@ def parse_option():
 
     # distributed training
     parser.add_argument("--local-rank", type=int, required=True, help='local rank for DistributedDataParallel')
+    parser.add_argument("--zero-stage", type=int, default=1, choices=[1,2,3], help='deep speed zero stage')
     parser.add_argument('--disable-grad-scalar', action='store_true', help='disable Grad Scalar')
 
     args, unparsed = parser.parse_known_args()
@@ -180,7 +181,7 @@ def build_ds_config(config, args):
             "loss_scale": 1 if args.disable_grad_scalar else 0
         },
         "zero_optimization": {
-            "stage": 1,
+            "stage": args.zero_stage,
         },
         "steps_per_print": 1e10,
         "gradient_accumulation_steps": config.TRAIN.ACCUMULATION_STEPS,
