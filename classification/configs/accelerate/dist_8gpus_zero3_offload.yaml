@@ -1,6 +1,6 @@
 compute_environment: LOCAL_MACHINE
 deepspeed_config:
-  deepspeed_config_file: configs/accelerate/deepspeed/ds_config_zero3.json
+  deepspeed_config_file: configs/accelerate/deepspeed/ds_config_zero3_offload.json
   zero3_init_flag: false
 distributed_type: DEEPSPEED
 downcast_bf16: 'no'

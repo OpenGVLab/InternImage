@@ -29,6 +29,7 @@ from utils import load_pretrained, reduce_tensor, MyAverageMeter
 from ddp_hooks import fp16_compress_hook
 from ema_deepspeed import EMADeepspeed
 
+
 def parse_option():
     parser = argparse.ArgumentParser(
         'InternImage training and evaluation script', add_help=False)
@@ -42,10 +43,11 @@ def parse_option():
     parser.add_argument('--zip', action='store_true', help='use zipped dataset instead of folder dataset')
     parser.add_argument('--cache-mode', type=str, default='part', choices=['no', 'full', 'part'],
                         help='no: no cache, '
-                        'full: cache all data, '
-                        'part: sharding the dataset into nonoverlapping pieces and only cache one piece'
+                             'full: cache all data, '
+                             'part: sharding the dataset into nonoverlapping pieces and only cache one piece'
                         )
-    parser.add_argument('--pretrained', help='pretrained weight from checkpoint, could be imagenet22k pretrained weight')
+    parser.add_argument('--pretrained',
+                        help='pretrained weight from checkpoint, could be imagenet22k pretrained weight')
     parser.add_argument('--resume', help='resume from checkpoint')
     parser.add_argument('--output', default='output', type=str, metavar='PATH',
                         help='root of output folder, the full path is <output>/<model_name>/<tag> (default: output)'
@@ -58,7 +60,16 @@ def parse_option():
 
     # distributed training
     parser.add_argument("--local-rank", type=int, required=True, help='local rank for DistributedDataParallel')
+
+    # deepspeed config
     parser.add_argument('--disable-grad-scalar', action='store_true', help='disable Grad Scalar')
+    parser.add_argument('--offload-optimizer', type=str, default='none', choices=['cpu', 'none'],
+                        help='enable optimizer offloading')
+    parser.add_argument('--offload-param', type=str, default='none', choices=['cpu', 'none'],
+                        help='enable model offloading')
+    # To use Zero3, Please use main_accelerate.py instead.
+    # For this script, we are facing a similar issue as https://github.com/microsoft/DeepSpeed/issues/3068
+    parser.add_argument("--zero-stage", type=int, default=1, choices=[1, 2], help='deep speed zero stage')
 
     args, unparsed = parser.parse_known_args()
     config = get_config(args)
@@ -97,11 +108,11 @@ def build_criterion(config):
 def scale_learning_rate(config, num_processes):
     # linear scale the learning rate according to total batch size, may not be optimal
     linear_scaled_lr = config.TRAIN.BASE_LR * \
-        config.DATA.BATCH_SIZE * num_processes / 512.0
+                       config.DATA.BATCH_SIZE * num_processes / 512.0
     linear_scaled_warmup_lr = config.TRAIN.WARMUP_LR * \
-        config.DATA.BATCH_SIZE * num_processes / 512.0
+                              config.DATA.BATCH_SIZE * num_processes / 512.0
     linear_scaled_min_lr = config.TRAIN.MIN_LR * \
-        config.DATA.BATCH_SIZE * num_processes / 512.0
+                           config.DATA.BATCH_SIZE * num_processes / 512.0
     # gradient accumulation also need to scale the learning rate
     if config.TRAIN.ACCUMULATION_STEPS > 1:
         linear_scaled_lr = linear_scaled_lr * config.TRAIN.ACCUMULATION_STEPS
@@ -121,7 +132,7 @@ def scale_learning_rate(config, num_processes):
 def log_model_statistic(model_wo_ddp):
     n_parameters = sum(p.numel() for p in model_wo_ddp.parameters()
                        if p.requires_grad)
-    logger.info(f"number of params: {n_parameters/1e6} M")
+    logger.info(f"number of params: {n_parameters / 1e6} M")
     if hasattr(model_wo_ddp, 'flops'):
         flops = model_wo_ddp.flops()
         logger.info(f"number of GFLOPs: {flops / 1e9}")
@@ -180,7 +191,13 @@ def build_ds_config(config, args):
             "loss_scale": 1 if args.disable_grad_scalar else 0
         },
         "zero_optimization": {
-            "stage": 1,
+            "stage": args.zero_stage,
+            "offload_optimizer": {
+                "device": args.offload_optimizer
+            },
+            "offload_param": {
+                "device": args.offload_param
+            }
         },
         "steps_per_print": 1e10,
         "gradient_accumulation_steps": config.TRAIN.ACCUMULATION_STEPS,
@@ -324,7 +341,7 @@ def eval_epoch(config, data_loader, model, epoch=None):
 
 def train(config, ds_config):
     # -------------- build ---------------- #
-    
+
     _, dataset_val, _, data_loader_train, data_loader_val, _, mixup_fn = build_loader(config)
     model = build_model(config)
     model.cuda()
@@ -356,7 +373,7 @@ def train(config, ds_config):
         model_ema = EMADeepspeed(model, config.TRAIN.EMA.DECAY)
 
     # -------------- resume ---------------- #
-    
+
     max_accuracy = 0.0
     max_accuracy_ema = 0.0
     client_state = {}
@@ -379,9 +396,9 @@ def train(config, ds_config):
         if model_ema is not None:
             max_accuracy_ema = client_state.get('max_accuracy_ema', 0.0)
             model_ema.load_state_dict((client_state['model_ema']))
-        
+
     # -------------- training ---------------- #
-    
+
     logger.info(f"Creating model:{config.MODEL.TYPE}/{config.MODEL.NAME}")
     logger.info(str(model))
     logger.info(get_optimizer_state_str(optimizer))
@@ -461,10 +478,11 @@ def eval(config):
                 from deepspeed.utils.zero_to_fp32 import get_fp32_state_dict_from_zero_checkpoint
                 ckpt_dir = os.path.dirname(config.MODEL.RESUME)
                 tag = os.path.basename(config.MODEL.RESUME)
-                state_dict = get_fp32_state_dict_from_zero_checkpoint(checkpoint_dir=ckpt_dir, tag=tag) 
+                state_dict = get_fp32_state_dict_from_zero_checkpoint(checkpoint_dir=ckpt_dir, tag=tag)
                 model_wo_ddp.load_state_dict(state_dict)
             except:
-                checkpoint = torch.load(os.path.join(config.MODEL.RESUME, 'mp_rank_00_model_states.pt'), map_location='cpu')
+                checkpoint = torch.load(os.path.join(config.MODEL.RESUME, 'mp_rank_00_model_states.pt'),
+                                        map_location='cpu')
                 model_wo_ddp.load_state_dict(checkpoint['module'])
     elif config.MODEL.PRETRAINED:
         load_pretrained(config, model_wo_ddp, logger)
