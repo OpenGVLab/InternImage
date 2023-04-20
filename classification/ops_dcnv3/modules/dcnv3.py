@@ -101,7 +101,9 @@ class DCNv3_pytorch(nn.Module):
             offset_scale=1.0,
             act_layer='GELU',
             norm_layer='LN',
-            center_feature_scale=False):
+            center_feature_scale=False,
+            remove_center=False,
+    ):
         """
         DCNv3 Module
         :param channels
@@ -137,6 +139,7 @@ class DCNv3_pytorch(nn.Module):
         self.group_channels = channels // group
         self.offset_scale = offset_scale
         self.center_feature_scale = center_feature_scale
+        self.remove_center = int(remove_center)
 
         self.dw_conv = nn.Sequential(
             nn.Conv2d(
@@ -154,10 +157,10 @@ class DCNv3_pytorch(nn.Module):
             build_act_layer(act_layer))
         self.offset = nn.Linear(
             channels,
-            group * kernel_size * kernel_size * 2)
+            group * (kernel_size * kernel_size - remove_center) * 2)
         self.mask = nn.Linear(
             channels,
-            group * kernel_size * kernel_size)
+            group * (kernel_size * kernel_size - remove_center))
         self.input_proj = nn.Linear(channels, channels)
         self.output_proj = nn.Linear(channels, channels)
         self._reset_parameters()
@@ -202,7 +205,7 @@ class DCNv3_pytorch(nn.Module):
             self.pad, self.pad,
             self.dilation, self.dilation,
             self.group, self.group_channels,
-            self.offset_scale)
+            self.offset_scale, self.remove_center)
         if self.center_feature_scale:
             center_feature_scale = self.center_feature_scale_module(
                 x1, self.center_feature_scale_proj_weight, self.center_feature_scale_proj_bias)
@@ -217,18 +220,20 @@ class DCNv3_pytorch(nn.Module):
 
 class DCNv3(nn.Module):
     def __init__(
-            self,
-            channels=64,
-            kernel_size=3,
-            dw_kernel_size=None,
-            stride=1,
-            pad=1,
-            dilation=1,
-            group=4,
-            offset_scale=1.0,
-            act_layer='GELU',
-            norm_layer='LN',
-            center_feature_scale=False):
+        self,
+        channels=64,
+        kernel_size=3,
+        dw_kernel_size=None,
+        stride=1,
+        pad=1,
+        dilation=1,
+        group=4,
+        offset_scale=1.0,
+        act_layer='GELU',
+        norm_layer='LN',
+        center_feature_scale=False,
+        remove_center=False,
+    ):
         """
         DCNv3 Module
         :param channels
@@ -264,7 +269,11 @@ class DCNv3(nn.Module):
         self.group_channels = channels // group
         self.offset_scale = offset_scale
         self.center_feature_scale = center_feature_scale
-        
+        self.remove_center = int(remove_center)
+
+        if self.remove_center and self.kernel_size % 2 == 0:
+            raise ValueError('remove_center is only compatible with odd kernel size.')
+
         self.dw_conv = nn.Sequential(
             nn.Conv2d(
                 channels,
@@ -281,10 +290,10 @@ class DCNv3(nn.Module):
             build_act_layer(act_layer))
         self.offset = nn.Linear(
             channels,
-            group * kernel_size * kernel_size * 2)
+            group * (kernel_size * kernel_size - remove_center) * 2)
         self.mask = nn.Linear(
             channels,
-            group * kernel_size * kernel_size)
+            group * (kernel_size * kernel_size - remove_center))
         self.input_proj = nn.Linear(channels, channels)
         self.output_proj = nn.Linear(channels, channels)
         self._reset_parameters()
@@ -321,8 +330,9 @@ class DCNv3(nn.Module):
         x1 = self.dw_conv(x1)
         offset = self.offset(x1)
         mask = self.mask(x1).reshape(N, H, W, self.group, -1)
-        mask = F.softmax(mask, -1).reshape(N, H, W, -1).type(dtype)
-
+        mask = F.softmax(mask, -1)
+        mask = mask.reshape(N, H, W, -1).type(dtype)
+        
         x = DCNv3Function.apply(
             x, offset, mask,
             self.kernel_size, self.kernel_size,
@@ -331,7 +341,8 @@ class DCNv3(nn.Module):
             self.dilation, self.dilation,
             self.group, self.group_channels,
             self.offset_scale,
-            256)
+            256,
+            self.remove_center)
         
         if self.center_feature_scale:
             center_feature_scale = self.center_feature_scale_module(

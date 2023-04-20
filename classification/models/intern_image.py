@@ -359,7 +359,9 @@ class InternImageLayer(nn.Module):
                  with_cp=False,
                  dw_kernel_size=None, # for InternImage-H/G
                  res_post_norm=False, # for InternImage-H/G
-                 center_feature_scale=False): # for InternImage-H/G
+                 center_feature_scale=False, # for InternImage-H/G
+                 remove_center=False,  # for InternImage-H/G
+                 ):
         super().__init__()
         self.channels = channels
         self.groups = groups
@@ -379,7 +381,9 @@ class InternImageLayer(nn.Module):
             act_layer=act_layer,
             norm_layer=norm_layer,
             dw_kernel_size=dw_kernel_size, # for InternImage-H/G
-            center_feature_scale=center_feature_scale) # for InternImage-H/G
+            center_feature_scale=center_feature_scale, # for InternImage-H/G
+            remove_center=remove_center,  # for InternImage-H/G
+        )
         self.drop_path = DropPath(drop_path) if drop_path > 0. \
             else nn.Identity()
         self.norm2 = build_norm_layer(channels, 'LN')
@@ -463,7 +467,9 @@ class InternImageBlock(nn.Module):
                  dw_kernel_size=None, # for InternImage-H/G
                  post_norm_block_ids=None, # for InternImage-H/G
                  res_post_norm=False, # for InternImage-H/G
-                 center_feature_scale=False): # for InternImage-H/G
+                 center_feature_scale=False, # for InternImage-H/G
+                 remove_center=False,  # for InternImage-H/G
+                 ):
         super().__init__()
         self.channels = channels
         self.depth = depth
@@ -487,8 +493,9 @@ class InternImageBlock(nn.Module):
                 with_cp=with_cp,
                 dw_kernel_size=dw_kernel_size, # for InternImage-H/G
                 res_post_norm=res_post_norm, # for InternImage-H/G
-                center_feature_scale=center_feature_scale # for InternImage-H/G
-            ) for i in range(depth)
+                center_feature_scale=center_feature_scale, # for InternImage-H/G
+                remove_center = remove_center,  # for InternImage-H/G
+        ) for i in range(depth)
         ])
         if not self.post_norm or center_feature_scale:
             self.norm = build_norm_layer(channels, 'LN')
@@ -567,6 +574,7 @@ class InternImage(nn.Module):
                  level2_post_norm_block_ids=None, # for InternImage-H/G
                  res_post_norm=False, # for InternImage-H/G
                  center_feature_scale=False, # for InternImage-H/G
+                 remove_center=False, # for InternImage-H/G
                  **kwargs):
         super().__init__()
         self.core_op = core_op
@@ -579,6 +587,8 @@ class InternImage(nn.Module):
         self.mlp_ratio = mlp_ratio
         self.use_clip_projector = use_clip_projector
         self.level2_post_norm_block_ids = level2_post_norm_block_ids
+        self.remove_center = remove_center
+
         print(f'using core type: {core_op}')
         print(f'using activation layer: {act_layer}')
         print(f'using main norm layer: {norm_layer}')
@@ -586,6 +596,7 @@ class InternImage(nn.Module):
         print(f"level2_post_norm: {level2_post_norm}")
         print(f"level2_post_norm_block_ids: {level2_post_norm_block_ids}")
         print(f"res_post_norm: {res_post_norm}")
+        print(f"remove_center: {remove_center}")
 
         in_chans = 3
         self.patch_embed = StemLayer(in_chans=in_chans,
@@ -623,7 +634,8 @@ class InternImage(nn.Module):
                 dw_kernel_size=dw_kernel_size,  # for InternImage-H/G
                 post_norm_block_ids=post_norm_block_ids, # for InternImage-H/G
                 res_post_norm=res_post_norm, # for InternImage-H/G
-                center_feature_scale=center_feature_scale # for InternImage-H/G
+                center_feature_scale=center_feature_scale, # for InternImage-H/G
+                remove_center=remove_center,  # for InternImage-H/G
             )
             self.levels.append(level)
         

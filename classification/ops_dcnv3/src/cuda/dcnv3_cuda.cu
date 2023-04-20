@@ -25,7 +25,7 @@ at::Tensor dcnv3_cuda_forward(const at::Tensor &input, const at::Tensor &offset,
                               const int pad_w, const int dilation_h,
                               const int dilation_w, const int group,
                               const int group_channels,
-                              const float offset_scale, const int im2col_step) {
+                              const float offset_scale, const int im2col_step, const int remove_center) {
     AT_ASSERTM(input.is_contiguous(), "input tensor has to be contiguous");
     AT_ASSERTM(offset.is_contiguous(), "offset tensor has to be contiguous");
     AT_ASSERTM(mask.is_contiguous(), "mask tensor has to be contiguous");
@@ -61,8 +61,8 @@ at::Tensor dcnv3_cuda_forward(const at::Tensor &input, const at::Tensor &offset,
                                  width_out, group * group_channels});
     auto per_input_size = height_in * width_in * group * group_channels;
     auto per_offset_size =
-        height_out * width_out * group * kernel_h * kernel_w * 2;
-    auto per_mask_size = height_out * width_out * group * kernel_h * kernel_w;
+        height_out * width_out * group * (kernel_h * kernel_w - remove_center) * 2;
+    auto per_mask_size = height_out * width_out * group * (kernel_h * kernel_w - remove_center);
     for (int n = 0; n < batch / im2col_step_; ++n) {
         auto columns = output_n.select(0, n);
         // AT_DISPATCH_FLOATING_TYPES(
@@ -77,7 +77,7 @@ at::Tensor dcnv3_cuda_forward(const at::Tensor &input, const at::Tensor &offset,
                     columns.data<scalar_t>(), kernel_h, kernel_w, stride_h,
                     stride_w, pad_h, pad_w, dilation_h, dilation_w, group,
                     group_channels, batch_n, height_in, width_in, height_out,
-                    width_out, offset_scale);
+                    width_out, offset_scale, remove_center);
             }));
     }
 
@@ -91,7 +91,7 @@ dcnv3_cuda_backward(const at::Tensor &input, const at::Tensor &offset,
                     const int pad_h, const int pad_w, const int dilation_h,
                     const int dilation_w, const int group,
                     const int group_channels, const float offset_scale,
-                    const at::Tensor &grad_output, const int im2col_step) {
+                    const at::Tensor &grad_output, const int im2col_step, const int remove_center) {
 
     AT_ASSERTM(input.is_contiguous(), "input tensor has to be contiguous");
     AT_ASSERTM(offset.is_contiguous(), "offset tensor has to be contiguous");
@@ -135,8 +135,8 @@ dcnv3_cuda_backward(const at::Tensor &input, const at::Tensor &offset,
     const int batch_n = im2col_step_;
     auto per_input_size = height_in * width_in * group * group_channels;
     auto per_offset_size =
-        height_out * width_out * group * kernel_h * kernel_w * 2;
-    auto per_mask_size = height_out * width_out * group * kernel_h * kernel_w;
+        height_out * width_out * group * (kernel_h * kernel_w - remove_center) * 2;
+    auto per_mask_size = height_out * width_out * group * (kernel_h * kernel_w - remove_center);
     auto grad_output_n =
         grad_output.view({batch / im2col_step_, batch_n, height_out * width_out,
                           group, group_channels});
@@ -155,7 +155,7 @@ dcnv3_cuda_backward(const at::Tensor &input, const at::Tensor &offset,
                     mask.data<scalar_t>() + n * im2col_step_ * per_mask_size,
                     kernel_h, kernel_w, stride_h, stride_w, pad_h, pad_w,
                     dilation_h, dilation_w, group, group_channels, batch_n,
-                    height_in, width_in, height_out, width_out, offset_scale,
+                    height_in, width_in, height_out, width_out, offset_scale, remove_center,
                     grad_input.data<opmath_t>() +
                         n * im2col_step_ * per_input_size,
                     grad_offset.data<opmath_t>() +

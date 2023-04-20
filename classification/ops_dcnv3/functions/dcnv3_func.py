@@ -15,6 +15,9 @@ from torch.autograd.function import once_differentiable
 from torch.cuda.amp import custom_bwd, custom_fwd
 import DCNv3
 
+import pkg_resources
+dcn_version = float(pkg_resources.get_distribution('DCNv3').version)
+
 
 class DCNv3Function(Function):
     @staticmethod
@@ -23,7 +26,7 @@ class DCNv3Function(Function):
             ctx, input, offset, mask,
             kernel_h, kernel_w, stride_h, stride_w,
             pad_h, pad_w, dilation_h, dilation_w,
-            group, group_channels, offset_scale, im2col_step):
+            group, group_channels, offset_scale, im2col_step, remove_center):
         ctx.kernel_h = kernel_h
         ctx.kernel_w = kernel_w
         ctx.stride_h = stride_h
@@ -36,11 +39,18 @@ class DCNv3Function(Function):
         ctx.group_channels = group_channels
         ctx.offset_scale = offset_scale
         ctx.im2col_step = im2col_step
-        output = DCNv3.dcnv3_forward(
+        ctx.remove_center = remove_center
+
+        args = [
             input, offset, mask, kernel_h,
             kernel_w, stride_h, stride_w, pad_h,
             pad_w, dilation_h, dilation_w, group,
-            group_channels, offset_scale, ctx.im2col_step)
+            group_channels, offset_scale, ctx.im2col_step
+        ]
+        if remove_center or dcn_version > 1.0:
+            args.append(remove_center)
+
+        output = DCNv3.dcnv3_forward(*args)
         ctx.save_for_backward(input, offset, mask)
 
         return output
@@ -50,20 +60,26 @@ class DCNv3Function(Function):
     @custom_bwd
     def backward(ctx, grad_output):
         input, offset, mask = ctx.saved_tensors
+
+        args = [
+            input, offset, mask, ctx.kernel_h,
+            ctx.kernel_w, ctx.stride_h, ctx.stride_w, ctx.pad_h,
+            ctx.pad_w, ctx.dilation_h, ctx.dilation_w, ctx.group,
+            ctx.group_channels, ctx.offset_scale, grad_output.contiguous(), ctx.im2col_step
+        ]
+        if ctx.remove_center or dcn_version > 1.0:
+            args.append(ctx.remove_center)
+
         grad_input, grad_offset, grad_mask = \
-            DCNv3.dcnv3_backward(
-                input, offset, mask, ctx.kernel_h,
-                ctx.kernel_w, ctx.stride_h, ctx.stride_w, ctx.pad_h,
-                ctx.pad_w, ctx.dilation_h, ctx.dilation_w, ctx.group,
-                ctx.group_channels, ctx.offset_scale, grad_output.contiguous(), ctx.im2col_step)
+            DCNv3.dcnv3_backward(*args)
 
         return grad_input, grad_offset, grad_mask, \
-            None, None, None, None, None, None, None, None, None, None, None, None
+            None, None, None, None, None, None, None, None, None, None, None, None, None
 
     @staticmethod
     def symbolic(g, input, offset, mask, kernel_h, kernel_w, stride_h,
                  stride_w, pad_h, pad_w, dilation_h, dilation_w, group,
-                 group_channels, offset_scale, im2col_step):
+                 group_channels, offset_scale, im2col_step, remove_center):
         """Symbolic function for mmdeploy::DCNv3.
 
         Returns:
@@ -86,6 +102,7 @@ class DCNv3Function(Function):
             group_channels_i=int(group_channels),
             offset_scale_f=float(offset_scale),
             im2col_step_i=int(im2col_step),
+            remove_center=int(remove_center),
         )
 
 
@@ -126,14 +143,14 @@ def _generate_dilation_grids(spatial_shapes, kernel_h, kernel_w, dilation_h, dil
     x, y = torch.meshgrid(
         torch.linspace(
             -((dilation_w * (kernel_w - 1)) // 2),
-            -((dilation_w * (kernel_w - 1)) // 2) +
-            (kernel_w - 1) * dilation_w, kernel_w,
+            -((dilation_w * (kernel_w - 1)) // 2) + (kernel_w - 1) * dilation_w,
+            kernel_w,
             dtype=torch.float32,
             device=device),
         torch.linspace(
             -((dilation_h * (kernel_h - 1)) // 2),
-            -((dilation_h * (kernel_h - 1)) // 2) +
-            (kernel_h - 1) * dilation_h, kernel_h,
+            -((dilation_h * (kernel_h - 1)) // 2) + (kernel_h - 1) * dilation_h,
+            kernel_h,
             dtype=torch.float32,
             device=device))
 
@@ -145,13 +162,24 @@ def _generate_dilation_grids(spatial_shapes, kernel_h, kernel_w, dilation_h, dil
     return grid
 
 
+def remove_center_sampling_locations(sampling_locations, kernel_w, kernel_h):
+    idx = list(range(sampling_locations.shape[-2]))
+    C = (kernel_w * kernel_h - 1)//2
+    idx = [i for i in idx if i != C and (i-C) % (C*2+1) != 0]
+    sampling_locations = sampling_locations[:,:,:,idx, :]
+    return sampling_locations
+
 def dcnv3_core_pytorch(
         input, offset, mask, kernel_h,
         kernel_w, stride_h, stride_w, pad_h,
         pad_w, dilation_h, dilation_w, group,
-        group_channels, offset_scale):
+        group_channels, offset_scale, remove_center):
     # for debug and test only,
     # need to use cuda version instead
+
+    if remove_center and (kernel_h % 2 == 0 or kernel_w % 2 == 0 or kernel_w != kernel_h):
+        raise ValueError('remove_center is only compatible with square odd kernel size.')
+
     input = F.pad(
         input,
         [0, 0, pad_h, pad_h, pad_w, pad_w])
@@ -163,12 +191,15 @@ def dcnv3_core_pytorch(
     grid = _generate_dilation_grids(
         input.shape, kernel_h, kernel_w, dilation_h, dilation_w, group, input.device)
     spatial_norm = torch.tensor([W_in, H_in]).reshape(1, 1, 1, 2).\
-        repeat(1, 1, 1, group*kernel_h*kernel_w).to(input.device)
+        repeat(1, 1, 1, group*(kernel_h*kernel_w-remove_center)).to(input.device)
 
-    sampling_locations = (ref + grid * offset_scale).repeat(N_, 1, 1, 1, 1).flatten(3, 4) + \
-        offset * offset_scale / spatial_norm
+    sampling_locations = (ref + grid * offset_scale).repeat(N_, 1, 1, 1, 1)
+    if remove_center:
+        sampling_locations = remove_center_sampling_locations(sampling_locations, kernel_w=kernel_w, kernel_h=kernel_h)
+    sampling_locations = sampling_locations.flatten(3, 4)
+    sampling_locations = sampling_locations + offset * offset_scale / spatial_norm
 
-    P_ = kernel_h * kernel_w
+    P_ = kernel_h * kernel_w - remove_center
     sampling_grids = 2 * sampling_locations - 1
     # N_, H_in, W_in, group*group_channels -> N_, H_in*W_in, group*group_channels -> N_, group*group_channels, H_in*W_in -> N_*group, group_channels, H_in, W_in
     input_ = input.view(N_, H_in*W_in, group*group_channels).transpose(1, 2).\

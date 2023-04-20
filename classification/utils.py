@@ -66,7 +66,27 @@ def load_checkpoint(config, model, optimizer, lr_scheduler, scaler, logger):
         checkpoint = torch.load(config.MODEL.RESUME, map_location='cpu')
 
     print('resuming model')
-    msg = model.load_state_dict(checkpoint['model'], strict=False)
+
+    model_checkpoint = checkpoint['model']
+    if config.MODEL.INTERN_IMAGE.REMOVE_CENTER:
+        for k, v in model_checkpoint.items():
+            if 'dcn.mask.bias' in k:
+                idx = list(range(v.shape[0]))
+                idx = [i for i in idx if i != 4 and (i - 4) % 9 != 0]
+                model_checkpoint[k] = v[idx]
+            if 'dcn.offset.bias' in k:
+                idx = list(range(v.shape[0]))
+                idx = [i for i in idx if i != 8 and (i - 8) % 18 != 0 and i != 9 and (i - 9) % 18 != 0]
+                model_checkpoint[k] = v[idx]
+            if 'dcn.mask.weight' in k:
+                idx = list(range(v.shape[0]))
+                idx = [i for i in idx if i != 4 and (i - 4) % 9 != 0]
+                model_checkpoint[k] = v[idx, :]
+            if 'dcn.offset.weight' in k:
+                idx = list(range(v.shape[0]))
+                idx = [i for i in idx if i != 8 and (i - 8) % 18 != 0 and i != 9 and (i - 9) % 18 != 0]
+                model_checkpoint[k] = v[idx, :]
+    msg = model.load_state_dict(model_checkpoint, strict=False)
     logger.info(msg)
     max_accuracy = 0.0
     if not config.EVAL_MODE and 'optimizer' in checkpoint and 'lr_scheduler' in checkpoint and 'epoch' in checkpoint:
@@ -238,6 +258,25 @@ def load_pretrained(config, model, logger):
                 state_dict['head.weight'] = state_dict['head.weight'][
                     map22kto1k, :]
                 state_dict['head.bias'] = state_dict['head.bias'][map22kto1k]
+
+    if config.MODEL.INTERN_IMAGE.REMOVE_CENTER:
+        for k, v in state_dict.items():
+            if 'dcn.mask.bias' in k:
+                idx = list(range(v.shape[0]))
+                idx = [i for i in idx if i != 4 and (i - 4) % 9 != 0]
+                state_dict[k] = v[idx]
+            if 'dcn.offset.bias' in k:
+                idx = list(range(v.shape[0]))
+                idx = [i for i in idx if i != 8 and (i - 8) % 18 != 0 and i != 9 and (i - 9) % 18 != 0]
+                state_dict[k] = v[idx]
+            if 'dcn.mask.weight' in k:
+                idx = list(range(v.shape[0]))
+                idx = [i for i in idx if i != 4 and (i - 4) % 9 != 0]
+                state_dict[k] = v[idx, :]
+            if 'dcn.offset.weight' in k:
+                idx = list(range(v.shape[0]))
+                idx = [i for i in idx if i != 8 and (i - 8) % 18 != 0 and i != 9 and (i - 9) % 18 != 0]
+                state_dict[k] = v[idx, :]
 
     msg = model.load_state_dict(state_dict, strict=False)
     logger.warning(msg)
