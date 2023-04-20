@@ -3,7 +3,7 @@
 We improve our baseline with a more powerful image backbone: **InaternImage**, which shows its excellent ability within a series of leaderboards and benchmarks, such as *COCO* and *nuScenes*.
 
 
-#### 1. Openmmlab packages requirements
+#### openmmlab packages requirements
 ```bash
 torch==1.12 # recommend
 mmcv-full>=1.5.0
@@ -14,13 +14,13 @@ numpy==1.22
 mmdet3d==0.18.1
 ```
 
-### 2. Install DCNv3 for InternImage
+### Install DCNv3 for InternImage
 ```bash
 cd projects/mmdet3d_plugin/bevformer/backbones/ops_dcnv3
 bash make.sh # requires torch>=1.10
 ```
 
-### 3. Train with InternImage-Small
+### Train with InternImage-Small
 
 ```bash
 ./tools/dist_train.sh projects/configs/bevformer/bevformer_intern-s_occ.py 8 # consumes less than 14G memory
