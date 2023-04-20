@@ -16,12 +16,12 @@ from mmdet.utils import get_root_logger
 
 
 def get_num_layer_for_swin(var_name, num_max_layer, depths):
-    if var_name.startswith("backbone.patch_embed"):
+    if var_name.startswith("img_backbone.patch_embed"):
         return 0
     elif "level_embeds" in var_name:
         return 0
-    elif var_name.startswith("backbone.layers") or var_name.startswith(
-            "backbone.levels"):
+    elif var_name.startswith("img_backbone.layers") or var_name.startswith(
+            "img_backbone.levels"):
         if var_name.split('.')[3] not in ['downsample', 'norm']:
             stage_id = int(var_name.split('.')[2])
             layer_id = int(var_name.split('.')[4])
