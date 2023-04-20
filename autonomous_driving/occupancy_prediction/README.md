@@ -1,13 +1,32 @@
 
 
 
+<div id="top" align="center">
 
-# InternImage-based Baseline for Occupancy Prediction
+# CVPR 2023 3D Occupancy Prediction Challenge
+**The world's First 3D Occupancy Benchmark for Scene Perception in Autonomous Driving.**
+
+
+
+
+
+<a href="#devkit">
+  <img alt="devkit: v0.1.0" src="https://img.shields.io/badge/devkit-v0.1.0-blueviolet"/>
+</a>
+<a href="#license">
+  <img alt="License: Apache2.0" src="https://img.shields.io/badge/license-Apache%202.0-blue.svg"/>
+</a>
+
+<img src="./figs/occupanc_1.gif" width="696px">
+
+</div>
+
+## InternImage-based Baseline for CVPR23 Occupancy Prediction Challenge!!!!
 
 We improve our baseline with a more powerful image backbone: **InaternImage**, which shows its excellent ability within a series of leaderboards and benchmarks, such as *COCO* and *nuScenes*.
 
 
-#### 1. Openmmlab packages requirements
+#### openmmlab packages requirements
 ```bash
 torch==1.12 # recommend
 mmcv-full>=1.5.0
@@ -17,13 +36,13 @@ timm
 numpy==1.22
 ```
 
-### 2. Install DCNv3 for InternImage
+### Install DCNv3 for InternImage
 ```bash
 cd projects/mmdet3d_plugin/bevformer/backbones/ops_dcnv3
 bash make.sh # requires torch>=1.10
 ```
 
-### 3. Train with InternImage-Small
+### Train with InternImage-Small
 
 ```bash
 ./tools/dist_train.sh projects/configs/bevformer/bevformer_intern-s_occ.py 8 # consumes less than 14G memory
@@ -32,8 +51,13 @@ bash make.sh # requires torch>=1.10
 Notes: InatenImage provides abundant pre-trained model weights that can be used!!!
 
 
+### Performance compared to baseline
 
-# CVPR2023 Occupancy Prediction Challenge Information
+model name|weight| mIoU | others | barrier | bicycle | bus | car | construction_vehicle | motorcycle | pedestrian | traffic_cone | trailer |  truck | driveable_surface | other_flat | sidewalk | terrain | manmade | vegetation | 
+----|:----------:| :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :----------------------: | :---: | :------: | :------: |
+bevformer_intern-s_occ|[Google Drive](https://drive.google.com/file/d/1LV9K8hrskKf51xY1wbqTKzK7WZmVXEV_/view?usp=sharing)| 25.11 | 6.93 | 35.57 | 10.40 | 35.97 | 41.23 | 13.72 | 20.30 | 21.10 | 18.34 | 19.18 | 28.64 | 49.82 | 30.74 | 31.00 | 27.44 | 19.29 | 17.29 | 
+bevformer_base_occ|[Google Drive](https://drive.google.com/file/d/1NyoiosafAmne1qiABeNOPXR-P-y0i7_I/view?usp=share_link)| 23.67 | 5.03 | 38.79 | 9.98 | 34.41 | 41.09 | 13.24 | 16.50 | 18.15 | 17.83 | 18.66 | 27.70 | 48.95 | 27.73 | 29.08 | 25.38 | 15.41 | 14.46 | 
+
 ## Table of Contents
 - [CVPR 2023 Occupancy Prediction Challenge](#cvpr-2023-occupancy-prediction-challenge)
   - [Introduction](#introduction)
