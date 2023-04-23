@@ -2,6 +2,17 @@
 
 This folder contains the implementation of the InternImage for image classification.
 
+<!-- TOC -->
+* [Install](#install)
+* [Data Preparation](#data-preparation)
+* [Evaluation](#evaluation)
+* [Training from Scratch on ImageNet-1K](#training-from-scratch-on-imagenet-1k)
+* [Manage Jobs with Slurm.](#manage-jobs-with-slurm)
+* [Training with Deepspeed](#training-with-deepspeed)
+* [Extracting Intermediate Features](#extracting-intermediate-features)
+* [Export](#export)
+<!-- TOC -->
+
 ## Usage
 
 ### Install
@@ -258,6 +269,18 @@ convert_zero_checkpoint_to_fp32_state_dict(checkpoint_dir, 'best.pth', tag='best
 Then, you could use `best.pth` as usual, e.g., `model.load_state_dict(torch.load('best.pth'))`
 
 > Due to the lack of computational resources, the deepspeed training scripts are currently only verified for the first few epochs. Please fire an issue if you have problems for reproducing the whole training.
+
+### Extracting Intermediate Features
+
+To extract the features of an intermediate layer, you could use `extract_feature.py`. 
+
+For example, extract features of `b.png` from layers `patch_embed` and `levels.0.downsample` and save them to 'b.pth'.
+
+```bash
+python extract_feature.py --cfg configs/internimage_t_1k_224.yaml --img b.png --keys patch_embed levels.0.downsample --save --resume internimage_t_1k_224.pth
+```
+
+
 
 ### Export
 
