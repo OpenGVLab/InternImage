@@ -47,6 +47,7 @@ ADE20K, outperforming previous models by a large margin.
 - [ ] Models/APIs for other downstream tasks
 - [ ] Support [CVPR 2023 Workshop on End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23), see [here](https://github.com/OpenGVLab/InternImage/tree/master/autonomous_driving)
 - [ ] Support Segment Anything
+- [x] Support extracting intermediate features, see [here](classification/extract_feature.py)
 - [x] Low-cost training with [DeepSpeed](https://github.com/microsoft/DeepSpeed), see [here](https://github.com/OpenGVLab/InternImage/tree/master/classification)
 - [x] Compiling-free .whl package of DCNv3 operator, see [here](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
 - [x] InternImage-H(1B)/G(3B)

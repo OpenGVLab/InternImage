@@ -45,6 +45,7 @@
 - [ ] 各类下游任务
 - [ ] 支持[CVPR 2023 Workshop on End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23)，[详见](https://github.com/OpenGVLab/InternImage/tree/master/autonomous_driving)
 - [ ] 支持Segment Anything
+- [x] 支持提取模型中间层特征，[详见](classification/extract_feature.py)
 - [x] 支持基于[DeepSpeed](https://github.com/microsoft/DeepSpeed)的低成本训练，[详见](https://github.com/OpenGVLab/InternImage/tree/master/classification)
 - [x] DCNv3算子预编译.whl包，[详见](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
 - [x] InternImage-H(1B)/G(3B)
