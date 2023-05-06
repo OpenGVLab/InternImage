@@ -42,13 +42,14 @@ The official implementation of
 - [M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining): one-stage pre-training paradigm
 
 ### Autonomous Driving
-- [BEVFormer](https://github.com/fundamentalvision/BEVFormer): a Cutting-edge Baseline for Camera-based 3D Detection
+- [BEVFormer](https://github.com/fundamentalvision/BEVFormer): A Cutting-edge Baseline for Camera-based 3D Detection
+- [BEVFormer v2](https://arxiv.org/abs/2211.10439):  Adapting Modern Image Backbones to Bird's-Eye-View Recognition via Perspective Supervision
 
-### Application in Challenge
+## Application in Challenge
 - [2022 Waymo 3D Camera-Only Detection Challenge](https://waymo.com/open/challenges/2022/3d-camera-only-detection/): BEVFormer++ Ranks 1st
 based on InternImage
-- [nuScenes 3D detection task](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Camera): BEVFormer v2 achieves SOTA performance of 63.4 NDS on nuScenes Camera Only.
-- [CVPR 2023 Workshop End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23): InternImage supports the baseline of the [3D Occupancy Prediction Challenge] (https://opendrivelab.com/AD23Challenge.html#Track3) and [Open OpenLane Topology Challenge](https://opendrivelab.com/AD23Challenge.html#Track1)
+- [nuScenes 3D detection task](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Camera): BEVFormer v2 achieves SOTA performance of 64.8 NDS on nuScenes Camera Only.
+- [CVPR 2023 Workshop End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23): InternImage supports the baseline of the [3D Occupancy Prediction Challenge](https://opendrivelab.com/AD23Challenge.html#Track3) and [OpenLane Topology Challenge](https://opendrivelab.com/AD23Challenge.html#Track1)
 
 
 ## News
