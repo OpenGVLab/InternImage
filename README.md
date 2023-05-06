@@ -36,6 +36,21 @@ The official implementation of
 - 🏆 **Achieved `90.1% Top1` accuracy in ImageNet, the most accurate among open-source models**
 - 🏆 **Achieved `65.5 mAP` on the COCO benchmark dataset for object detection, the only model that exceeded `65.0 mAP`**
 
+## Related Projects
+### Foundation Models
+- [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver): Image-Text Retrieval, Image Captioning, and Visual Question Answering
+- [M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining): one-stage pre-training paradigm
+
+### Autonomous Driving
+- [BEVFormer](https://github.com/fundamentalvision/BEVFormer): a Cutting-edge Baseline for Camera-based 3D Detection
+
+### Application in Challenge
+- [2022 Waymo 3D Camera-Only Detection Challenge](https://waymo.com/open/challenges/2022/3d-camera-only-detection/): BEVFormer++ Ranks 1st
+based on InternImage
+- [nuScenes 3D detection task](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Camera): BEVFormer v2 achieves SOTA performance of 63.4 NDS on nuScenes Camera Only.
+- [CVPR 2023 Workshop End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23): InternImage supports the baseline of the [3D Occupancy Prediction Challenge] (https://opendrivelab.com/AD23Challenge.html#Track3) and [Open OpenLane Topology Challenge](https://opendrivelab.com/AD23Challenge.html#Track1)
+
+
 ## News
 - `Mar 14, 2023`: 🚀 "INTERN-2.5" is released！
 - `Feb 28, 2023`: 🚀 InternImage is accepted to CVPR 2023!
@@ -266,11 +281,6 @@ For more details on building custom ops, please refering to [this document](http
 
 </details>
 
-
-## Related Projects
-- Pre-training: [M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining)
-- Image-Text Retrieval, Image Captioning, and Visual Question Answering: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
-- 3D Perception: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
 
 ## Citations
