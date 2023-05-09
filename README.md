@@ -36,6 +36,22 @@ The official implementation of
 - 🏆 **Achieved `90.1% Top1` accuracy in ImageNet, the most accurate among open-source models**
 - 🏆 **Achieved `65.5 mAP` on the COCO benchmark dataset for object detection, the only model that exceeded `65.0 mAP`**
 
+## Related Projects
+### Foundation Models
+- [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver): A Pre-training unified architecture for generic perception for zero-shot and few-shot tasks
+- [Uni-Perceiver v2](https://arxiv.org/abs/2211.09808): A generalist model for large-scale vision and vision-language tasks
+- [M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining): One-stage pre-training paradigm via maximizing multi-modal mutual information
+
+### Autonomous Driving
+- [BEVFormer](https://github.com/fundamentalvision/BEVFormer): A cutting-edge baseline for camera-based 3D detection
+- [BEVFormer v2](https://arxiv.org/abs/2211.10439):  Adapting modern image backbones to Bird's-Eye-View recognition via perspective supervision
+
+## Application in Challenges
+- [2022 Waymo 3D Camera-Only Detection Challenge](https://waymo.com/open/challenges/2022/3d-camera-only-detection/): BEVFormer++ **Ranks 1st** based on InternImage
+- [nuScenes 3D detection task](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Camera): BEVFormer v2 achieves SOTA performance of 64.8 NDS on nuScenes Camera Only
+- [CVPR 2023 Workshop End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23): InternImage supports the baseline of the [3D Occupancy Prediction Challenge](https://opendrivelab.com/AD23Challenge.html#Track3) and [OpenLane Topology Challenge](https://opendrivelab.com/AD23Challenge.html#Track1)
+
+
 ## News
 - `Mar 14, 2023`: 🚀 "INTERN-2.5" is released！
 - `Feb 28, 2023`: 🚀 InternImage is accepted to CVPR 2023!
@@ -266,11 +282,6 @@ For more details on building custom ops, please refering to [this document](http
 
 </details>
 
-
-## Related Projects
-- Pre-training: [M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining)
-- Image-Text Retrieval, Image Captioning, and Visual Question Answering: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
-- 3D Perception: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
 
 
 ## Citations

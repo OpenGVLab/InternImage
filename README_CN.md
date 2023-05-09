@@ -34,6 +34,23 @@
 - 🏆 **图像分类标杆数据集ImageNet `90.1% Top1`准确率，开源模型中准确度最高**
 - 🏆 **物体检测标杆数据集COCO `65.5 mAP`，唯一超过`65 mAP`的模型**
 
+## 相关项目
+### 多模态基模型
+- [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver): 通用感知任务预训练统一框架, 可直接处理zero-shot和few-shot任务
+- [Uni-Perceiver v2](https://arxiv.org/abs/2211.09808): 
+用于处理图像/图文任务的通用模型
+- [M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining): 基于最大化输入和目标的互信息的单阶段预训练范式
+
+### 自动驾驶
+- [BEVFormer](https://github.com/fundamentalvision/BEVFormer): 基于BEV的新一代纯视觉环视感知方案
+- [BEVFormer v2](https://arxiv.org/abs/2211.10439): 融合BEV感知和透视图检测的两阶段检测器
+## Application in Challenge
+- [2022 Waymo 3D Camera-Only Detection Challenge](https://waymo.com/open/challenges/2022/3d-camera-only-detection/): 基于书生2.5 BEVFormer++取得赛道冠军
+- [nuScenes 3D detection task](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Camera): BEVFormer v2 在nuScenes纯视觉检测任务中取得SOTA性能(64.8 NDS)
+- [CVPR 2023 Workshop End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23): InternImage作为baseline支持了比赛 
+[3D Occupancy Prediction Challenge](https://opendrivelab.com/AD23Challenge.html#Track3)和[OpenLane Topology Challenge](https://opendrivelab.com/AD23Challenge.html#Track1)
+
+
 ## 最新进展
 - 2023年3月14日: 🚀 “书生2.5”发布！
 - 2023年2月28日: 🚀 InternImage 被CVPR 2023接收!
@@ -278,13 +295,6 @@ pip install -e .
 </div>
 
 </details>
-
-
-## 相关开源项目
-- 预训练：[M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining)
-- 图文检索、图像描述和视觉问答: [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver)
-- 3D感知: [BEVFormer](https://github.com/fundamentalvision/BEVFormer)
-
 
 ## 引用
 
