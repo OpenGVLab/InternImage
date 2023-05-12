@@ -17,7 +17,7 @@ timm
 ### 2. Install DCNv3 for InternImage
 ```bash
 cd plugin/mmdet3d/baseline/models/backbones/ops_dcnv3
-bash make.sh # requires torch>=1.10
+bash make.sh
 ```
 
 ### 3. Train with InternImage-Small
