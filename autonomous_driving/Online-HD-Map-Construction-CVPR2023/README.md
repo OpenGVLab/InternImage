@@ -3,7 +3,6 @@
 # Online HD Map Construction Challenge For Autonomous Driving
  </div>
 
-We train a fast version of vectormapnet_intern .
 
 
 If you need detaild information about the challenge, please refer to https://github.com/Tsinghua-MARS-Lab/Online-HD-Map-Construction-CVPR2023/tree/master
@@ -37,10 +36,10 @@ Notes: InatenImage provides abundant pre-trained model weights that can be used!
 
 ### 4. Performance compared to baseline
 
-model name|weight| Epoch|$\mathrm{mAP}$ | $\mathrm{AP}_{pc}$ | $\mathrm{AP}_{div}$ | $\mathrm{AP}_{bound}$ | 
+model name|weight|$\mathrm{mAP}$ | $\mathrm{AP}_{pc}$ | $\mathrm{AP}_{div}$ | $\mathrm{AP}_{bound}$ | 
 ----|:----------:| :--: |:--: | :--: | :--: | :--: | 
-vectormapnet_intern|[Checkpoint](https://github.com/OpenGVLab/InternImage/releases/download/track_model/vectormapnet_internimage.pth)| 24 | 42.63 | 33.51 | 54.14 | 40.26 | 
-vectormapnet_base|[Google Drive](https://drive.google.com/file/d/16D1CMinwA8PG1sd9PV9_WtHzcBohvO-D/view)| 120 | 42.79 | 37.22 | 50.47	 | 40.68 | 
+vectormapnet_intern|[Checkpoint](https://github.com/OpenGVLab/InternImage/releases/download/track_model/vectormapnet_internimage.pth) | 49.35 | 45.05 | 56.78 | 46.22 | 
+vectormapnet_base|[Google Drive](https://drive.google.com/file/d/16D1CMinwA8PG1sd9PV9_WtHzcBohvO-D/view) | 42.79 | 37.22 | 50.47	 | 40.68 | 
 
 
 

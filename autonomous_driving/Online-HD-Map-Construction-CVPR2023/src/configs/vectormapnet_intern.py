@@ -32,8 +32,6 @@ plugin_dir = 'src/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 
-
-
 img_size = (int(128*2), int((16/9*128)*2))
 
 # category configs
@@ -155,7 +153,7 @@ model = dict(
                             feedforward_channels=head_dim*2,
                             num_fcs=2,
                             ffn_drop=0.1,
-                            act_cfg=dict(type='ReLU', inplace=True),        
+                            act_cfg=dict(type='ReLU', inplace=True),
                         ),
                         feedforward_channels=head_dim*2,
                         ffn_dropout=0.1,
@@ -213,7 +211,7 @@ model = dict(
         max_num_vertices=80,
         top_p_gen_model=0.9,
         sync_cls_avg_factor=True,
-        ),  
+        ),
     with_auxiliary_head=False,
     model_name='VectorMapNet'
 )
@@ -265,8 +263,8 @@ data = dict(
     workers_per_gpu=5,
     train=dict(
         type='AV2Dataset',
-        ann_file='path/train_annotations.json',
-        root_path='path',
+        ann_file='/mnt/petrelfs/yeshenglong/Dataset/track_data/train_annotations.json',
+        root_path='/mnt/petrelfs/yeshenglong/Dataset/track_data/train',
         meta=meta,
         roi_size=roi_size,
         cat2id=cat2id,
@@ -275,8 +273,8 @@ data = dict(
     ),
     val=dict(
         type='AV2Dataset',
-        ann_file='path/val_annotations.json',
-        root_path='path',
+        ann_file='/mnt/petrelfs/yeshenglong/Dataset/track_data/val_annotations.json',
+        root_path='/mnt/petrelfs/yeshenglong/Dataset/track_data/val',
         meta=meta,
         roi_size=roi_size,
         cat2id=cat2id,
@@ -286,8 +284,8 @@ data = dict(
     ),
     test=dict(
         type='AV2Dataset',
-        ann_file='path/test_annotations.json',
-        root_path='path',
+        ann_file='/mnt/petrelfs/yeshenglong/Dataset/track_data/test_annotations.json',
+        root_path='/mnt/petrelfs/yeshenglong/Dataset/track_data/test',
         meta=meta,
         roi_size=roi_size,
         cat2id=cat2id,
@@ -300,31 +298,36 @@ data = dict(
 # optimizer
 optimizer = dict(
     type='AdamW',
-    lr=2e-4,
+    lr=1e-3,
     paramwise_cfg=dict(
-        custom_keys={
-            'img_backbone': dict(lr_mult=0.1),
-        }),
+    custom_keys={
+        'backbone': dict(lr_mult=0.1),
+    }),
     weight_decay=0.01)
+optimizer_config = dict(grad_clip=dict(max_norm=3.5, norm_type=2))
 
-optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
-# learning policy
+# learning policy & schedule
 lr_config = dict(
-    policy='CosineAnnealing',
+    policy='step',
     warmup='linear',
-    warmup_iters=500,
-    warmup_ratio=1.0 / 3,
-    min_lr_ratio=1e-3)
-total_epochs = 24
-evaluation = dict(interval=1, pipeline=test_pipeline)
+    warmup_iters=400,
+    warmup_ratio=0.1,
+    step=[100, 120])
+checkpoint_config = dict(interval=5)
+total_epochs = 130
+
+# kwargs for dataset evaluation
+eval_kwargs = dict()
+evaluation = dict(
+    interval=5,
+    **eval_kwargs)
 
 runner = dict(type='EpochBasedRunner', max_epochs=total_epochs)
+
+find_unused_parameters = True
 log_config = dict(
     interval=50,
     hooks=[
         dict(type='TextLoggerHook'),
         dict(type='TensorboardLoggerHook')
     ])
-
-checkpoint_config = dict(interval=1, max_keep_ckpts=1)
-
