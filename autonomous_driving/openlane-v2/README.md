@@ -36,6 +36,9 @@ Notes: InternImage provides abundant pre-trained model weights that can be used!
 | base r50    | 0.292             | 0.183           | 0.457           | 0.022            | 0.143            | 0.215   |
 | InternImage | 0.325             | 0.194           | 0.537           | 0.02             | 0.17             | 0.224   |
 
+#### Baseline checkpoint
+
+InternImage-S: [download](https://drive.google.com/file/d/1PsyVOEkCdo-q-jxeDKGRjw28_kWWm1d1/view?usp=sharing)
 
 ## Challenge Timeline
 - Pending - Challenge Period Open.
