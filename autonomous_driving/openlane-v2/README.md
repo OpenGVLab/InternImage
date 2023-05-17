@@ -1,6 +1,6 @@
 ## InternImage-based Baseline for CVPR23 OpenLane-V2 Challenge!!!!
 
-We improve our baseline with a more powerful image backbone: **InaternImage**, which shows its excellent ability within a series of leaderboards and benchmarks, such as *COCO* and *nuScenes*.
+We improve our baseline with a more powerful image backbone: **InternImage**, which shows its excellent ability within a series of leaderboards and benchmarks, such as *COCO* and *nuScenes*.
 
 
 #### 1. Requirements

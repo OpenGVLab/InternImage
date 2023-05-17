@@ -6,7 +6,7 @@
 
 
 ## 1. InternImage-based Baseline for CVPR23 Occupancy Prediction Challenge
-We achieve a nimprovement of 1.44 in MIOU baseline by leveraging the InterImage-based model.
+We achieve an improvement of 1.44 in MIOU baseline by leveraging the InterImage-based model.
 
 model name|weight| mIoU | others | barrier | bicycle | bus | car | construction_vehicle | motorcycle | pedestrian | traffic_cone | trailer |  truck | driveable_surface | other_flat | sidewalk | terrain | manmade | vegetation | 
 ----|:----------:| :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :----------------------: | :---: | :------: | :------: |
