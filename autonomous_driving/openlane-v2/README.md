@@ -37,15 +37,6 @@ Notes: InternImage provides abundant pre-trained model weights that can be used!
 | InternImage | 0.325             | 0.194           | 0.537           | 0.02             | 0.17             | 0.224   |
 
 
-## Challenge Timeline
-- Pending - Challenge Period Open.
-- Jun 01, 2023 - Challenge Period End.
-- Jun 03, 2023 - Finalist Notification.
-- Jun 10, 2023 - Technical Report Deadline.
-- Jun 12, 2023 - Winner Announcement.
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
 ## Leaderboard 
 To be released.
 
