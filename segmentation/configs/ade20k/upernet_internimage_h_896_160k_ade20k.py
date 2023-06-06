@@ -29,7 +29,7 @@ model = dict(
         center_feature_scale=True, # for InternImage-H/G
         with_cp=False,
         out_indices=(0, 1, 2, 3),
-        init_cfg=None), #dict(type='Pretrained', checkpoint=pretrained)),
+        init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
     decode_head=dict(num_classes=150, in_channels=[320, 640, 1280, 2560]),
     auxiliary_head=dict(num_classes=150, in_channels=1280),
     test_cfg=dict(mode='whole'))
