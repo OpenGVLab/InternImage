@@ -8,7 +8,7 @@ _base_ = [
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_80k.py'
 ]
 num_classes = 150
-# load_from = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_896_80k_cocostuff164k.pth'
+load_from = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_896_80k_cocostuff164k.pth'
 model = dict(
     type='EncoderDecoderMask2Former',
     backbone=dict(

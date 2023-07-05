@@ -22,3 +22,10 @@ The ADE20K semantic segmentation dataset contains more than 20K scene-centric im
 - Training speed is measured with A100 GPU.
 - Please set `with_cp=True` to save memory if you meet `out-of-memory` issues.
 - The logs are our recent newly trained ones. There are slight differences between the results in logs and our paper.
+
+
+### Mask2Former + InternImage
+
+| backbone       | resolution | mIoU (ss/ms) | train speed | train time | #param | FLOPs | Config | Download            |
+|:--------------:|:----------:|:-----------:|:-----------:|:----------:|:-------:|:-----:|:-----:|:-------------------:|
+| InternImage-H  | 896x896    | 62.5 / 62.9  | 1.21s / iter       | 1.5d (2n)       | 1.31B    | 4635G | [config](./mask2former_internimage_h_896_80k_cocostuff2ade20k_ss.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_896_80k_cocostuff2ade20k.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/mask2former_internimage_h_896_80k_cocostuff2ade20k.log.json) |
