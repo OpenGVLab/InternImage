@@ -8,10 +8,9 @@ The Common Objects in COntext-stuff (COCO-stuff) dataset is a dataset for scen
 
 
 ## Model Zoo
-:q
 
 ### Mask2Former + InternImage
 
 | backbone       | resolution | mIoU (ss) | train speed | train time | #param | FLOPs | Config | Download            |
 |:--------------:|:----------:|:-----------:|:-----------:|:----------:|:-------:|:-----:|:-----:|:-------------------:|
-| InternImage-H  | 896x896    | 52.6  | 1.6s / iter       | 1.5d (2n)       | 1.31B    | 4635G | [config](./mask2former_internimage_h_896_80k_cocostuff_ss.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_896_80k_cocostuff2ade20k.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/mask2former_internimage_h_896_80k_cocostuff.log.json) |
+| InternImage-H  | 896x896    | 52.6  | 1.6s / iter       | 1.5d (2n)       | 1.31B    | 4635G | [config](./mask2former_internimage_h_896_80k_cocostuff164k_ss.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_896_80k_cocostuff2ade20k.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/mask2former_internimage_h_896_80k_cocostuff164k.log.json) |
