@@ -887,7 +887,7 @@ __global__ void dcnv3_col2im_gpu_kernel_gm(
 }
 
 template <typename scalar_t>
-void dcnv3_im2col_cuda<opmath_t>(cudaStream_t stream, const scalar_t *data_im,
+void dcnv3_im2col_cuda(cudaStream_t stream, const scalar_t *data_im,
                        const scalar_t *data_offset, const scalar_t *data_mask,
                        scalar_t *data_col, const int kernel_h,
                        const int kernel_w, const int stride_h,
@@ -916,7 +916,7 @@ void dcnv3_im2col_cuda<opmath_t>(cudaStream_t stream, const scalar_t *data_im,
 }
 
 template <typename scalar_t>
-void dcnv3_col2im_cuda<opmath_t>(
+void dcnv3_col2im_cuda(
     cudaStream_t stream, const scalar_t *grad_col, const scalar_t *data_im,
     const scalar_t *data_offset, const scalar_t *data_mask, const int kernel_h,
     const int kernel_w, const int stride_h, const int stride_w, const int pad_h,
