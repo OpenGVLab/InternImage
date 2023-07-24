@@ -108,7 +108,8 @@ GPUS=8 sh slurm_train.sh <partition> <job-name> configs/ade20k/upernet_internima
 ```
 
 ### Image Demo
-To inference a single image like this:
+To inference a single/multiple image like this.
+If you specify image containing directory instead of a single image, it will process all the images in the directory.:
 ```
 CUDA_VISIBLE_DEVICES=0 python image_demo.py \
   data/ade/ADEChallengeData2016/images/validation/ADE_val_00000591.jpg \
