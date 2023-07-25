@@ -206,7 +206,7 @@ def dcnv3_core_pytorch(
         reshape(N_*group, group_channels, H_in, W_in)
     # N_, H_out, W_out, group*P_*2 -> N_, H_out*W_out, group, P_, 2 -> N_, group, H_out*W_out, P_, 2 -> N_*group, H_out*W_out, P_, 2
     sampling_grid_ = sampling_grids.view(N_, H_out*W_out, group, P_, 2).transpose(1, 2).\
-        flatten(0, 1)
+        flatten(0, 1).to(input_.dtype)
     # N_*group, group_channels, H_out*W_out, P_
     sampling_input_ = F.grid_sample(
         input_, sampling_grid_, mode='bilinear', padding_mode='zeros', align_corners=False)
