@@ -124,9 +124,6 @@ dcnv3_cuda_backward(const at::Tensor &input, const at::Tensor &offset,
         channels, group * group_channels);
 
     auto dtype = input.dtype();
-    if (dtype == at::kHalf) {
-        dtype = at::kFloat;
-    }
 
     auto grad_input = at::zeros_like(input, dtype);
     auto grad_offset = at::zeros_like(offset, dtype);
