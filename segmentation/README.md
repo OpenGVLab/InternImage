@@ -33,6 +33,7 @@ conda install -c conda-forge cudatoolkit-dev=11.3 -y # to install nvcc
 ```
 
 - Install other requirements:
+
   note: conda opencv will break torchvision as not to support GPU, so we need to install opencv using pip. 	  
 
 ```bash
