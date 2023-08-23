@@ -26,23 +26,28 @@ conda activate internimage
   the [official installation instructions](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
 - Install `PyTorch>=1.10.0` and `torchvision>=0.9.0` with `CUDA>=10.2`:
 
-For examples, to install torch==1.11 with CUDA==11.3:
+For examples, to install torch==1.11 with CUDA==11.3 and nvcc:
 ```bash
-pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html
-```
-
-- Install `timm==0.6.11` and `mmcv-full==1.5.0`:
-
-```bash
-pip install -U openmim
-mim install mmcv-full==1.5.0
-pip install timm==0.6.11 mmdet==2.28.1
+conda install pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3 -c pytorch -y
+conda install -c conda-forge cudatoolkit-dev=11.3 -y # to install nvcc
 ```
 
 - Install other requirements:
 
+  note: conda opencv will break torchvision as not to support GPU, so we need to install opencv using pip. 	  
+
 ```bash
-pip install opencv-python termcolor yacs pyyaml scipy
+conda install -c conda-forge termcolor yacs pyyaml scipy pip -y
+pip install opencv-python
+```
+
+- Install `timm` and `mmcv-full` and `mmsegmentation':
+
+```bash
+pip install -U openmim
+mim install mmcv-full==1.5.0
+mim install mmsegmentation==0.27.0
+pip install timm==0.6.11 mmdet==2.28.1
 ```
 
 - Compile CUDA operators
@@ -67,6 +72,7 @@ To evaluate our `InternImage` on ADE20K val, run:
 ```bash
 sh dist_test.sh <config-file> <checkpoint> <gpu-num> --eval mIoU
 ```
+You can download checkpoint files from [here](https://huggingface.co/OpenGVLab/InternImage/tree/fc1e4e7e01c3e7a39a3875bdebb6577a7256ff91). Then place it to segmentation/checkpoint_dir/seg.
 
 For example, to evaluate the `InternImage-T` with a single GPU:
 
@@ -103,7 +109,8 @@ GPUS=8 sh slurm_train.sh <partition> <job-name> configs/ade20k/upernet_internima
 ```
 
 ### Image Demo
-To inference a single image like this:
+To inference a single/multiple image like this.
+If you specify image containing directory instead of a single image, it will process all the images in the directory.:
 ```
 CUDA_VISIBLE_DEVICES=0 python image_demo.py \
   data/ade/ADEChallengeData2016/images/validation/ADE_val_00000591.jpg \
