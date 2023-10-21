@@ -15,15 +15,21 @@ import os
 
 
 def test_single_image(model, img_name, out_dir, color_palette, opacity):
+    # check img_name is an image file or not
+    assumed_imgformat = ('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')
+    if (not img_name.lower().endswith(assumed_imgformat)):
+        print(f"Skip {img_name} because it is not an image file.")
+        return
+
     result = inference_segmentor(model, img_name)
-    
+
     # show the results
     if hasattr(model, 'module'):
         model = model.module
     img = model.show_result(img_name, result,
                             palette=color_palette,
                             show=False, opacity=opacity)
-    
+
     # save the results
     mmcv.mkdir_or_exist(out_dir)
     out_path = osp.join(out_dir, osp.basename(img_name))
@@ -33,7 +39,8 @@ def test_single_image(model, img_name, out_dir, color_palette, opacity):
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument('img', help='Image file or a directory contains images')
+    parser.add_argument(
+        'img', help='Image file or a directory contains images')
     parser.add_argument('config', help='Config file')
     parser.add_argument('checkpoint', help='Checkpoint file')
     parser.add_argument('--out', type=str, default="demo", help='out dir')
@@ -58,13 +65,16 @@ def main():
         model.CLASSES = checkpoint['meta']['CLASSES']
     else:
         model.CLASSES = get_classes(args.palette)
-        
+
     # check arg.img is directory of a single image.
     if osp.isdir(args.img):
-        for img in os.listdir(args.img):
-            test_single_image(model, osp.join(args.img, img), args.out, get_palette(args.palette), args.opacity)
+        for img in sorted(os.listdir(args.img)):
+            test_single_image(model, osp.join(args.img, img),
+                              args.out, get_palette(args.palette), args.opacity)
     else:
-        test_single_image(model, args.img, args.out, get_palette(args.palette), args.opacity)
+        test_single_image(model, args.img, args.out,
+                          get_palette(args.palette), args.opacity)
+
 
 if __name__ == '__main__':
     main()
