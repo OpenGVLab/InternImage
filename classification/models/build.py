@@ -21,6 +21,7 @@ def build_model(config):
             post_norm=config.MODEL.INTERN_IMAGE.POST_NORM,
             mlp_ratio=config.MODEL.INTERN_IMAGE.MLP_RATIO,
             with_cp=config.TRAIN.USE_CHECKPOINT,
+            drop_path_rate=config.MODEL.DROP_PATH_RATE,
             res_post_norm=config.MODEL.INTERN_IMAGE.RES_POST_NORM, # for InternImage-H/G
             dw_kernel_size=config.MODEL.INTERN_IMAGE.DW_KERNEL_SIZE, # for InternImage-H/G
             use_clip_projector=config.MODEL.INTERN_IMAGE.USE_CLIP_PROJECTOR, # for InternImage-H/G
