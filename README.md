@@ -41,7 +41,8 @@ The official implementation of
 - [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver): A Pre-training unified architecture for generic perception for zero-shot and few-shot tasks
 - [Uni-Perceiver v2](https://arxiv.org/abs/2211.09808): A generalist model for large-scale vision and vision-language tasks
 - [M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining): One-stage pre-training paradigm via maximizing multi-modal mutual information
-
+- [InternVL](https://github.com/OpenGVLab/InternVL): The largest open-source vision/vision-language foundation model (14B) to date
+  
 ### Autonomous Driving
 - [BEVFormer](https://github.com/fundamentalvision/BEVFormer): A cutting-edge baseline for camera-based 3D detection
 - [BEVFormer v2](https://arxiv.org/abs/2211.10439):  Adapting modern image backbones to Bird's-Eye-View recognition via perspective supervision
