@@ -54,6 +54,7 @@ The official implementation of
 
 
 ## News
+- `Jan 22, 2024`: 🚀 Support [DCNv4](https://github.com/OpenGVLab/DCNv4) in InternImage!
 - `Mar 14, 2023`: 🚀 "INTERN-2.5" is released！
 - `Feb 28, 2023`: 🚀 InternImage is accepted to CVPR 2023!
 - `Nov 18, 2022`: 🚀 InternImage-XL merged into [BEVFormer v2](https://arxiv.org/abs/2211.10439) achieves state-of-the-art performance of `63.4 NDS` on nuScenes Camera Only.
