@@ -15,7 +15,7 @@ from mmseg.utils import get_root_logger
 from mmseg.models.builder import BACKBONES
 import torch.nn.functional as F
 
-from ops_dcnv3 import modules as opsm
+from ops_dcnv3 import modules as dcnv3
 
 
 class to_channels_first(nn.Module):
@@ -365,7 +365,8 @@ class InternImageLayer(nn.Module):
                  with_cp=False,
                  dw_kernel_size=None, # for InternImage-H/G
                  res_post_norm=False, # for InternImage-H/G
-                 center_feature_scale=False): # for InternImage-H/G
+                 center_feature_scale=False,
+                 use_dcn_v4_op=False): # for InternImage-H/G
         super().__init__()
         self.channels = channels
         self.groups = groups
@@ -385,7 +386,8 @@ class InternImageLayer(nn.Module):
             act_layer=act_layer,
             norm_layer=norm_layer,
             dw_kernel_size=dw_kernel_size, # for InternImage-H/G
-            center_feature_scale=center_feature_scale) # for InternImage-H/G
+            center_feature_scale=center_feature_scale,
+            use_dcn_v4_op=use_dcn_v4_op) # for InternImage-H/G
         self.drop_path = DropPath(drop_path) if drop_path > 0. \
             else nn.Identity()
         self.norm2 = build_norm_layer(channels, 'LN')
@@ -469,7 +471,8 @@ class InternImageBlock(nn.Module):
                  dw_kernel_size=None, # for InternImage-H/G
                  post_norm_block_ids=None, # for InternImage-H/G
                  res_post_norm=False, # for InternImage-H/G
-                 center_feature_scale=False): # for InternImage-H/G
+                 center_feature_scale=False, # for InternImage-H/G
+                 use_dcn_v4_op=False):
         super().__init__()
         self.channels = channels
         self.depth = depth
@@ -493,7 +496,8 @@ class InternImageBlock(nn.Module):
                 with_cp=with_cp,
                 dw_kernel_size=dw_kernel_size, # for InternImage-H/G
                 res_post_norm=res_post_norm, # for InternImage-H/G
-                center_feature_scale=center_feature_scale # for InternImage-H/G
+                center_feature_scale=center_feature_scale, # for InternImage-H/G
+                use_dcn_v4_op=use_dcn_v4_op
             ) for i in range(depth)
         ])
         if not self.post_norm or center_feature_scale:
@@ -569,6 +573,7 @@ class InternImage(nn.Module):
                  level2_post_norm_block_ids=None,  # for InternImage-H/G
                  res_post_norm=False,  # for InternImage-H/G
                  center_feature_scale=False,  # for InternImage-H/G
+                 use_dcn_v4_op=False,
                  out_indices=(0, 1, 2, 3),
                  init_cfg=None,
                  **kwargs):
@@ -591,6 +596,7 @@ class InternImage(nn.Module):
         logger.info(f"level2_post_norm: {level2_post_norm}")
         logger.info(f"level2_post_norm_block_ids: {level2_post_norm_block_ids}")
         logger.info(f"res_post_norm: {res_post_norm}")
+        logger.info(f"use_dcn_v4_op: {use_dcn_v4_op}")
 
         in_chans = 3
         self.patch_embed = StemLayer(in_chans=in_chans,
@@ -611,7 +617,7 @@ class InternImage(nn.Module):
             post_norm_block_ids = level2_post_norm_block_ids if level2_post_norm and (
                 i == 2) else None # for InternImage-H/G
             level = InternImageBlock(
-                core_op=getattr(opsm, core_op),
+                core_op=getattr(dcnv3, core_op),
                 channels=int(channels * 2**i),
                 depth=depths[i],
                 groups=groups[i],
@@ -628,7 +634,8 @@ class InternImage(nn.Module):
                 dw_kernel_size=dw_kernel_size,  # for InternImage-H/G
                 post_norm_block_ids=post_norm_block_ids, # for InternImage-H/G
                 res_post_norm=res_post_norm, # for InternImage-H/G
-                center_feature_scale=center_feature_scale # for InternImage-H/G
+                center_feature_scale=center_feature_scale, # for InternImage-H/G
+                use_dcn_v4_op=use_dcn_v4_op,
             )
             self.levels.append(level)
 
@@ -687,7 +694,7 @@ class InternImage(nn.Module):
             nn.init.constant_(m.weight, 1.0)
 
     def _init_deform_weights(self, m):
-        if isinstance(m, getattr(opsm, self.core_op)):
+        if isinstance(m, getattr(dcnv3, self.core_op)):
             m._reset_parameters()
 
     def forward(self, x):

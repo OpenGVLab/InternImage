@@ -14,7 +14,11 @@ from torch import nn
 import torch.nn.functional as F
 from torch.nn.init import xavier_uniform_, constant_
 from ..functions import DCNv3Function, dcnv3_core_pytorch
-
+try:
+    from DCNv4.functions import DCNv4Function
+except:
+    warnings.warn('Now, we support DCNv4 in InternImage.')
+import math
 
 class to_channels_first(nn.Module):
 
@@ -228,7 +232,9 @@ class DCNv3(nn.Module):
             offset_scale=1.0,
             act_layer='GELU',
             norm_layer='LN',
-            center_feature_scale=False):
+            center_feature_scale=False,
+            use_dcn_v4_op=False,
+            ):
         """
         DCNv3 Module
         :param channels
@@ -264,7 +270,9 @@ class DCNv3(nn.Module):
         self.group_channels = channels // group
         self.offset_scale = offset_scale
         self.center_feature_scale = center_feature_scale
-        
+         
+        self.use_dcn_v4_op = use_dcn_v4_op
+
         self.dw_conv = nn.Sequential(
             nn.Conv2d(
                 channels,
@@ -321,18 +329,44 @@ class DCNv3(nn.Module):
         x1 = self.dw_conv(x1)
         offset = self.offset(x1)
         mask = self.mask(x1).reshape(N, H, W, self.group, -1)
-        mask = F.softmax(mask, -1).reshape(N, H, W, -1).type(dtype)
-
-        x = DCNv3Function.apply(
-            x, offset, mask,
-            self.kernel_size, self.kernel_size,
-            self.stride, self.stride,
-            self.pad, self.pad,
-            self.dilation, self.dilation,
-            self.group, self.group_channels,
-            self.offset_scale,
-            256)
         
+        if not self.use_dcn_v4_op:
+            mask = F.softmax(mask, -1).reshape(N, H, W, -1).type(dtype)
+            x = DCNv3Function.apply(
+                x, offset, mask,
+                self.kernel_size, self.kernel_size,
+                self.stride, self.stride,
+                self.pad, self.pad,
+                self.dilation, self.dilation,
+                self.group, self.group_channels,
+                self.offset_scale,
+                256)
+        else:
+            # DCNv4 combines offset and weight mask into one tensor `offset_mask`.
+            # The following code is to align DCNv3 and DCNv4
+            offset = offset.view(N, H, W, self.group, -1)
+            mask = F.softmax(mask, -1)
+            mask = mask.view(N, H, W, self.group, -1)
+            offset_mask = torch.cat([offset, mask], -1).view(N, H, W, -1).contiguous()
+
+            # For efficiency, the last dimension of the offset_mask tensor in dcnv4 is a multiple of 8. 
+            K3 = offset_mask.size(-1)
+            K3_pad = int(math.ceil(K3/8)*8)
+            pad_dim = K3_pad - K3
+            offset_mask = torch.cat([offset_mask, offset_mask.new_zeros([*offset_mask.size()[:3], pad_dim])], -1)
+        
+            x = DCNv4Function.apply(
+                x, offset_mask,
+                self.kernel_size, self.kernel_size,
+                self.stride, self.stride,
+                self.pad, self.pad,
+                self.dilation, self.dilation,
+                self.group, self.group_channels,
+                self.offset_scale,
+                256,
+                False
+            )
+
         if self.center_feature_scale:
             center_feature_scale = self.center_feature_scale_module(
                 x1, self.center_feature_scale_proj_weight, self.center_feature_scale_proj_bias)
