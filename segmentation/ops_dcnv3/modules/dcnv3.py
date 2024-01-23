@@ -17,7 +17,7 @@ from ..functions import DCNv3Function, dcnv3_core_pytorch
 try:
     from DCNv4.functions import DCNv4Function
 except:
-    print('Now, we support DCNv4 in InternImage.')
+    warnings.warn('Now, we support DCNv4 in InternImage.')
 import math
 
 class to_channels_first(nn.Module):
@@ -345,6 +345,7 @@ class DCNv3(nn.Module):
             # DCNv4 combines offset and weight mask into one tensor `offset_mask`.
             # The following code is to align DCNv3 and DCNv4
             offset = offset.view(N, H, W, self.group, -1)
+            mask = F.softmax(mask, -1)
             mask = mask.view(N, H, W, self.group, -1)
             offset_mask = torch.cat([offset, mask], -1).view(N, H, W, -1).contiguous()
 
