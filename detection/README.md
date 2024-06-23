@@ -2,13 +2,26 @@
 
 This folder contains the implementation of the InternImage for object detection and instance segmentation. 
 
-Our detection code is developed on top of [MMDetection v2.28.1](https://github.com/open-mmlab/mmdetection/tree/v2.28.1).
+**Note:** Our detection code is developed on top of [MMDetection v2.28.1](https://github.com/open-mmlab/mmdetection/tree/v2.28.1).
 
 
 ## Usage
 
 ### Install
-See "install" part of segmentation/README.md. 
+See "install" section in segmentation/README.md. 
+
+### Inference
+To run inference on a single image or multiple images, you can run as below.
+
+**Note:** If you specify an image containing directory instead of a single image, it will process all the images in the directory.:
+```
+python image_demo.py path/to/your/image/or/directory <config-file> <checkpoint>
+e.g. 
+python image_demo.py \
+  data/coco/val2014/COCO_val2014_000000000042.jpg \
+  configs/coco/mask_rcnn_internimage_t_fpn_1x_coco.py \
+  ../checkpoint_dir/det/mask_rcnn_internimage_t_fpn_1x_coco.pth 
+```
 
 ### Data Preparation
 
@@ -67,7 +80,7 @@ CKPT_PATH="/path/to/model/ckpt.pth"
 python deploy.py \
     "./deploy/configs/mmdet/instance-seg/instance-seg_tensorrt_dynamic-320x320-1344x1344.py" \
     "./configs/coco/${MODEL}.py" \
-    "${CKPT_PATH}" \
+    "${CKPT_PATH}" \ 
     "./deploy/demo.jpg" \
     --work-dir "./work_dirs/mmdet/instance-seg/${MODEL}" \
     --device cuda \

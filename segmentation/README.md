@@ -2,7 +2,9 @@
 
 This folder contains the implementation of the InternImage for semantic segmentation. 
 
-Our segmentation code is developed on top of [MMSegmentation v0.27.0](https://github.com/open-mmlab/mmsegmentation/tree/v0.27.0).
+**Note:** Our segmentation code is developed on top of [MMSegmentation v0.27.0](https://github.com/open-mmlab/mmsegmentation/tree/v0.27.0).
+
+**Note:** You can run Instance segmentation in detection directory.
 
 ## Usage
 
@@ -37,6 +39,19 @@ python test.py
 ```
 - You can also install the operator using .whl files
 [DCNv3-1.0-whl](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
+
+
+### Inference
+To run inference on a single image or multiple images, you can run as below.
+**Note:** If you specify an image containing directory instead of a single image, it will process all the images in the directory.:
+```
+CUDA_VISIBLE_DEVICES=0 python image_demo.py \
+  data/ade/ADEChallengeData2016/images/validation/ADE_val_00000591.jpg \
+  configs/ade20k/upernet_internimage_t_512_160k_ade20k.py  \
+  checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth  \
+  --palette ade20k 
+```
+
 
 ### Data Preparation
 
@@ -84,17 +99,6 @@ For example, to train `InternImage-XL` with 8 GPU on 1 node (total batch size 16
 
 ```bash
 GPUS=8 sh slurm_train.sh <partition> <job-name> configs/ade20k/upernet_internimage_xl_640_160k_ade20k.py
-```
-
-### Image Demo
-To inference a single/multiple image like this.
-If you specify image containing directory instead of a single image, it will process all the images in the directory.:
-```
-CUDA_VISIBLE_DEVICES=0 python image_demo.py \
-  data/ade/ADEChallengeData2016/images/validation/ADE_val_00000591.jpg \
-  configs/ade20k/upernet_internimage_t_512_160k_ade20k.py  \
-  checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth  \
-  --palette ade20k 
 ```
 
 ### Export
