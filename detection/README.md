@@ -1,6 +1,6 @@
-# InternImage for Object Detection
+# InternImage for Object Detection and Instance Segmentation
 
-This folder contains the implementation of the InternImage for object detection. 
+This folder contains the implementation of the InternImage for object detection and instance segmentation. 
 
 Our detection code is developed on top of [MMDetection v2.28.1](https://github.com/open-mmlab/mmdetection/tree/v2.28.1).
 
