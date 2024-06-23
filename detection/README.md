@@ -8,54 +8,7 @@ Our detection code is developed on top of [MMDetection v2.28.1](https://github.c
 ## Usage
 
 ### Install
-
-- Clone this repo:
-
-```bash
-git clone https://github.com/OpenGVLab/InternImage.git
-cd InternImage
-```
-
-- Create a conda virtual environment and activate it:
-
-```bash
-conda create -n internimage python=3.7 -y
-conda activate internimage
-```
-
-- Install `CUDA>=10.2` with `cudnn>=7` following
-  the [official installation instructions](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
-- Install `PyTorch>=1.10.0` and `torchvision>=0.9.0` with `CUDA>=10.2`:
-
-For examples, to install torch==1.11 with CUDA==11.3:
-```bash
-pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
-```
-
-- Install `timm==0.6.11` and `mmcv-full==1.5.0`:
-
-```bash
-pip install -U openmim
-mim install mmcv-full==1.5.0
-pip install timm==0.6.11 mmdet==2.28.1
-```
-
-- Install other requirements:
-
-```bash
-pip install opencv-python termcolor yacs pyyaml scipy
-```
-
-- Compile CUDA operators
-```bash
-cd ./ops_dcnv3
-sh ./make.sh
-# unit test (should see all checking is True)
-python test.py
-```
-- You can also install the operator using .whl files
-
-[DCNv3-1.0-whl](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
+See "install" part of segmentation/README.md. 
 
 ### Data Preparation
 
