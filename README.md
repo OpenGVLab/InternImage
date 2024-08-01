@@ -261,7 +261,7 @@ ADE20K, outperforming previous models by a large margin.
 | InternImage-L  |  384x384   |  223M  | 108G  |           56           |
 | InternImage-XL |  384x384   |  335M  | 163G  |           47           |
 
-Before using `mmdeploy` to convert our PyTorch models to TensorRT, please make sure you have the DCNv3 custom operator builded correctly. You can build it with the following command:
+Before using `mmdeploy` to convert our PyTorch models to TensorRT, please make sure you have the DCNv3 custom operator built correctly. You can build it with the following command:
 ```shell
 export MMDEPLOY_DIR=/the/root/path/of/MMDeploy
 
