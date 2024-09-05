@@ -7,7 +7,7 @@ This folder contains the implementation of the InternImage for image classificat
 * [Data Preparation](#data-preparation)
 * [Evaluation](#evaluation)
 * [Training from Scratch on ImageNet-1K](#training-from-scratch-on-imagenet-1k)
-* [Manage Jobs with Slurm.](#manage-jobs-with-slurm)
+* [Manage Jobs with Slurm](#manage-jobs-with-slurm)
 * [Training with Deepspeed](#training-with-deepspeed)
 * [Extracting Intermediate Features](#extracting-intermediate-features)
 * [Export](#export)
@@ -165,7 +165,7 @@ python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --maste
 --cfg <config-file> --data-path <imagenet-path> [--batch-size <batch-size-per-gpu> --output <output-directory> --tag <job-tag>]
 ```
 
-### Manage Jobs with Slurm.
+### Manage Jobs with Slurm
 
 For example, to train `InternImage` with 8 GPU on a single node for 300 epochs, run:
 
