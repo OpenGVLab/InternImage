@@ -6,3 +6,7 @@ classification/convertor/
 segmentation/convertor/
 checkpoint_dir/
 demo/
+build/
+dist/
+DCNv3.egg-info/
+data/

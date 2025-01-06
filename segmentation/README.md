@@ -2,7 +2,9 @@
 
 This folder contains the implementation of the InternImage for semantic segmentation. 
 
-Our segmentation code is developed on top of [MMSegmentation v0.27.0](https://github.com/open-mmlab/mmsegmentation/tree/v0.27.0).
+**Note:** Our segmentation code is developed on top of [MMSegmentation v0.27.0](https://github.com/open-mmlab/mmsegmentation/tree/v0.27.0).
+
+**Note:** You can run Instance segmentation in detection directory.
 
 ## Usage
 
@@ -15,50 +17,41 @@ git clone https://github.com/OpenGVLab/InternImage.git
 cd InternImage
 ```
 
+- Install Nvidia driver which is compatible with `CUDA>=10.2` with `cudnn>=7` following
+  the [official installation instructions](https://developer.nvidia.com/cuda-downloads?)
+  
+  (Note: CUDA and other Nvidia stufff will be automatically installed by the next step from the conda environment.yml file.)
+
 - Create a conda virtual environment and activate it:
 
 ```bash
-conda create -n internimage python=3.7 -y
+conda env create -f environment.yml
 conda activate internimage
 ```
 
-- Install `CUDA>=10.2` with `cudnn>=7` following
-  the [official installation instructions](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
-- Install `PyTorch>=1.10.0` and `torchvision>=0.9.0` with `CUDA>=10.2`:
-
-For examples, to install torch==1.11 with CUDA==11.3 and nvcc:
-```bash
-conda install pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3 -c pytorch -y
-conda install -c conda-forge cudatoolkit-dev=11.3 -y # to install nvcc
-```
-
-- Install other requirements:
-
-  note: conda opencv will break torchvision as not to support GPU, so we need to install opencv using pip. 	  
-
-```bash
-conda install -c conda-forge termcolor yacs pyyaml scipy pip -y
-pip install opencv-python
-```
-
-- Install `timm` and `mmcv-full` and `mmsegmentation':
-
-```bash
-pip install -U openmim
-mim install mmcv-full==1.5.0
-mim install mmsegmentation==0.27.0
-pip install timm==0.6.11 mmdet==2.28.1
-```
 
 - Compile CUDA operators
 ```bash
-cd ./ops_dcnv3
+cd segmentation/ops_dcnv3
 sh ./make.sh
 # unit test (should see all checking is True)
 python test.py
 ```
 - You can also install the operator using .whl files
 [DCNv3-1.0-whl](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
+
+
+### Inference
+To run inference on a single image or multiple images, you can run as below.
+**Note:** If you specify an image containing directory instead of a single image, it will process all the images in the directory.:
+```
+CUDA_VISIBLE_DEVICES=0 python image_demo.py \
+  data/ade/ADEChallengeData2016/images/validation/ADE_val_00000591.jpg \
+  configs/ade20k/upernet_internimage_t_512_160k_ade20k.py  \
+  checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth  \
+  --palette ade20k 
+```
+
 
 ### Data Preparation
 
@@ -106,17 +99,6 @@ For example, to train `InternImage-XL` with 8 GPU on 1 node (total batch size 16
 
 ```bash
 GPUS=8 sh slurm_train.sh <partition> <job-name> configs/ade20k/upernet_internimage_xl_640_160k_ade20k.py
-```
-
-### Image Demo
-To inference a single/multiple image like this.
-If you specify image containing directory instead of a single image, it will process all the images in the directory.:
-```
-CUDA_VISIBLE_DEVICES=0 python image_demo.py \
-  data/ade/ADEChallengeData2016/images/validation/ADE_val_00000591.jpg \
-  configs/ade20k/upernet_internimage_t_512_160k_ade20k.py  \
-  checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth  \
-  --palette ade20k 
 ```
 
 ### Export

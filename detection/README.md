@@ -1,61 +1,27 @@
-# InternImage for Object Detection
+# InternImage for Object Detection and Instance Segmentation
 
-This folder contains the implementation of the InternImage for object detection. 
+This folder contains the implementation of the InternImage for object detection and instance segmentation. 
 
-Our detection code is developed on top of [MMDetection v2.28.1](https://github.com/open-mmlab/mmdetection/tree/v2.28.1).
+**Note:** Our detection code is developed on top of [MMDetection v2.28.1](https://github.com/open-mmlab/mmdetection/tree/v2.28.1).
 
 
 ## Usage
 
 ### Install
+See "install" section in segmentation/README.md. 
 
-- Clone this repo:
+### Inference
+To run inference on a single image or multiple images, you can run as below.
 
-```bash
-git clone https://github.com/OpenGVLab/InternImage.git
-cd InternImage
+**Note:** If you specify an image containing directory instead of a single image, it will process all the images in the directory.:
 ```
-
-- Create a conda virtual environment and activate it:
-
-```bash
-conda create -n internimage python=3.7 -y
-conda activate internimage
+python image_demo.py path/to/your/image/or/directory <config-file> <checkpoint>
+e.g. 
+python image_demo.py \
+  data/coco/val2014/COCO_val2014_000000000042.jpg \
+  configs/coco/mask_rcnn_internimage_t_fpn_1x_coco.py \
+  ../checkpoint_dir/det/mask_rcnn_internimage_t_fpn_1x_coco.pth 
 ```
-
-- Install `CUDA>=10.2` with `cudnn>=7` following
-  the [official installation instructions](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
-- Install `PyTorch>=1.10.0` and `torchvision>=0.9.0` with `CUDA>=10.2`:
-
-For examples, to install torch==1.11 with CUDA==11.3:
-```bash
-pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
-```
-
-- Install `timm==0.6.11` and `mmcv-full==1.5.0`:
-
-```bash
-pip install -U openmim
-mim install mmcv-full==1.5.0
-pip install timm==0.6.11 mmdet==2.28.1
-```
-
-- Install other requirements:
-
-```bash
-pip install opencv-python termcolor yacs pyyaml scipy
-```
-
-- Compile CUDA operators
-```bash
-cd ./ops_dcnv3
-sh ./make.sh
-# unit test (should see all checking is True)
-python test.py
-```
-- You can also install the operator using .whl files
-
-[DCNv3-1.0-whl](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
 
 ### Data Preparation
 
@@ -114,7 +80,7 @@ CKPT_PATH="/path/to/model/ckpt.pth"
 python deploy.py \
     "./deploy/configs/mmdet/instance-seg/instance-seg_tensorrt_dynamic-320x320-1344x1344.py" \
     "./configs/coco/${MODEL}.py" \
-    "${CKPT_PATH}" \
+    "${CKPT_PATH}" \ 
     "./deploy/demo.jpg" \
     --work-dir "./work_dirs/mmdet/instance-seg/${MODEL}" \
     --device cuda \
