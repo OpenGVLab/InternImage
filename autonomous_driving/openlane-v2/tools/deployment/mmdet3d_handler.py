@@ -4,10 +4,9 @@ import os
 
 import numpy as np
 import torch
-from ts.torch_handler.base_handler import BaseHandler
-
 from mmdet3d.apis import inference_detector, init_model
 from mmdet3d.core.points import get_points_type
+from ts.torch_handler.base_handler import BaseHandler
 
 
 class MMdet3dHandler(BaseHandler):

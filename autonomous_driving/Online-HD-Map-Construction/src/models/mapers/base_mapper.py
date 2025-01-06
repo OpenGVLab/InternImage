@@ -1,13 +1,12 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 
 import torch.nn as nn
-from mmcv.runner import auto_fp16
 from mmcv.utils import print_log
-
-from mmdet.utils import get_root_logger
 from mmdet3d.models.builder import DETECTORS
+from mmdet.utils import get_root_logger
 
 MAPPERS = DETECTORS
+
 
 class BaseMapper(nn.Module, metaclass=ABCMeta):
     """Base class for mappers."""
@@ -40,7 +39,7 @@ class BaseMapper(nn.Module, metaclass=ABCMeta):
         return ((hasattr(self, 'roi_head') and self.roi_head.with_mask)
                 or (hasattr(self, 'mask_head') and self.mask_head is not None))
 
-    #@abstractmethod
+    # @abstractmethod
     def extract_feat(self, imgs):
         """Extract features from images."""
         pass
@@ -48,11 +47,11 @@ class BaseMapper(nn.Module, metaclass=ABCMeta):
     def forward_train(self, *args, **kwargs):
         pass
 
-    #@abstractmethod
+    # @abstractmethod
     def simple_test(self, img, img_metas, **kwargs):
         pass
 
-    #@abstractmethod
+    # @abstractmethod
     def aug_test(self, imgs, img_metas, **kwargs):
         """Test function with test time augmentation."""
         pass
@@ -88,7 +87,7 @@ class BaseMapper(nn.Module, metaclass=ABCMeta):
         should be double nested (i.e.  List[Tensor], List[List[dict]]), with
         the outer list indicating test time augmentations.
         """
-        
+
         if return_loss:
             return self.forward_train(*args, **kwargs)
         else:
@@ -123,7 +122,7 @@ class BaseMapper(nn.Module, metaclass=ABCMeta):
                 averaging the logs.
         """
         loss, log_vars, num_samples = self(**data_dict)
-        
+
         outputs = dict(
             loss=loss, log_vars=log_vars, num_samples=num_samples)
 
@@ -137,7 +136,7 @@ class BaseMapper(nn.Module, metaclass=ABCMeta):
         not implemented with this method, but an evaluation hook.
         """
         loss, log_vars, num_samples = self(**data)
-        
+
         outputs = dict(
             loss=loss, log_vars=log_vars, num_samples=num_samples)
 

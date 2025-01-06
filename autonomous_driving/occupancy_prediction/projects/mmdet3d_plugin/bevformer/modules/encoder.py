@@ -1,33 +1,28 @@
-
 # ---------------------------------------------
 # Copyright (c) OpenMMLab. All rights reserved.
 # ---------------------------------------------
 #  Modified by Zhiqi Li
 # ---------------------------------------------
 
-from projects.mmdet3d_plugin.models.utils.bricks import run_time
-from projects.mmdet3d_plugin.models.utils.visual import save_tensor
-from .custom_base_transformer_layer import MyCustomBaseTransformerLayer
 import copy
 import warnings
-from mmcv.cnn.bricks.registry import (ATTENTION,
-                                      TRANSFORMER_LAYER,
-                                      TRANSFORMER_LAYER_SEQUENCE)
-from mmcv.cnn.bricks.transformer import TransformerLayerSequence
-from mmcv.runner import force_fp32, auto_fp16
+
 import numpy as np
 import torch
-import cv2 as cv
-import mmcv
-from mmcv.utils import TORCH_VERSION, digit_version
-from mmcv.utils import ext_loader
+from mmcv.cnn.bricks.registry import (TRANSFORMER_LAYER,
+                                      TRANSFORMER_LAYER_SEQUENCE)
+from mmcv.cnn.bricks.transformer import TransformerLayerSequence
+from mmcv.runner import auto_fp16, force_fp32
+from mmcv.utils import TORCH_VERSION, digit_version, ext_loader
+
+from .custom_base_transformer_layer import MyCustomBaseTransformerLayer
+
 ext_module = ext_loader.load_ext(
     '_ext', ['ms_deform_attn_backward', 'ms_deform_attn_forward'])
 
 
 @TRANSFORMER_LAYER_SEQUENCE.register_module()
 class BEVFormerEncoder(TransformerLayerSequence):
-
     """
     Attention with both self and cross
     Implements the decoder in DETR transformer.
@@ -71,7 +66,7 @@ class BEVFormerEncoder(TransformerLayerSequence):
                                 device=device).view(1, H, 1).expand(num_points_in_pillar, H, W) / H
             ref_3d = torch.stack((xs, ys, zs), -1)
             ref_3d = ref_3d.permute(0, 3, 1, 2).flatten(2).permute(0, 2, 1)
-            ref_3d = ref_3d[None].repeat(bs, 1, 1, 1)  #shape: (bs,num_points_in_pillar,h*w,3)
+            ref_3d = ref_3d[None].repeat(bs, 1, 1, 1)  # shape: (bs,num_points_in_pillar,h*w,3)
             return ref_3d
 
         # reference points on 2D bev plane, used in temporal self-attention (TSA).
@@ -90,8 +85,8 @@ class BEVFormerEncoder(TransformerLayerSequence):
 
     # This function must use fp32!!!
     @force_fp32(apply_to=('reference_points', 'img_metas'))
-    def point_sampling(self, reference_points, pc_range,  img_metas):
-        ego2lidar=img_metas[0]['ego2lidar']
+    def point_sampling(self, reference_points, pc_range, img_metas):
+        ego2lidar = img_metas[0]['ego2lidar']
         lidar2img = []
 
         for img_meta in img_metas:
@@ -104,26 +99,28 @@ class BEVFormerEncoder(TransformerLayerSequence):
         reference_points = reference_points.clone()
 
         reference_points[..., 0:1] = reference_points[..., 0:1] * \
-            (pc_range[3] - pc_range[0]) + pc_range[0]
+                                     (pc_range[3] - pc_range[0]) + pc_range[0]
         reference_points[..., 1:2] = reference_points[..., 1:2] * \
-            (pc_range[4] - pc_range[1]) + pc_range[1]
+                                     (pc_range[4] - pc_range[1]) + pc_range[1]
         reference_points[..., 2:3] = reference_points[..., 2:3] * \
-            (pc_range[5] - pc_range[2]) + pc_range[2]
+                                     (pc_range[5] - pc_range[2]) + pc_range[2]
 
         reference_points = torch.cat(
             (reference_points, torch.ones_like(reference_points[..., :1])), -1)
 
-        reference_points = reference_points.permute(1, 0, 2, 3) #shape: (num_points_in_pillar,bs,h*w,4)
-        D, B, num_query = reference_points.size()[:3] # D=num_points_in_pillar , num_query=h*w
+        reference_points = reference_points.permute(1, 0, 2, 3)  # shape: (num_points_in_pillar,bs,h*w,4)
+        D, B, num_query = reference_points.size()[:3]  # D=num_points_in_pillar , num_query=h*w
         num_cam = lidar2img.size(1)
 
         reference_points = reference_points.view(
-            D, B, 1, num_query, 4).repeat(1, 1, num_cam, 1, 1).unsqueeze(-1)  #shape: (num_points_in_pillar,bs,num_cam,h*w,4)
+            D, B, 1, num_query, 4).repeat(1, 1, num_cam, 1, 1).unsqueeze(
+            -1)  # shape: (num_points_in_pillar,bs,num_cam,h*w,4)
 
         lidar2img = lidar2img.view(
             1, B, num_cam, 1, 4, 4).repeat(D, 1, 1, num_query, 1, 1)
-        ego2lidar=ego2lidar.view(1,1,1,1,4,4).repeat(D,1,num_cam,num_query,1,1)
-        reference_points_cam = torch.matmul(torch.matmul(lidar2img.to(torch.float32),ego2lidar.to(torch.float32)),reference_points.to(torch.float32)).squeeze(-1)
+        ego2lidar = ego2lidar.view(1, 1, 1, 1, 4, 4).repeat(D, 1, num_cam, num_query, 1, 1)
+        reference_points_cam = torch.matmul(torch.matmul(lidar2img.to(torch.float32), ego2lidar.to(torch.float32)),
+                                            reference_points.to(torch.float32)).squeeze(-1)
         eps = 1e-5
 
         bev_mask = (reference_points_cam[..., 2:3] > eps)
@@ -143,8 +140,8 @@ class BEVFormerEncoder(TransformerLayerSequence):
             bev_mask = bev_mask.new_tensor(
                 np.nan_to_num(bev_mask.cpu().numpy()))
 
-        reference_points_cam = reference_points_cam.permute(2, 1, 3, 0, 4) #shape: (num_cam,bs,h*w,num_points_in_pillar,2)
-
+        reference_points_cam = reference_points_cam.permute(2, 1, 3, 0,
+                                                            4)  # shape: (num_cam,bs,h*w,num_points_in_pillar,2)
 
         bev_mask = bev_mask.permute(2, 1, 3, 0, 4).squeeze(-1)
 
@@ -188,7 +185,8 @@ class BEVFormerEncoder(TransformerLayerSequence):
         intermediate = []
 
         ref_3d = self.get_reference_points(
-            bev_h, bev_w, self.pc_range[5]-self.pc_range[2], self.num_points_in_pillar, dim='3d', bs=bev_query.size(1),  device=bev_query.device, dtype=bev_query.dtype)
+            bev_h, bev_w, self.pc_range[5] - self.pc_range[2], self.num_points_in_pillar, dim='3d',
+            bs=bev_query.size(1), device=bev_query.device, dtype=bev_query.dtype)
         ref_2d = self.get_reference_points(
             bev_h, bev_w, dim='2d', bs=bev_query.size(1), device=bev_query.device, dtype=bev_query.dtype)
 
@@ -206,12 +204,12 @@ class BEVFormerEncoder(TransformerLayerSequence):
         if prev_bev is not None:
             prev_bev = prev_bev.permute(1, 0, 2)
             prev_bev = torch.stack(
-                [prev_bev, bev_query], 1).reshape(bs*2, len_bev, -1)
+                [prev_bev, bev_query], 1).reshape(bs * 2, len_bev, -1)
             hybird_ref_2d = torch.stack([shift_ref_2d, ref_2d], 1).reshape(
-                bs*2, len_bev, num_bev_level, 2)
+                bs * 2, len_bev, num_bev_level, 2)
         else:
             hybird_ref_2d = torch.stack([ref_2d, ref_2d], 1).reshape(
-                bs*2, len_bev, num_bev_level, 2)
+                bs * 2, len_bev, num_bev_level, 2)
 
         for lid, layer in enumerate(self.layers):
             output = layer(
@@ -353,7 +351,7 @@ class BEVFormerLayer(MyCustomBaseTransformerLayer):
             assert len(attn_masks) == self.num_attn, f'The length of ' \
                                                      f'attn_masks {len(attn_masks)} must be equal ' \
                                                      f'to the number of attention in ' \
-                f'operation_order {self.num_attn}'
+                                                     f'operation_order {self.num_attn}'
 
         for layer in self.operation_order:
             # temporal self attention

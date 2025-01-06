@@ -1,13 +1,13 @@
-tqdm
-ninja
-jupyter
-openmim
-matplotlib
-numpy >=1.22.0, <1.24.0
-scikit-learn
-similaritymeasures
-opencv-python
-scipy ==1.8.0
-ortools ==9.2.9972
-iso3166
 chardet
+iso3166
+jupyter
+matplotlib
+ninja
+numpy >=1.22.0, <1.24.0
+opencv-python
+openmim
+ortools ==9.2.9972
+scikit-learn
+scipy ==1.8.0
+similaritymeasures
+tqdm

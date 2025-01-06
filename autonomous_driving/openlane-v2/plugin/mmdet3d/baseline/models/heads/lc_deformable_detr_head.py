@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # custom_detr_head.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -22,12 +22,8 @@
 
 import copy
 
-import numpy as np
-import cv2
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import mmcv
 from mmcv.cnn import Linear, bias_init_with_prob, build_activation_layer
 from mmcv.runner import auto_fp16, force_fp32
 from mmcv.utils import TORCH_VERSION, digit_version
@@ -79,15 +75,15 @@ class LCDeformableDETRHead(AnchorFreeHead):
         self.bg_cls_weight = 0
         self.sync_cls_avg_factor = sync_cls_avg_factor
         if train_cfg:
-            assert 'assigner' in train_cfg, 'assigner should be provided '\
-                'when train_cfg is set.'
+            assert 'assigner' in train_cfg, 'assigner should be provided ' \
+                                            'when train_cfg is set.'
             assigner = train_cfg['assigner']
             assert loss_cls['loss_weight'] == assigner['cls_cost']['weight'], \
                 'The classification weight for loss and matcher should be' \
                 'exactly the same.'
             assert loss_bbox['loss_weight'] == assigner['reg_cost'][
                 'weight'], 'The regression L1 weight for loss and matcher ' \
-                'should be exactly the same.'
+                           'should be exactly the same.'
             assert loss_iou['loss_weight'] == assigner['iou_cost']['weight'], \
                 'The regression iou weight for loss and matcher should be' \
                 'exactly the same.'
@@ -195,7 +191,7 @@ class LCDeformableDETRHead(AnchorFreeHead):
                 network, each is a 5D-tensor with shape
                 (B, N, C, H, W).
             prev_bev: previous bev featues
-            only_bev: only compute BEV features with encoder. 
+            only_bev: only compute BEV features with encoder.
         Returns:
             all_cls_scores (Tensor): Outputs from the classification head, \
                 shape [nb_dec, bs, num_query, cls_out_channels]. Note \
@@ -232,12 +228,12 @@ class LCDeformableDETRHead(AnchorFreeHead):
 
             assert reference.shape[-1] == 3
             for p in range(self.code_size // 3):
-                tmp[..., 3*p:3*p+3] = tmp[..., 3*p:3*p+3] + reference
-                tmp[..., 3*p:3*p+3] = tmp[..., 3*p:3*p+3].sigmoid()
-                tmp[..., 3*p] = tmp[..., 3*p] * (self.pc_range[3] - self.pc_range[0]) + self.pc_range[0]
-                tmp[..., 3*p+1] = tmp[..., 3*p+1] * (self.pc_range[4] - self.pc_range[1]) + self.pc_range[1]
-                tmp[..., 3*p+2] = tmp[..., 3*p+2] * (self.pc_range[5] - self.pc_range[2]) + self.pc_range[2]
- 
+                tmp[..., 3 * p:3 * p + 3] = tmp[..., 3 * p:3 * p + 3] + reference
+                tmp[..., 3 * p:3 * p + 3] = tmp[..., 3 * p:3 * p + 3].sigmoid()
+                tmp[..., 3 * p] = tmp[..., 3 * p] * (self.pc_range[3] - self.pc_range[0]) + self.pc_range[0]
+                tmp[..., 3 * p + 1] = tmp[..., 3 * p + 1] * (self.pc_range[4] - self.pc_range[1]) + self.pc_range[1]
+                tmp[..., 3 * p + 2] = tmp[..., 3 * p + 2] * (self.pc_range[5] - self.pc_range[2]) + self.pc_range[2]
+
             outputs_coord = tmp
             outputs_classes.append(outputs_class)
             outputs_coords.append(outputs_coord)
@@ -293,7 +289,7 @@ class LCDeformableDETRHead(AnchorFreeHead):
 
         sampling_result = self.sampler.sample(assign_result, lanes_pred,
                                               gt_lanes)
-        
+
         pos_inds = sampling_result.pos_inds
         neg_inds = sampling_result.neg_inds
         pos_assigned_gt_inds = sampling_result.pos_assigned_gt_inds
@@ -415,7 +411,7 @@ class LCDeformableDETRHead(AnchorFreeHead):
         cls_scores = cls_scores.reshape(-1, self.cls_out_channels)
         # construct weighted avg_factor to match with the official DETR repo
         cls_avg_factor = num_total_pos * 1.0 + \
-            num_total_neg * self.bg_cls_weight
+                         num_total_neg * self.bg_cls_weight
         if self.sync_cls_avg_factor:
             cls_avg_factor = reduce_mean(
                 cls_scores.new_tensor([cls_avg_factor]))
@@ -436,7 +432,7 @@ class LCDeformableDETRHead(AnchorFreeHead):
         bbox_weights = bbox_weights * self.code_weights
 
         loss_bbox = self.loss_bbox(
-            lanes_preds[isnotnan, :self.code_size], 
+            lanes_preds[isnotnan, :self.code_size],
             bbox_targets[isnotnan, :self.code_size],
             bbox_weights[isnotnan, :self.code_size],
             avg_factor=num_total_pos)
@@ -544,7 +540,7 @@ class LCDeformableDETRHead(AnchorFreeHead):
             cls_scores = all_cls_scores[i].sigmoid()
 
             predictions_list.append([
-                all_lanes_preds[i].detach().cpu().numpy(), 
+                all_lanes_preds[i].detach().cpu().numpy(),
                 cls_scores.detach().cpu().numpy()])
 
         return predictions_list

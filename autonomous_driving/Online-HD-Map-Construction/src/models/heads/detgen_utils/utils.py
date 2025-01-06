@@ -2,18 +2,20 @@ import torch
 import torch.nn.functional as F
 from torch import Tensor
 
-def generate_square_subsequent_mask(sz: int, condition_len: int = 1, bool_out=False, device: str = "cpu") -> torch.Tensor:
+
+def generate_square_subsequent_mask(sz: int, condition_len: int = 1, bool_out=False,
+                                    device: str = 'cpu') -> torch.Tensor:
     """ Generate the attention mask for causal decoding """
     mask = (torch.triu(torch.ones(sz, sz)) == 1).transpose(0, 1)
 
     if condition_len > 1:
-        mask[:condition_len,:condition_len] = 1
+        mask[:condition_len, :condition_len] = 1
 
     if not bool_out:
         mask = (
             mask.float()
-            .masked_fill(mask == 0, float("-inf"))
-            .masked_fill(mask == 1, float(0.0)))
+                .masked_fill(mask == 0, float('-inf'))
+                .masked_fill(mask == 1, float(0.0)))
     return mask.to(device=device)
 
 
@@ -39,10 +41,10 @@ def quantize_verts(
     """
     min_range = -1
     max_range = 1
-    range_quantize = canvas_size-1
+    range_quantize = canvas_size - 1
 
     verts_ratio = (verts - min_range) / (
-        max_range - min_range)
+            max_range - min_range)
     verts_quantize = verts_ratio * range_quantize
 
     return verts_quantize.type(torch.int32)
@@ -56,7 +58,7 @@ def top_k_logits(logits, k):
         values, _ = torch.topk(logits, k=k)
         k_largest = torch.min(values)
         logits = torch.where(logits < k_largest,
-                             torch.ones_like(logits)*-1e9, logits)
+                             torch.ones_like(logits) * -1e9, logits)
         return logits
 
 

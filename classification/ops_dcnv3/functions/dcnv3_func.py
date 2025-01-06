@@ -4,18 +4,16 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
+import DCNv3
+import pkg_resources
 import torch
 import torch.nn.functional as F
 from torch.autograd import Function
 from torch.autograd.function import once_differentiable
 from torch.cuda.amp import custom_bwd, custom_fwd
-import DCNv3
 
-import pkg_resources
 dcn_version = float(pkg_resources.get_distribution('DCNv3').version)
 
 
@@ -168,6 +166,7 @@ def remove_center_sampling_locations(sampling_locations, kernel_w, kernel_h):
     idx = [i for i in idx if i != C and (i-C) % (C*2+1) != 0]
     sampling_locations = sampling_locations[:,:,:,idx, :]
     return sampling_locations
+
 
 def dcnv3_core_pytorch(
         input, offset, mask, kernel_h,

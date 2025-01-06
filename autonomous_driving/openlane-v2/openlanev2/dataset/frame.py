@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # frame.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -31,7 +31,8 @@ class Frame:
     A data structure containing meta data of a frame.
 
     """
-    def __init__(self, root_path : str, meta : dict) -> None:
+
+    def __init__(self, root_path: str, meta: dict) -> None:
         r"""
         Parameters
         ----------
@@ -67,7 +68,7 @@ class Frame:
         """
         return self.meta['pose']
 
-    def get_image_path(self, camera : str) -> str:
+    def get_image_path(self, camera: str) -> str:
         r"""
         Retuens the image path given a camera.
 
@@ -83,7 +84,7 @@ class Frame:
         """
         return f'{self.root_path}/{self.meta["sensor"][camera]["image_path"]}'
 
-    def get_rgb_image(self, camera : str) -> np.ndarray:
+    def get_rgb_image(self, camera: str) -> np.ndarray:
         r"""
         Retuens the RGB image given a camera.
 
@@ -100,7 +101,7 @@ class Frame:
         image_path = self.get_image_path(camera)
         return cv2.cvtColor(io.cv2_imread(image_path), cv2.COLOR_BGR2RGB)
 
-    def get_intrinsic(self, camera : str) -> dict:
+    def get_intrinsic(self, camera: str) -> dict:
         r"""
         Retuens the intrinsic given a camera.
 
@@ -116,7 +117,7 @@ class Frame:
         """
         return self.meta['sensor'][camera]['intrinsic']
 
-    def get_extrinsic(self, camera : str) -> dict:
+    def get_extrinsic(self, camera: str) -> dict:
         r"""
         Retuens the extrinsic given a camera.
 
@@ -193,7 +194,7 @@ class Frame:
         -------
         list
             [#lane_centerline, #traffic_element].
-        
+
         """
         result = self.get_annotations()
         return result['topology_lcte'] if result is not None else result

@@ -1,1 +1,0 @@
-from .vectormapnet import VectorMapNet

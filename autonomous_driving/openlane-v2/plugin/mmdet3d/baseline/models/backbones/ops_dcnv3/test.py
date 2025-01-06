@@ -4,16 +4,11 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
 import time
-import torch
-import torch.nn as nn
-import math
-from torch.autograd import gradcheck
 
+import torch
 from functions.dcnv3_func import DCNv3Function, dcnv3_core_pytorch
 
 H_in, W_in = 8, 8
@@ -32,11 +27,11 @@ torch.manual_seed(3)
 
 @torch.no_grad()
 def check_forward_equal_with_pytorch_double():
-    input = torch.rand(N, H_in, W_in, M*D).cuda() * 0.01
-    offset = torch.rand(N, H_out, W_out, M*P*2).cuda() * 10
+    input = torch.rand(N, H_in, W_in, M * D).cuda() * 0.01
+    offset = torch.rand(N, H_out, W_out, M * P * 2).cuda() * 10
     mask = torch.rand(N, H_out, W_out, M, P).cuda() + 1e-5
     mask /= mask.sum(-1, keepdim=True)
-    mask = mask.reshape(N, H_out, W_out, M*P)
+    mask = mask.reshape(N, H_out, W_out, M * P)
 
     output_pytorch = dcnv3_core_pytorch(
         input.double(),
@@ -57,16 +52,17 @@ def check_forward_equal_with_pytorch_double():
     max_rel_err = ((output_cuda - output_pytorch).abs() /
                    output_pytorch.abs()).max()
     print('>>> forward double')
-    print(f'* {fwdok} check_forward_equal_with_pytorch_double: max_abs_err {max_abs_err:.2e} max_rel_err {max_rel_err:.2e}')
+    print(
+        f'* {fwdok} check_forward_equal_with_pytorch_double: max_abs_err {max_abs_err:.2e} max_rel_err {max_rel_err:.2e}')
 
 
 @torch.no_grad()
 def check_forward_equal_with_pytorch_float():
-    input = torch.rand(N, H_in, W_in, M*D).cuda() * 0.01
-    offset = torch.rand(N, H_out, W_out, M*P*2).cuda() * 10
+    input = torch.rand(N, H_in, W_in, M * D).cuda() * 0.01
+    offset = torch.rand(N, H_out, W_out, M * P * 2).cuda() * 10
     mask = torch.rand(N, H_out, W_out, M, P).cuda() + 1e-5
     mask /= mask.sum(-1, keepdim=True)
-    mask = mask.reshape(N, H_out, W_out, M*P)
+    mask = mask.reshape(N, H_out, W_out, M * P)
 
     output_pytorch = dcnv3_core_pytorch(
         input,
@@ -87,7 +83,8 @@ def check_forward_equal_with_pytorch_float():
     max_rel_err = ((output_cuda - output_pytorch).abs() /
                    output_pytorch.abs()).max()
     print('>>> forward float')
-    print(f'* {fwdok} check_forward_equal_with_pytorch_float: max_abs_err {max_abs_err:.2e} max_rel_err {max_rel_err:.2e}')
+    print(
+        f'* {fwdok} check_forward_equal_with_pytorch_float: max_abs_err {max_abs_err:.2e} max_rel_err {max_rel_err:.2e}')
 
 
 def check_backward_equal_with_pytorch_double(channels=4, grad_input=True, grad_offset=True, grad_mask=True):
@@ -98,11 +95,11 @@ def check_backward_equal_with_pytorch_double(channels=4, grad_input=True, grad_o
     W_out = (W_in + 2 * pad - (dilation * (Kw - 1) + 1)) // stride + 1
 
     D = channels
-    input0 = torch.rand(N, H_in, W_in, M*D).cuda() * 0.01
-    offset0 = torch.rand(N, H_out, W_out, M*P*2).cuda() * 10
+    input0 = torch.rand(N, H_in, W_in, M * D).cuda() * 0.01
+    offset0 = torch.rand(N, H_out, W_out, M * P * 2).cuda() * 10
     mask0 = torch.rand(N, H_out, W_out, M, P).cuda() + 1e-5
     mask0 /= mask0.sum(-1, keepdim=True)
-    mask0 = mask0.reshape(N, H_out, W_out, M*P)
+    mask0 = mask0.reshape(N, H_out, W_out, M * P)
     input0.requires_grad = grad_input
     offset0.requires_grad = grad_offset
     mask0.requires_grad = grad_mask
@@ -161,11 +158,11 @@ def check_backward_equal_with_pytorch_float(channels=4, grad_input=True, grad_of
     W_out = (W_in + 2 * pad - (dilation * (Kw - 1) + 1)) // stride + 1
 
     D = channels
-    input0 = torch.rand(N, H_in, W_in, M*D).cuda() * 0.01
-    offset0 = torch.rand(N, H_out, W_out, M*P*2).cuda() * 10
+    input0 = torch.rand(N, H_in, W_in, M * D).cuda() * 0.01
+    offset0 = torch.rand(N, H_out, W_out, M * P * 2).cuda() * 10
     mask0 = torch.rand(N, H_out, W_out, M, P).cuda() + 1e-5
     mask0 /= mask0.sum(-1, keepdim=True)
-    mask0 = mask0.reshape(N, H_out, W_out, M*P)
+    mask0 = mask0.reshape(N, H_out, W_out, M * P)
     input0.requires_grad = grad_input
     offset0.requires_grad = grad_offset
     mask0.requires_grad = grad_mask
@@ -223,11 +220,11 @@ def check_time_cost(im2col_step=128):
     H_out = (H_in + 2 * pad - (dilation * (Kh - 1) + 1)) // stride + 1
     W_out = (W_in + 2 * pad - (dilation * (Kw - 1) + 1)) // stride + 1
 
-    input = torch.rand(N, H_in, W_in, M*D).cuda() * 0.01
-    offset = torch.rand(N, H_out, W_out, M*P*2).cuda() * 10
+    input = torch.rand(N, H_in, W_in, M * D).cuda() * 0.01
+    offset = torch.rand(N, H_out, W_out, M * P * 2).cuda() * 10
     mask = torch.rand(N, H_out, W_out, M, P).cuda() + 1e-5
     mask /= mask.sum(-1, keepdim=True)
-    mask = mask.reshape(N, H_out, W_out, M*P)
+    mask = mask.reshape(N, H_out, W_out, M * P)
     print(
         f'>>> time cost: im2col_step {im2col_step}; input {input.shape}; points {P} ')
     repeat = 100

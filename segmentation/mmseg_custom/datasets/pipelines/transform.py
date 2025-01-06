@@ -93,7 +93,7 @@ class SETR_Resize(object):
                 ``img_scale`` is sampled scale and None is just a placeholder
                 to be consistent with :func:`random_select`.
         """
-        
+
         assert mmcv.is_list_of(img_scales, tuple) and len(img_scales) == 2
         img_scale_long = [max(s) for s in img_scales]
         img_scale_short = [min(s) for s in img_scales]
@@ -105,7 +105,7 @@ class SETR_Resize(object):
             max(img_scale_short) + 1)
         img_scale = (long_edge, short_edge)
         return img_scale, None
-    
+
     @staticmethod
     def random_sample_ratio(img_scale, ratio_range):
         """Randomly sample an img_scale when ``ratio_range`` is specified.

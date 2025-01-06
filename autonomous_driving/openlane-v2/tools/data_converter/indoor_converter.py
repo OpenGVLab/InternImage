@@ -3,7 +3,6 @@ import os
 
 import mmcv
 import numpy as np
-
 from tools.data_converter.s3dis_data_utils import S3DISData, S3DISSegData
 from tools.data_converter.scannet_data_utils import ScanNetData, ScanNetSegData
 from tools.data_converter.sunrgbd_data_utils import SUNRGBDData

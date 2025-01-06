@@ -9,17 +9,16 @@ import torch.nn.functional as F
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (Linear, build_activation_layer, build_conv_layer,
                       build_norm_layer, xavier_init)
-from mmcv.cnn.bricks.registry import (TRANSFORMER_LAYER,
-                                      TRANSFORMER_LAYER_SEQUENCE,
-                                      FEEDFORWARD_NETWORK)
 from mmcv.cnn.bricks.drop import build_dropout
+from mmcv.cnn.bricks.registry import (FEEDFORWARD_NETWORK, TRANSFORMER_LAYER,
+                                      TRANSFORMER_LAYER_SEQUENCE)
 from mmcv.cnn.bricks.transformer import (BaseTransformerLayer,
                                          TransformerLayerSequence,
-                                         build_transformer_layer_sequence,
                                          build_attention,
-                                         build_feedforward_network)
+                                         build_feedforward_network,
+                                         build_transformer_layer_sequence)
 from mmcv.runner.base_module import BaseModule, ModuleList, Sequential
-from mmcv.utils import to_2tuple, ConfigDict, deprecated_api_warning
+from mmcv.utils import ConfigDict, deprecated_api_warning, to_2tuple
 from torch.nn.init import normal_
 
 from ..builder import TRANSFORMER
@@ -319,12 +318,12 @@ class FFN(BaseModule):
         """Forward function for `FFN`.
         The function would add x to the output tensor if residue is None.
         """
-        
+
         if self.with_cp and x.requires_grad:
             out = cp.checkpoint(self.layers, x)
         else:
             out = self.layers(x)
-            
+
         if not self.add_identity:
             return self.dropout_layer(out)
         if identity is None:

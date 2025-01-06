@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # custom_ipm_view_transformer.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -20,12 +20,9 @@
 # limitations under the License.
 # ==============================================================================
 
-import copy
-import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 from mmcv.runner import BaseModule
 from mmdet3d.models import NECKS
 
@@ -33,7 +30,7 @@ from mmdet3d.models import NECKS
 def get_campos(reference_points, ego2cam, img_shape):
     '''
         Find the each refence point's corresponding pixel in each camera
-        Args: 
+        Args:
             reference_points: [B, num_query, 3]
             ego2cam: (B, num_cam, 4, 4)
         Outs:
@@ -63,7 +60,7 @@ def get_campos(reference_points, ego2cam, img_shape):
     eps = 1e-9
     mask = (reference_points_cam[..., 2:3] > eps)
 
-    reference_points_cam =\
+    reference_points_cam = \
         reference_points_cam[..., 0:2] / \
         reference_points_cam[..., 2:3] + eps
 
@@ -74,15 +71,16 @@ def get_campos(reference_points, ego2cam, img_shape):
     reference_points_cam = (reference_points_cam - 0.5) * 2
 
     mask = (mask & (reference_points_cam[..., 0:1] > -1.0)
-                 & (reference_points_cam[..., 0:1] < 1.0)
-                 & (reference_points_cam[..., 1:2] > -1.0)
-                 & (reference_points_cam[..., 1:2] < 1.0))
+            & (reference_points_cam[..., 0:1] < 1.0)
+            & (reference_points_cam[..., 1:2] > -1.0)
+            & (reference_points_cam[..., 1:2] < 1.0))
 
     # (B, num_cam, num_query)
     mask = mask.view(B, num_cam, num_query)
-    reference_points_cam = reference_points_cam.view(B*num_cam, num_query, 2)
+    reference_points_cam = reference_points_cam.view(B * num_cam, num_query, 2)
 
     return reference_points_cam, mask
+
 
 def construct_plane_grid(xbound, ybound, height: float, dtype=torch.float32):
     '''
@@ -108,6 +106,7 @@ def construct_plane_grid(xbound, ybound, height: float, dtype=torch.float32):
 
     return plane
 
+
 @NECKS.register_module()
 class CustomIPMViewTransformer(BaseModule):
     r"""
@@ -116,8 +115,9 @@ class CustomIPMViewTransformer(BaseModule):
     Adapted from https://github.com/Mrmoore98/VectorMapNet_code/blob/mian/plugin/models/backbones/ipm_backbone.py#L238.
 
     """
-    def __init__(self,         
-                 num_cam,        
+
+    def __init__(self,
+                 num_cam,
                  xbound,
                  ybound,
                  zbound,
@@ -126,24 +126,24 @@ class CustomIPMViewTransformer(BaseModule):
         super().__init__()
         self.x_bound = xbound
         self.y_bound = ybound
-        heights = [zbound[0]+i*zbound[2] for i in range(int((zbound[1]-zbound[0])//zbound[2])+1)]
+        heights = [zbound[0] + i * zbound[2] for i in range(int((zbound[1] - zbound[0]) // zbound[2]) + 1)]
         self.heights = heights
 
         self.num_cam = num_cam
 
-        self.outconvs =\
-            nn.Conv2d((out_channels+3)*len(heights), out_channels, 
-                        kernel_size=3, stride=1, padding=1)  # same
+        self.outconvs = \
+            nn.Conv2d((out_channels + 3) * len(heights), out_channels,
+                      kernel_size=3, stride=1, padding=1)  # same
 
         # bev_plane
         bev_planes = [construct_plane_grid(
             xbound, ybound, h) for h in self.heights]
         self.register_buffer('bev_planes', torch.stack(
-            bev_planes),)  # nlvl,bH,bW,2
+            bev_planes), )  # nlvl,bH,bW,2
 
     def forward(self, cam_feat, ego2cam, img_shape):
         '''
-            inverse project 
+            inverse project
             Args:
                 cam_feat: B*ncam, C, cH, cW
                 img_shape: tuple(H, W)
@@ -161,7 +161,7 @@ class CustomIPMViewTransformer(BaseModule):
         # bev_grid_pos: B*ncam, nlvl*bH*bW, 2
         bev_grid_pos, bev_cam_mask = get_campos(bev_grid, ego2cam, img_shape)
         # B*cam, nlvl*bH, bW, 2
-        bev_grid_pos = bev_grid_pos.unflatten(-2, (nlvl*bH, bW))
+        bev_grid_pos = bev_grid_pos.unflatten(-2, (nlvl * bH, bW))
 
         # project feat from 2D to bev plane
         projected_feature = F.grid_sample(
@@ -173,11 +173,11 @@ class CustomIPMViewTransformer(BaseModule):
         # eliminate the ncam
         # The bev feature is the sum of the 6 cameras
         bev_feat_mask = bev_feat_mask.unsqueeze(2)
-        projected_feature = (projected_feature*bev_feat_mask).sum(1)
+        projected_feature = (projected_feature * bev_feat_mask).sum(1)
         num_feat = bev_feat_mask.sum(1)
 
         projected_feature = projected_feature / \
-            num_feat.masked_fill(num_feat == 0, 1)
+                            num_feat.masked_fill(num_feat == 0, 1)
 
         # concatenate a position information
         # projected_feature: B, bH, bW, nlvl, C+3

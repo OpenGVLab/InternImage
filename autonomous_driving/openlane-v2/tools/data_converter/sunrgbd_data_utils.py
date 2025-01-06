@@ -47,7 +47,7 @@ class SUNRGBDInstance(object):
         # z_size (height) in our depth coordinate system,
         # l corresponds to the size along the x axis
         self.size = np.array([data[9], data[8], data[10]]) * 2
-        self.orientation = np.zeros((3, ))
+        self.orientation = np.zeros((3,))
         self.orientation[0] = data[11]
         self.orientation[1] = data[12]
         self.heading_angle = np.arctan2(self.orientation[1],
@@ -187,12 +187,12 @@ class SUNRGBDData(object):
                         obj.box2d.reshape(1, 4) for obj in obj_list
                         if obj.classname in self.cat2label.keys()
                     ],
-                                                         axis=0)
+                        axis=0)
                     annotations['location'] = np.concatenate([
                         obj.centroid.reshape(1, 3) for obj in obj_list
                         if obj.classname in self.cat2label.keys()
                     ],
-                                                             axis=0)
+                        axis=0)
                     annotations['dimensions'] = 2 * np.array([
                         [obj.length, obj.width, obj.height] for obj in obj_list
                         if obj.classname in self.cat2label.keys()

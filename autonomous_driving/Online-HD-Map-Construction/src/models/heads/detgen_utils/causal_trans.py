@@ -1,12 +1,12 @@
 # the causal layer is credited by the https://github.com/alexmt-scale/causal-transformer-decoder
 # we made some change to stick with the polygen.
+from typing import Optional
+
 import torch
 import torch.nn as nn
-from typing import Optional
-from torch import Tensor
-
 from mmcv.cnn.bricks.registry import ATTENTION
 from mmcv.utils import build_from_cfg
+from torch import Tensor
 
 
 def build_attention(cfg, default_args=None):
@@ -29,14 +29,14 @@ class CausalTransformerDecoder(nn.TransformerDecoder):
     """
 
     def forward(
-        self,
-        tgt: Tensor,
-        memory: Optional[Tensor] = None,
-        cache: Optional[Tensor] = None,
-        memory_mask: Optional[Tensor] = None,
-        tgt_key_padding_mask: Optional[Tensor] = None,
-        memory_key_padding_mask: Optional[Tensor] = None,
-        causal_mask: Optional[Tensor] = None,
+            self,
+            tgt: Tensor,
+            memory: Optional[Tensor] = None,
+            cache: Optional[Tensor] = None,
+            memory_mask: Optional[Tensor] = None,
+            tgt_key_padding_mask: Optional[Tensor] = None,
+            memory_key_padding_mask: Optional[Tensor] = None,
+            causal_mask: Optional[Tensor] = None,
     ) -> Tensor:
         """
         Args:
@@ -58,7 +58,7 @@ class CausalTransformerDecoder(nn.TransformerDecoder):
         if self.training:
             if cache is not None:
                 raise ValueError(
-                    "cache parameter should be None in training mode")
+                    'cache parameter should be None in training mode')
             for mod in self.layers:
                 output = mod(
                     output,
@@ -132,7 +132,7 @@ class CausalTransformerDecoderLayer(nn.TransformerDecoderLayer):
         """
         Args:
             see CausalTransformerDecoder
-            query is not None model will perform query stream 
+            query is not None model will perform query stream
         Returns:
             Tensor:
                 If training: embedding of the whole layer: seq_len x bsz x hidden_dim
@@ -140,23 +140,23 @@ class CausalTransformerDecoderLayer(nn.TransformerDecoderLayer):
         """
         if not self.norm_first:
             raise ValueError(
-                "norm_first parameter should be True!")
+                'norm_first parameter should be True!')
 
         if self.training:
             # the official Pytorch implementation
             x = tgt
             if query is not None:
                 x = query
-            
+
             x = x + self.res_weight1 * \
                 self._sa_block(self.norm1(x), self.norm1(tgt), causal_mask,
-                                tgt_key_padding_mask)
+                               tgt_key_padding_mask)
             if memory is not None:
                 x = x + self.res_weight2 * \
                     self._mha_block(self.norm2(x), memory,
                                     memory_mask, memory_key_padding_mask)
-            x = x + self.res_weight3*self._ff_block(self.norm3(x))
-            
+            x = x + self.res_weight3 * self._ff_block(self.norm3(x))
+
             return x
 
         # This part is adapted from the official Pytorch implementation
@@ -169,14 +169,14 @@ class CausalTransformerDecoderLayer(nn.TransformerDecoderLayer):
 
         if only_last:
             x = x[-1:]
-            
+
         if causal_mask is not None:
-            attn_mask = causal_mask 
+            attn_mask = causal_mask
             if only_last:
-                attn_mask = attn_mask[-1:]   # XXX
+                attn_mask = attn_mask[-1:]  # XXX
         else:
             attn_mask = None
-            
+
         # efficient self attention
         x = x + self.res_weight1 * \
             self._sa_block(self.norm1(x), self.norm1(tgt), attn_mask,
@@ -189,7 +189,7 @@ class CausalTransformerDecoderLayer(nn.TransformerDecoderLayer):
                                 memory_mask, memory_key_padding_mask)
 
         # final feed-forward network
-        x = x + self.res_weight3*self._ff_block(self.norm3(x))
+        x = x + self.res_weight3 * self._ff_block(self.norm3(x))
 
         return x
 
@@ -235,7 +235,8 @@ class PolygenTransformerEncoderLayer(nn.TransformerEncoderLayer):
 
         self.norm_first = norm_first
 
-    def forward(self, src: Tensor, src_mask: Optional[Tensor] = None, src_key_padding_mask: Optional[Tensor] = None) -> Tensor:
+    def forward(self, src: Tensor, src_mask: Optional[Tensor] = None,
+                src_key_padding_mask: Optional[Tensor] = None) -> Tensor:
         r"""Pass the input through the encoder layer.
         Args:
             src: the sequence to the encoder layer (required).
@@ -249,13 +250,13 @@ class PolygenTransformerEncoderLayer(nn.TransformerEncoderLayer):
 
         x = src
         if self.norm_first:
-            x = x + self.res_weight1*self._sa_block(self.norm1(x), src_mask,
-                                                    src_key_padding_mask)
-            x = x + self.res_weight2*self._ff_block(self.norm2(x))
+            x = x + self.res_weight1 * self._sa_block(self.norm1(x), src_mask,
+                                                      src_key_padding_mask)
+            x = x + self.res_weight2 * self._ff_block(self.norm2(x))
         else:
             x = self.norm1(
-                x + self.res_weight1*self._sa_block(x, src_mask, src_key_padding_mask))
-            x = self.norm2(x + self.res_weight2*self._ff_block(x))
+                x + self.res_weight1 * self._sa_block(x, src_mask, src_key_padding_mask))
+            x = self.norm2(x + self.res_weight2 * self._ff_block(x))
 
         return x
 
@@ -274,12 +275,12 @@ class PolygenTransformerEncoderLayer(nn.TransformerEncoderLayer):
         return self.dropout2(x)
 
 
-def generate_square_subsequent_mask(sz: int, device: str = "cpu") -> torch.Tensor:
+def generate_square_subsequent_mask(sz: int, device: str = 'cpu') -> torch.Tensor:
     """ Generate the attention mask for causal decoding """
     mask = (torch.triu(torch.ones(sz, sz)) == 1).transpose(0, 1)
     mask = (
         mask.float()
-        .masked_fill(mask == 0, float("-inf"))
-        .masked_fill(mask == 1, float(0.0))
+            .masked_fill(mask == 0, float('-inf'))
+            .masked_fill(mask == 1, float(0.0))
     ).to(device=device)
     return mask

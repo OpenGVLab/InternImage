@@ -1,10 +1,7 @@
 import torch
-
+from mmdet.core.bbox.assigners import AssignResult, BaseAssigner
 from mmdet.core.bbox.builder import BBOX_ASSIGNERS
-from mmdet.core.bbox.assigners import AssignResult
-from mmdet.core.bbox.assigners import BaseAssigner
 from mmdet.core.bbox.match_costs import build_match_cost
-from mmdet.models.utils.transformer import inverse_sigmoid
 from projects.mmdet3d_plugin.core.bbox.util import normalize_bbox
 
 try:
@@ -52,7 +49,7 @@ class HungarianAssigner3D(BaseAssigner):
     def assign(self,
                bbox_pred,
                cls_pred,
-               gt_bboxes, 
+               gt_bboxes,
                gt_labels,
                gt_bboxes_ignore=None,
                eps=1e-7):
@@ -89,10 +86,10 @@ class HungarianAssigner3D(BaseAssigner):
         num_gts, num_bboxes = gt_bboxes.size(0), bbox_pred.size(0)
 
         # 1. assign -1 by default
-        assigned_gt_inds = bbox_pred.new_full((num_bboxes, ),
+        assigned_gt_inds = bbox_pred.new_full((num_bboxes,),
                                               -1,
                                               dtype=torch.long)
-        assigned_labels = bbox_pred.new_full((num_bboxes, ),
+        assigned_labels = bbox_pred.new_full((num_bboxes,),
                                              -1,
                                              dtype=torch.long)
         if num_gts == 0 or num_bboxes == 0:
@@ -107,14 +104,14 @@ class HungarianAssigner3D(BaseAssigner):
         # classification and bboxcost.
         cls_cost = self.cls_cost(cls_pred, gt_labels)
         # regression L1 cost
-       
+
         normalized_gt_bboxes = normalize_bbox(gt_bboxes, self.pc_range)
-    
+
         reg_cost = self.reg_cost(bbox_pred[:, :8], normalized_gt_bboxes[:, :8])
-      
+
         # weighted sum of above two costs
         cost = cls_cost + reg_cost
-        
+
         # 3. do Hungarian matching on CPU using linear_sum_assignment
         cost = cost.detach().cpu()
         if linear_sum_assignment is None:

@@ -4,16 +4,17 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
+from collections import OrderedDict
+
 import torch
 import torch.nn as nn
-from collections import OrderedDict
-import torch.utils.checkpoint as checkpoint
-from timm.models.layers import trunc_normal_, DropPath
-from mmcv.runner import _load_checkpoint
-from mmcv.cnn import constant_init, trunc_normal_init
-from mmdet.utils import get_root_logger
-from mmdet.models.builder import BACKBONES
 import torch.nn.functional as F
+import torch.utils.checkpoint as checkpoint
+from mmcv.cnn import constant_init, trunc_normal_init
+from mmcv.runner import _load_checkpoint
+from mmdet.models.builder import BACKBONES
+from mmdet.utils import get_root_logger
+from timm.models.layers import DropPath, trunc_normal_
 
 from .ops_dcnv3 import modules as opsm
 
@@ -86,7 +87,7 @@ class CrossAttention(nn.Module):
         attn_head_dim (int, optional): Dimension of attention head.
         out_dim (int, optional): Dimension of output.
     """
-    
+
     def __init__(self,
                  dim,
                  num_heads=8,
@@ -178,7 +179,7 @@ class AttentiveBlock(nn.Module):
         attn_head_dim (int, optional): Dimension of attention head. Default: None.
         out_dim (int, optional): Dimension of output. Default: None.
     """
-    
+
     def __init__(self,
                  dim,
                  num_heads,
@@ -187,7 +188,7 @@ class AttentiveBlock(nn.Module):
                  drop=0.,
                  attn_drop=0.,
                  drop_path=0.,
-                 norm_layer="LN",
+                 norm_layer='LN',
                  attn_head_dim=None,
                  out_dim=None):
         super().__init__()
@@ -363,9 +364,9 @@ class InternImageLayer(nn.Module):
                  layer_scale=None,
                  offset_scale=1.0,
                  with_cp=False,
-                 dw_kernel_size=None, # for InternImage-H/G
-                 res_post_norm=False, # for InternImage-H/G
-                 center_feature_scale=False): # for InternImage-H/G
+                 dw_kernel_size=None,  # for InternImage-H/G
+                 res_post_norm=False,  # for InternImage-H/G
+                 center_feature_scale=False):  # for InternImage-H/G
         super().__init__()
         self.channels = channels
         self.groups = groups
@@ -384,8 +385,8 @@ class InternImageLayer(nn.Module):
             offset_scale=offset_scale,
             act_layer=act_layer,
             norm_layer=norm_layer,
-            dw_kernel_size=dw_kernel_size, # for InternImage-H/G
-            center_feature_scale=center_feature_scale) # for InternImage-H/G
+            dw_kernel_size=dw_kernel_size,  # for InternImage-H/G
+            center_feature_scale=center_feature_scale)  # for InternImage-H/G
         self.drop_path = DropPath(drop_path) if drop_path > 0. \
             else nn.Identity()
         self.norm2 = build_norm_layer(channels, 'LN')
@@ -411,7 +412,7 @@ class InternImageLayer(nn.Module):
                 if self.post_norm:
                     x = x + self.drop_path(self.norm1(self.dcn(x)))
                     x = x + self.drop_path(self.norm2(self.mlp(x)))
-                elif self.res_post_norm: # for InternImage-H/G
+                elif self.res_post_norm:  # for InternImage-H/G
                     x = x + self.drop_path(self.res_post_norm1(self.dcn(self.norm1(x))))
                     x = x + self.drop_path(self.res_post_norm2(self.mlp(self.norm2(x))))
                 else:
@@ -466,10 +467,10 @@ class InternImageBlock(nn.Module):
                  offset_scale=1.0,
                  layer_scale=None,
                  with_cp=False,
-                 dw_kernel_size=None, # for InternImage-H/G
-                 post_norm_block_ids=None, # for InternImage-H/G
-                 res_post_norm=False, # for InternImage-H/G
-                 center_feature_scale=False): # for InternImage-H/G
+                 dw_kernel_size=None,  # for InternImage-H/G
+                 post_norm_block_ids=None,  # for InternImage-H/G
+                 res_post_norm=False,  # for InternImage-H/G
+                 center_feature_scale=False):  # for InternImage-H/G
         super().__init__()
         self.channels = channels
         self.depth = depth
@@ -491,15 +492,15 @@ class InternImageBlock(nn.Module):
                 layer_scale=layer_scale,
                 offset_scale=offset_scale,
                 with_cp=with_cp,
-                dw_kernel_size=dw_kernel_size, # for InternImage-H/G
-                res_post_norm=res_post_norm, # for InternImage-H/G
-                center_feature_scale=center_feature_scale # for InternImage-H/G
+                dw_kernel_size=dw_kernel_size,  # for InternImage-H/G
+                res_post_norm=res_post_norm,  # for InternImage-H/G
+                center_feature_scale=center_feature_scale  # for InternImage-H/G
             ) for i in range(depth)
         ])
         if not self.post_norm or center_feature_scale:
             self.norm = build_norm_layer(channels, 'LN')
         self.post_norm_block_ids = post_norm_block_ids
-        if post_norm_block_ids is not None: # for InternImage-H/G
+        if post_norm_block_ids is not None:  # for InternImage-H/G
             self.post_norms = nn.ModuleList(
                 [build_norm_layer(channels, 'LN', eps=1e-6) for _ in post_norm_block_ids]
             )
@@ -511,7 +512,7 @@ class InternImageBlock(nn.Module):
             x = blk(x)
             if (self.post_norm_block_ids is not None) and (i in self.post_norm_block_ids):
                 index = self.post_norm_block_ids.index(i)
-                x = self.post_norms[index](x) # for InternImage-H/G
+                x = self.post_norms[index](x)  # for InternImage-H/G
         if not self.post_norm or self.center_feature_scale:
             x = self.norm(x)
         if return_wo_downsample:
@@ -577,7 +578,7 @@ class InternImage(nn.Module):
         self.num_levels = len(depths)
         self.depths = depths
         self.channels = channels
-        self.num_features = int(channels * 2**(self.num_levels - 1))
+        self.num_features = int(channels * 2 ** (self.num_levels - 1))
         self.post_norm = post_norm
         self.mlp_ratio = mlp_ratio
         self.init_cfg = init_cfg
@@ -588,9 +589,9 @@ class InternImage(nn.Module):
         logger.info(f'using activation layer: {act_layer}')
         logger.info(f'using main norm layer: {norm_layer}')
         logger.info(f'using dpr: {drop_path_type}, {drop_path_rate}')
-        logger.info(f"level2_post_norm: {level2_post_norm}")
-        logger.info(f"level2_post_norm_block_ids: {level2_post_norm_block_ids}")
-        logger.info(f"res_post_norm: {res_post_norm}")
+        logger.info(f'level2_post_norm: {level2_post_norm}')
+        logger.info(f'level2_post_norm_block_ids: {level2_post_norm_block_ids}')
+        logger.info(f'res_post_norm: {res_post_norm}')
 
         in_chans = 3
         self.patch_embed = StemLayer(in_chans=in_chans,
@@ -609,10 +610,10 @@ class InternImage(nn.Module):
         self.levels = nn.ModuleList()
         for i in range(self.num_levels):
             post_norm_block_ids = level2_post_norm_block_ids if level2_post_norm and (
-                i == 2) else None # for InternImage-H/G
+                    i == 2) else None  # for InternImage-H/G
             level = InternImageBlock(
                 core_op=getattr(opsm, core_op),
-                channels=int(channels * 2**i),
+                channels=int(channels * 2 ** i),
                 depth=depths[i],
                 groups=groups[i],
                 mlp_ratio=self.mlp_ratio,
@@ -626,9 +627,9 @@ class InternImage(nn.Module):
                 offset_scale=offset_scale,
                 with_cp=with_cp,
                 dw_kernel_size=dw_kernel_size,  # for InternImage-H/G
-                post_norm_block_ids=post_norm_block_ids, # for InternImage-H/G
-                res_post_norm=res_post_norm, # for InternImage-H/G
-                center_feature_scale=center_feature_scale # for InternImage-H/G
+                post_norm_block_ids=post_norm_block_ids,  # for InternImage-H/G
+                res_post_norm=res_post_norm,  # for InternImage-H/G
+                center_feature_scale=center_feature_scale  # for InternImage-H/G
             )
             self.levels.append(level)
 

@@ -4,18 +4,12 @@ import warnings
 
 import torch
 import torch.nn as nn
-from mmcv.cnn import build_activation_layer, build_norm_layer, xavier_init
-from mmcv.cnn.bricks.registry import (TRANSFORMER_LAYER,
-                                      TRANSFORMER_LAYER_SEQUENCE)
-from mmcv.cnn.bricks.transformer import (BaseTransformerLayer,
-                                         TransformerLayerSequence,
-                                         build_transformer_layer_sequence)
-from mmcv.runner.base_module import BaseModule
-from torch.nn.init import normal_
-
+from mmcv.cnn import xavier_init
+from mmcv.cnn.bricks.registry import TRANSFORMER_LAYER_SEQUENCE
+from mmcv.cnn.bricks.transformer import TransformerLayerSequence
 from mmdet.models.utils.builder import TRANSFORMER
-
 from mmdet.models.utils.transformer import Transformer
+from torch.nn.init import normal_
 
 try:
     from mmcv.ops.multi_scale_deform_attn import MultiScaleDeformableAttention
@@ -26,6 +20,7 @@ except ImportError:
     from mmcv.cnn.bricks.transformer import MultiScaleDeformableAttention
 
 from .fp16_dattn import MultiScaleDeformableAttentionFp16
+
 
 def inverse_sigmoid(x, eps=1e-5):
     """Inverse function of sigmoid.
@@ -44,6 +39,7 @@ def inverse_sigmoid(x, eps=1e-5):
     x2 = (1 - x).clamp(min=eps)
     return torch.log(x1 / x2)
 
+
 @TRANSFORMER_LAYER_SEQUENCE.register_module()
 class DeformableDetrTransformerDecoder_(TransformerLayerSequence):
     """Implements the decoder in DETR transformer.
@@ -53,8 +49,8 @@ class DeformableDetrTransformerDecoder_(TransformerLayerSequence):
             `LN`.
     """
 
-    def __init__(self, *args, 
-            return_intermediate=False, coord_dim=2, kp_coord_dim=2, **kwargs):
+    def __init__(self, *args,
+                 return_intermediate=False, coord_dim=2, kp_coord_dim=2, **kwargs):
 
         super(DeformableDetrTransformerDecoder_, self).__init__(*args, **kwargs)
         self.return_intermediate = return_intermediate
@@ -94,25 +90,26 @@ class DeformableDetrTransformerDecoder_(TransformerLayerSequence):
         for lid, layer in enumerate(self.layers):
 
             reference_points_input = \
-                reference_points[:, :, None,:self.kp_coord_dim] * \
-                valid_ratios[:, None,:,:self.kp_coord_dim]
+                reference_points[:, :, None, :self.kp_coord_dim] * \
+                valid_ratios[:, None, :, :self.kp_coord_dim]
             # if reference_points.shape[-1] == 3 and self.kp_coord_dim==2:
             output = layer(
                 output,
                 *args,
-                reference_points=reference_points_input[...,:self.kp_coord_dim],
+                reference_points=reference_points_input[..., :self.kp_coord_dim],
                 **kwargs)
             output = output.permute(1, 0, 2)
 
             if reg_branches is not None:
-                tmp = reg_branches[lid](output)   
+                tmp = reg_branches[lid](output)
                 new_reference_points = tmp
                 new_reference_points[..., :self.kp_coord_dim] = tmp[
-                    ..., :self.kp_coord_dim] + inverse_sigmoid(reference_points)
+                                                                ..., :self.kp_coord_dim] + inverse_sigmoid(
+                    reference_points)
                 new_reference_points = new_reference_points.sigmoid()
-                if reference_points.shape[-1] == 3 and self.kp_coord_dim==2:
-                    reference_points[...,-1] = tmp[...,-1].sigmoid().detach()  
-                reference_points[...,:self.coord_dim] = new_reference_points.detach()
+                if reference_points.shape[-1] == 3 and self.kp_coord_dim == 2:
+                    reference_points[..., -1] = tmp[..., -1].sigmoid().detach()
+                reference_points[..., :self.coord_dim] = new_reference_points.detach()
 
             output = output.permute(1, 0, 2)
             if self.return_intermediate:
@@ -174,7 +171,7 @@ class DeformableDetrTransformer_(Transformer):
         for m in self.modules():
             if isinstance(m, MultiScaleDeformableAttention):
                 m.init_weights()
-            elif isinstance(m,MultiScaleDeformableAttentionFp16):
+            elif isinstance(m, MultiScaleDeformableAttentionFp16):
                 m.init_weights()
         if not self.as_two_stage:
             xavier_init(self.reference_points_embed, distribution='uniform', bias=0.)
@@ -204,9 +201,9 @@ class DeformableDetrTransformer_(Transformer):
                 torch.linspace(
                     0.5, W - 0.5, W, dtype=torch.float32, device=device))
             ref_y = ref_y.reshape(-1)[None] / (
-                valid_ratios[:, None, lvl, 1] * H)
+                    valid_ratios[:, None, lvl, 1] * H)
             ref_x = ref_x.reshape(-1)[None] / (
-                valid_ratios[:, None, lvl, 0] * W)
+                    valid_ratios[:, None, lvl, 0] * W)
             ref = torch.stack((ref_x, ref_y), -1)
             reference_points_list.append(ref)
         reference_points = torch.cat(reference_points_list, 1)
@@ -231,7 +228,7 @@ class DeformableDetrTransformer_(Transformer):
         scale = 2 * math.pi
         dim_t = torch.arange(
             num_pos_feats, dtype=torch.float32, device=proposals.device)
-        dim_t = temperature**(2 * (dim_t // 2) / num_pos_feats)
+        dim_t = temperature ** (2 * (dim_t // 2) / num_pos_feats)
         # N, L, 4
         proposals = proposals.sigmoid() * scale
         # N, L, 4, 128
@@ -317,7 +314,7 @@ class DeformableDetrTransformer_(Transformer):
         spatial_shapes = torch.as_tensor(
             spatial_shapes, dtype=torch.long, device=feat_flatten.device)
         level_start_index = torch.cat((spatial_shapes.new_zeros(
-            (1, )), spatial_shapes.prod(1).cumsum(0)[:-1]))
+            (1,)), spatial_shapes.prod(1).cumsum(0)[:-1]))
         valid_ratios = torch.stack(
             [self.get_valid_ratio(m) for m in mlvl_masks], 1)
 
@@ -343,7 +340,7 @@ class DeformableDetrTransformer_(Transformer):
 
         memory = feat_flatten.permute(1, 0, 2)
         bs, _, c = memory.shape
-        
+
         query_pos, query = torch.split(query_embed, c, dim=-1)
         reference_points = self.reference_points_embed(query_pos).sigmoid()
         init_reference_out = reference_points

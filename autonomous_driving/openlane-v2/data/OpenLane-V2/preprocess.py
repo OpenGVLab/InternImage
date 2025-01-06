@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # preprocess.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #

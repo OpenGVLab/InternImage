@@ -5,13 +5,13 @@ import torch.nn.functional as F
 
 class NoiseSythesis(nn.Module):
 
-    def __init__(self, 
-            p, scale=0.01, shift_scale=(8,5), 
-            scaling_size=(0.1,0.1), canvas_size=(200, 100),
-            bbox_type='sce',
-            poly_coord_dim=2,
-            bbox_coord_dim=2,
-            quantify=True):
+    def __init__(self,
+                 p, scale=0.01, shift_scale=(8, 5),
+                 scaling_size=(0.1, 0.1), canvas_size=(200, 100),
+                 bbox_type='sce',
+                 poly_coord_dim=2,
+                 bbox_coord_dim=2,
+                 quantify=True):
         super(NoiseSythesis, self).__init__()
 
         self.p = p
@@ -37,7 +37,7 @@ class NoiseSythesis(nn.Module):
         dtype = bbox.dtype
         B = bbox.shape[0]
 
-        noise = (torch.rand(B, device=device)*2-1)[:,None,None] # [-1,1]
+        noise = (torch.rand(B, device=device) * 2 - 1)[:, None, None]  # [-1,1]
         scale = self.scaling_size.to(device)
         scale = (noise * scale) + 1
 
@@ -45,7 +45,7 @@ class NoiseSythesis(nn.Module):
 
         # recenterization
         coffset = scaled_bbox.mean(-2) - bbox.float().mean(-2)
-        scaled_bbox = scaled_bbox - coffset[:,None]
+        scaled_bbox = scaled_bbox - coffset[:, None]
 
         return scaled_bbox.round().type(dtype)
 
@@ -60,13 +60,13 @@ class NoiseSythesis(nn.Module):
         scale = (bbox.max(1)[0] - bbox.min(1)[0]) * 0.1
         scale = torch.where(scale < shift_scale, scale, shift_scale)
 
-        noise = (torch.rand(batch_size, 2, device=device)*2-1) # [-1,1]
+        noise = (torch.rand(batch_size, 2, device=device) * 2 - 1)  # [-1,1]
         offset = (noise * scale).round().type(bbox.dtype)
 
         shifted_bbox = bbox + offset[:, None]
-        
+
         return shifted_bbox
-    
+
     def gaussian_noise_bbox(self, bbox):
 
         dtype = bbox.dtype
@@ -80,23 +80,23 @@ class NoiseSythesis(nn.Module):
             noisy_bbox = noisy_bbox.round().type(dtype)
             # prevent out of bound case
             for i in range(self.bbox_coord_dim):
-                noisy_bbox[...,i] =\
-                    torch.clamp(noisy_bbox[...,0],1,self.canvas_size[i])
+                noisy_bbox[..., i] = \
+                    torch.clamp(noisy_bbox[..., 0], 1, self.canvas_size[i])
         else:
             noisy_bbox = noisy_bbox.type(torch.float)
-        
+
         return noisy_bbox
-    
+
     def gaussian_noise_poly(self, polyline, polyline_mask):
 
         device = polyline.device
         batchsize = polyline.shape[0]
         scale = self.canvas_size * self.scale
 
-        polyline = F.pad(polyline,(0,self.poly_coord_dim-1))
-        polyline = polyline.view(batchsize,-1, self.poly_coord_dim)
-        mask = F.pad(polyline_mask[:,1:],(0,self.poly_coord_dim))
-        
+        polyline = F.pad(polyline, (0, self.poly_coord_dim - 1))
+        polyline = polyline.view(batchsize, -1, self.poly_coord_dim)
+        mask = F.pad(polyline_mask[:, 1:], (0, self.poly_coord_dim))
+
         noisy_polyline = torch.normal(polyline.type(torch.float), scale)
 
         if self.quantify:
@@ -104,14 +104,14 @@ class NoiseSythesis(nn.Module):
 
             # prevent out of bound case
             for i in range(self.poly_coord_dim):
-                noisy_polyline[...,i] =\
-                    torch.clamp(noisy_polyline[...,i],0,self.canvas_size[i])
+                noisy_polyline[..., i] = \
+                    torch.clamp(noisy_polyline[..., i], 0, self.canvas_size[i])
 
         else:
             noisy_polyline = noisy_polyline.type(torch.float)
 
-        noisy_polyline = noisy_polyline.view(batchsize,-1) * mask
-        noisy_polyline = noisy_polyline[:,:-(self.poly_coord_dim-1)]
+        noisy_polyline = noisy_polyline.view(batchsize, -1) * mask
+        noisy_polyline = noisy_polyline[:, :-(self.poly_coord_dim - 1)]
 
         return noisy_polyline
 
@@ -125,11 +125,11 @@ class NoiseSythesis(nn.Module):
             bbox = t(bbox)
 
         # prevent out of bound case
-        bbox[...,0] =\
-            torch.clamp(bbox[...,0],0,self.canvas_size[0])
-        
-        bbox[...,1] =\
-            torch.clamp(bbox[...,1],0,self.canvas_size[1])
+        bbox[..., 0] = \
+            torch.clamp(bbox[..., 0], 0, self.canvas_size[0])
+
+        bbox[..., 1] = \
+            torch.clamp(bbox[..., 1], 0, self.canvas_size[1])
 
         return bbox
 
@@ -143,8 +143,8 @@ class NoiseSythesis(nn.Module):
             bbox = self.gaussian_noise_bbox(bbox)
             fbbox_aug = bbox.view(seq_len, -1)
 
-            aug_mask = torch.rand(fbbox.shape,device=fbbox.device)
-            fbbox = torch.where(aug_mask<self.p, fbbox_aug, fbbox)
+            aug_mask = torch.rand(fbbox.shape, device=fbbox.device)
+            fbbox = torch.where(aug_mask < self.p, fbbox_aug, fbbox)
         elif self.bbox_type == 'rxyxy':
             fbbox = self.rbbox_aug(batch)
         elif self.bbox_type == 'convex_hull':
@@ -154,18 +154,18 @@ class NoiseSythesis(nn.Module):
         polyline = batch['polylines']
         polyline_mask = batch['polyline_masks']
         polyline_aug = self.gaussian_noise_poly(polyline, polyline_mask)
-        
-        aug_mask = torch.rand(polyline.shape,device=polyline.device)
-        polyline = torch.where(aug_mask<self.p, polyline_aug, polyline)
+
+        aug_mask = torch.rand(polyline.shape, device=polyline.device)
+        polyline = torch.where(aug_mask < self.p, polyline_aug, polyline)
 
         return polyline, fbbox
 
     def rbbox_aug(self, batch):
-        
+
         return None
-    
-    def convex_hull_aug(self,batch):
-    
+
+    def convex_hull_aug(self, batch):
+
         return None
 
     def __call__(self, batch, simple_aug=False):
@@ -182,6 +182,5 @@ class NoiseSythesis(nn.Module):
             aug_bbox = self.random_apply(bbox)
 
             aug_bbox_flat = aug_bbox.view(seq_len, -1)
-
 
         return aug_bbox_flat

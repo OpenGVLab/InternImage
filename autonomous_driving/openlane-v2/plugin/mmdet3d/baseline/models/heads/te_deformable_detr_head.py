@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # custom_detr_head.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -27,12 +27,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import Linear, bias_init_with_prob, constant_init
 from mmcv.runner import force_fp32
-
-from mmdet.core import (bbox_cxcywh_to_xyxy, bbox_xyxy_to_cxcywh,
-                        multi_apply, reduce_mean)
-from mmdet.models.utils.transformer import inverse_sigmoid
-from mmdet.models import HEADS, build_loss
+from mmdet.core import (bbox_cxcywh_to_xyxy, bbox_xyxy_to_cxcywh, multi_apply,
+                        reduce_mean)
+from mmdet.models import HEADS
 from mmdet.models.dense_heads import DETRHead
+from mmdet.models.utils.transformer import inverse_sigmoid
 
 
 @HEADS.register_module()
@@ -163,14 +162,14 @@ class TEDeformableDETRHead(DETRHead):
         if not self.as_two_stage:
             query_embeds = self.query_embedding.weight
         hs, init_reference, inter_references, \
-            enc_outputs_class, enc_outputs_coord = self.transformer(
-                    mlvl_feats,
-                    mlvl_masks,
-                    query_embeds,
-                    mlvl_positional_encodings,
-                    reg_branches=self.reg_branches if self.with_box_refine else None,  # noqa:E501
-                    cls_branches=self.cls_branches if self.as_two_stage else None  # noqa:E501
-            )
+        enc_outputs_class, enc_outputs_coord = self.transformer(
+            mlvl_feats,
+            mlvl_masks,
+            query_embeds,
+            mlvl_positional_encodings,
+            reg_branches=self.reg_branches if self.with_box_refine else None,  # noqa:E501
+            cls_branches=self.cls_branches if self.as_two_stage else None  # noqa:E501
+        )
         hs = hs.permute(0, 2, 1, 3)
         outputs_classes = []
         outputs_coords = []
@@ -199,7 +198,7 @@ class TEDeformableDETRHead(DETRHead):
             'all_cls_scores': outputs_classes,
             'all_bbox_preds': outputs_coords,
             'enc_cls_scores': enc_outputs_class if self.as_two_stage else None,
-            'enc_bbox_preds': enc_outputs_coord.sigmoid()  if self.as_two_stage else None,
+            'enc_bbox_preds': enc_outputs_coord.sigmoid() if self.as_two_stage else None,
             'history_states': hs
         }
 
@@ -336,7 +335,7 @@ class TEDeformableDETRHead(DETRHead):
         cls_scores = cls_scores.reshape(-1, self.cls_out_channels)
         # construct weighted avg_factor to match with the official DETR repo
         cls_avg_factor = num_total_pos * 1.0 + \
-            num_total_neg * self.bg_cls_weight
+                         num_total_neg * self.bg_cls_weight
         if self.sync_cls_avg_factor:
             cls_avg_factor = reduce_mean(
                 cls_scores.new_tensor([cls_avg_factor]))
@@ -356,7 +355,7 @@ class TEDeformableDETRHead(DETRHead):
             img_h, img_w, _ = img_meta['img_shape']
             factor = bbox_pred.new_tensor([img_w, img_h, img_w,
                                            img_h]).unsqueeze(0).repeat(
-                                               bbox_pred.size(0), 1)
+                bbox_pred.size(0), 1)
             factors.append(factor)
         factors = torch.cat(factors, 0)
 
@@ -426,8 +425,8 @@ class TEDeformableDETRHead(DETRHead):
 
         (labels_list, label_weights_list, bbox_targets_list,
          bbox_weights_list, pos_inds_list, neg_inds_list, pos_assigned_gt_inds_list) = multi_apply(
-             self._get_target_single, cls_scores_list, bbox_preds_list,
-             gt_bboxes_list, gt_labels_list, img_metas, gt_bboxes_ignore_list)
+            self._get_target_single, cls_scores_list, bbox_preds_list,
+            gt_bboxes_list, gt_labels_list, img_metas, gt_bboxes_ignore_list)
         num_total_pos = sum((inds.numel() for inds in pos_inds_list))
         num_total_neg = sum((inds.numel() for inds in neg_inds_list))
         assign_result = dict(
@@ -484,7 +483,7 @@ class TEDeformableDETRHead(DETRHead):
         pos_assigned_gt_inds = sampling_result.pos_assigned_gt_inds
 
         # label targets
-        labels = gt_bboxes.new_full((num_bboxes, ),
+        labels = gt_bboxes.new_full((num_bboxes,),
                                     self.num_classes,
                                     dtype=torch.long)
         labels[pos_inds] = gt_labels[sampling_result.pos_assigned_gt_inds]

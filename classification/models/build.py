@@ -31,6 +31,6 @@ def build_model(config):
             remove_center=config.MODEL.INTERN_IMAGE.REMOVE_CENTER,
         )
     else:
-        raise NotImplementedError(f"Unkown model: {model_type}")
+        raise NotImplementedError(f'Unkown model: {model_type}')
 
     return model

@@ -11,12 +11,12 @@ meta = {
     'output_format': 'vector',
 
     # NOTE: please modify the information below
-    'method': 'VectorMapNet', # name of your method
+    'method': 'VectorMapNet',  # name of your method
     'authors': ['Yicheng Liu', 'Tianyuan Yuan', 'Yue Wang',
-        'Yilun Wang', 'Hang Zhao'], # author names
-    'e-mail': 'yuantianyuan01@gmail.com', # your e-mail address
-    'institution / company': 'MarsLab, Tsinghua University', # your organization
-    'country / region': 'xxx', # (IMPORTANT) your country/region in iso3166 standard
+                'Yilun Wang', 'Hang Zhao'],  # author names
+    'e-mail': 'yuantianyuan01@gmail.com',  # your e-mail address
+    'institution / company': 'MarsLab, Tsinghua University',  # your organization
+    'country / region': 'xxx',  # (IMPORTANT) your country/region in iso3166 standard
 }
 
 # model type
@@ -28,11 +28,11 @@ plugin_dir = 'src/'
 
 # img configs
 # img_norm_cfg = dict(
-    # mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
+# mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 
-img_size = (int(128*2), int((16/9*128)*2))
+img_size = (int(128 * 2), int((16 / 9 * 128) * 2))
 
 # category configs
 cat2id = {
@@ -43,14 +43,14 @@ cat2id = {
 num_class = max(list(cat2id.values())) + 1
 
 # bev configs
-roi_size = (60, 30) # bev range, 60m in x-axis, 30m in y-axis
-canvas_size = (200, 100) # bev feature size
+roi_size = (60, 30)  # bev range, 60m in x-axis, 30m in y-axis
+canvas_size = (200, 100)  # bev feature size
 
 # vectorize params
-coords_dim = 2 # polylines coordinates dimension, 2 or 3
-sample_dist = -1 # sampling params, vectormapnet uses simplify
-sample_num = -1 # sampling params, vectormapnet uses simplify
-simplify = True # sampling params, vectormapnet uses simplify
+coords_dim = 2  # polylines coordinates dimension, 2 or 3
+sample_dist = -1  # sampling params, vectormapnet uses simplify
+sample_num = -1  # sampling params, vectormapnet uses simplify
+simplify = True  # sampling params, vectormapnet uses simplify
 
 # model configs
 head_dim = 256
@@ -62,20 +62,20 @@ model = dict(
     backbone_cfg=dict(
         type='IPMEncoder',
         img_backbone=dict(
-        _delete_=True,
-        type='InternImage',
-        core_op='DCNv3',
-        channels=80,
-        depths=[4, 4, 21, 4],
-        groups=[5, 10, 20, 40],
-        mlp_ratio=4.,
-        drop_path_rate=0.3,
-        norm_layer='LN',
-        layer_scale=1.0,
-        offset_scale=1.0,
-        post_norm=True,
-        with_cp=False,
-        init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
+            _delete_=True,
+            type='InternImage',
+            core_op='DCNv3',
+            channels=80,
+            depths=[4, 4, 21, 4],
+            groups=[5, 10, 20, 40],
+            mlp_ratio=4.,
+            drop_path_rate=0.3,
+            norm_layer='LN',
+            layer_scale=1.0,
+            offset_scale=1.0,
+            post_norm=True,
+            with_cp=False,
+            init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
         img_neck=dict(
             type='FPN',
             in_channels=[80, 160, 320, 640],
@@ -89,21 +89,21 @@ model = dict(
         upsample=dict(
             zoom_size=(1, 2, 4, 8),
             in_channels=128,
-            out_channels=128,),
-        xbound=[-roi_size[0]/2, roi_size[0]/2, roi_size[0]/canvas_size[0]],
-        ybound=[-roi_size[1]/2, roi_size[1]/2, roi_size[1]/canvas_size[1]],
+            out_channels=128, ),
+        xbound=[-roi_size[0] / 2, roi_size[0] / 2, roi_size[0] / canvas_size[0]],
+        ybound=[-roi_size[1] / 2, roi_size[1] / 2, roi_size[1] / canvas_size[1]],
         heights=[-1.1, 0, 0.5, 1.1],
         out_channels=128,
         pretrained=None,
         num_cam=7,
-        ),
+    ),
     head_cfg=dict(
         type='DGHead',
         augmentation=True,
         augmentation_kwargs=dict(
-            p=0.3,scale=0.01,
+            p=0.3, scale=0.01,
             bbox_type='xyxy',
-            ),
+        ),
         det_net_cfg=dict(
             type='MapElementDetector',
             num_query=120,
@@ -139,30 +139,30 @@ model = dict(
                                 num_heads=8,
                                 attn_drop=0.1,
                                 proj_drop=0.1,
-                                dropout_layer=dict(type='Dropout', drop_prob=0.1),),
+                                dropout_layer=dict(type='Dropout', drop_prob=0.1), ),
                             dict(
                                 type='MultiScaleDeformableAttention',
                                 embed_dims=head_dim,
                                 num_heads=8,
                                 num_levels=1,
-                                ),
+                            ),
                         ],
                         ffn_cfgs=dict(
                             type='FFN',
                             embed_dims=head_dim,
-                            feedforward_channels=head_dim*2,
+                            feedforward_channels=head_dim * 2,
                             num_fcs=2,
                             ffn_drop=0.1,
                             act_cfg=dict(type='ReLU', inplace=True),
                         ),
-                        feedforward_channels=head_dim*2,
+                        feedforward_channels=head_dim * 2,
                         ffn_dropout=0.1,
                         operation_order=('norm', 'self_attn', 'norm', 'cross_attn',
-                                        'norm', 'ffn',)))
-                ),
+                                         'norm', 'ffn',)))
+            ),
             positional_encoding=dict(
                 type='SinePositionalEncoding',
-                num_feats=head_dim//2,
+                num_feats=head_dim // 2,
                 normalize=True,
                 offset=-0.5),
             loss_cls=dict(
@@ -180,30 +180,30 @@ model = dict(
                     cost=dict(
                         type='MapQueriesCost',
                         cls_cost=dict(type='FocalLossCost', weight=2.0),
-                        reg_cost=dict(type='BBoxCostC', weight=0.1), # continues
-                        iou_cost=dict(type='IoUCostC', weight=1,box_format='xyxy'), # continues
-                        ),
+                        reg_cost=dict(type='BBoxCostC', weight=0.1),  # continues
+                        iou_cost=dict(type='IoUCostC', weight=1, box_format='xyxy'),  # continues
                     ),
                 ),
+            ),
         ),
         gen_net_cfg=dict(
             type='PolylineGenerator',
             in_channels=128,
             encoder_config=None,
             decoder_config={
-                    'layer_config': {
-                        'd_model': 256,
-                        'nhead': 8,
-                        'dim_feedforward': 512,
-                        'dropout': 0.2,
-                        'norm_first': True,
-                        're_zero': True,
-                    },
-                    'num_layers': 6,
+                'layer_config': {
+                    'd_model': 256,
+                    'nhead': 8,
+                    'dim_feedforward': 512,
+                    'dropout': 0.2,
+                    'norm_first': True,
+                    're_zero': True,
                 },
+                'num_layers': 6,
+            },
             class_conditional=True,
             num_classes=num_class,
-            canvas_size=canvas_size, #xy
+            canvas_size=canvas_size,  # xy
             max_seq_length=500,
             decoder_cross_attention=False,
             use_discrete_vertex_embeddings=True,
@@ -211,7 +211,7 @@ model = dict(
         max_num_vertices=80,
         top_p_gen_model=0.9,
         sync_cls_avg_factor=True,
-        ),
+    ),
     with_auxiliary_head=False,
     model_name='VectorMapNet'
 )
@@ -230,11 +230,11 @@ train_pipeline = [
         canvas_size=canvas_size,  # xy
         coord_dim=2,
         num_class=num_class,
-        threshold=4/200,
+        threshold=4 / 200,
     ),
     dict(type='LoadMultiViewImagesFromFiles'),
     dict(type='ResizeMultiViewImages',
-         size = (int(128*2), int((16/9*128)*2)), # H, W
+         size=(int(128 * 2), int((16 / 9 * 128) * 2)),  # H, W
          change_intrinsics=True,
          ),
     dict(type='Normalize3D', **img_norm_cfg),
@@ -247,7 +247,7 @@ train_pipeline = [
 test_pipeline = [
     dict(type='LoadMultiViewImagesFromFiles'),
     dict(type='ResizeMultiViewImages',
-         size=img_size, # H, W
+         size=img_size,  # H, W
          change_intrinsics=True,
          ),
     dict(type='Normalize3D', **img_norm_cfg),
@@ -300,9 +300,9 @@ optimizer = dict(
     type='AdamW',
     lr=1e-3,
     paramwise_cfg=dict(
-    custom_keys={
-        'backbone': dict(lr_mult=0.1),
-    }),
+        custom_keys={
+            'backbone': dict(lr_mult=0.1),
+        }),
     weight_decay=0.01)
 optimizer_config = dict(grad_clip=dict(max_norm=3.5, norm_type=2))
 

@@ -181,7 +181,7 @@ class S3DISSegData(object):
         self.ignore_index = len(self.cat_ids)
 
         self.cat_id2class = np.ones((self.all_ids.shape[0],), dtype=np.int) * \
-            self.ignore_index
+                            self.ignore_index
         for i, cat_id in enumerate(self.cat_ids):
             self.cat_id2class[cat_id] = i
 
@@ -221,7 +221,7 @@ class S3DISSegData(object):
         """
         num_classes = len(self.cat_ids)
         num_point_all = []
-        label_weight = np.zeros((num_classes + 1, ))  # ignore_index
+        label_weight = np.zeros((num_classes + 1,))  # ignore_index
         for data_info in self.data_infos:
             label = self._convert_to_label(
                 osp.join(self.data_root, data_info['pts_semantic_mask_path']))

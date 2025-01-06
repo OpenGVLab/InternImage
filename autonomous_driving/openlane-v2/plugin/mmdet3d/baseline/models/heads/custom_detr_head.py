@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # custom_detr_head.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -23,17 +23,17 @@
 
 import torch
 import torch.nn.functional as F
-
 from mmcv.cnn import Linear
-from mmdet.core import bbox_cxcywh_to_xyxy, bbox_xyxy_to_cxcywh, multi_apply, reduce_mean
+from mmdet.core import (bbox_cxcywh_to_xyxy, bbox_xyxy_to_cxcywh, multi_apply,
+                        reduce_mean)
 from mmdet.models import HEADS, DETRHead
 
 
 @HEADS.register_module()
 class CustomDETRHead(DETRHead):
-    
-    def __init__(self, 
-                 num_classes, 
+
+    def __init__(self,
+                 num_classes,
                  in_channels,
                  num_query,
                  object_type,
@@ -46,7 +46,7 @@ class CustomDETRHead(DETRHead):
                  ffn_dropout=0.1,
                  **kwargs):
 
-        self.object_type = object_type 
+        self.object_type = object_type
         if self.object_type == 'lane':
             self.num_reg_dim = num_reg_dim
             assert self.num_reg_dim % 3 == 0
@@ -57,7 +57,7 @@ class CustomDETRHead(DETRHead):
         else:
             raise NotImplementedError
 
-        transformer=dict(
+        transformer = dict(
             type='Transformer',
             encoder=dict(
                 type='DetrTransformerEncoder',
@@ -106,13 +106,13 @@ class CustomDETRHead(DETRHead):
                     operation_order=('self_attn', 'norm', 'cross_attn', 'norm',
                                      'ffn', 'norm')),
             ))
-        positional_encoding=dict(
-            type='SinePositionalEncoding', num_feats=embed_dims//2, normalize=True)
+        positional_encoding = dict(
+            type='SinePositionalEncoding', num_feats=embed_dims // 2, normalize=True)
         super().__init__(
-            num_classes=num_classes, 
-            in_channels=in_channels, 
-            num_query=num_query, 
-            transformer=transformer, 
+            num_classes=num_classes,
+            in_channels=in_channels,
+            num_query=num_query,
+            transformer=transformer,
             positional_encoding=positional_encoding,
             **kwargs,
         )
@@ -135,7 +135,7 @@ class CustomDETRHead(DETRHead):
             for img_id in range(batch_size):
                 img_h, img_w, _ = img_metas[img_id]['img_shape']
                 masks[img_id, :img_h, :img_w] = 0
-                
+
         x = self.input_proj(x)
         # interpolate masks to have the same spatial shape with x
         masks = F.interpolate(
@@ -221,7 +221,7 @@ class CustomDETRHead(DETRHead):
         cls_scores = cls_scores.reshape(-1, self.cls_out_channels)
         # construct weighted avg_factor to match with the official DETR repo
         cls_avg_factor = num_total_pos * 1.0 + \
-            num_total_neg * self.bg_cls_weight
+                         num_total_neg * self.bg_cls_weight
         if self.sync_cls_avg_factor:
             cls_avg_factor = reduce_mean(
                 cls_scores.new_tensor([cls_avg_factor]))
@@ -244,8 +244,8 @@ class CustomDETRHead(DETRHead):
             for img_meta, bbox_pred in zip(img_metas, bbox_preds):
                 img_h, img_w, _ = img_meta['img_shape']
                 factor = bbox_pred.new_tensor([img_w, img_h, img_w,
-                                            img_h]).unsqueeze(0).repeat(
-                                                bbox_pred.size(0), 1)
+                                               img_h]).unsqueeze(0).repeat(
+                    bbox_pred.size(0), 1)
                 factors.append(factor)
             factors = torch.cat(factors, 0)
 
@@ -282,8 +282,8 @@ class CustomDETRHead(DETRHead):
 
         (labels_list, label_weights_list, bbox_targets_list,
          bbox_weights_list, pos_inds_list, neg_inds_list, pos_assigned_gt_inds_list) = multi_apply(
-             self._get_target_single, cls_scores_list, bbox_preds_list,
-             gt_bboxes_list, gt_labels_list, img_metas, gt_bboxes_ignore_list)
+            self._get_target_single, cls_scores_list, bbox_preds_list,
+            gt_bboxes_list, gt_labels_list, img_metas, gt_bboxes_ignore_list)
         num_total_pos = sum((inds.numel() for inds in pos_inds_list))
         num_total_neg = sum((inds.numel() for inds in neg_inds_list))
         assign_result = dict(
@@ -312,7 +312,7 @@ class CustomDETRHead(DETRHead):
         pos_assigned_gt_inds = sampling_result.pos_assigned_gt_inds
 
         # label targets
-        labels = gt_bboxes.new_full((num_bboxes, ),
+        labels = gt_bboxes.new_full((num_bboxes,),
                                     self.num_classes,
                                     dtype=torch.long)
         labels[pos_inds] = gt_labels[sampling_result.pos_assigned_gt_inds]
@@ -327,9 +327,12 @@ class CustomDETRHead(DETRHead):
             pos_gt_bboxes = sampling_result.pos_gt_bboxes
             pos_gt_bboxes_normalized = torch.zeros_like(pos_gt_bboxes)
             for p in range(self.num_reg_dim // 3):
-                pos_gt_bboxes_normalized[..., 3*p] = (pos_gt_bboxes[..., 3*p] - self.bev_range[0]) / (self.bev_range[3] - self.bev_range[0])
-                pos_gt_bboxes_normalized[..., 3*p+1] = (pos_gt_bboxes[..., 3*p+1] - self.bev_range[1]) / (self.bev_range[4] - self.bev_range[1])
-                pos_gt_bboxes_normalized[..., 3*p+2] = (pos_gt_bboxes[..., 3*p+2] - self.bev_range[2]) / (self.bev_range[5] - self.bev_range[2])
+                pos_gt_bboxes_normalized[..., 3 * p] = (pos_gt_bboxes[..., 3 * p] - self.bev_range[0]) / (
+                            self.bev_range[3] - self.bev_range[0])
+                pos_gt_bboxes_normalized[..., 3 * p + 1] = (pos_gt_bboxes[..., 3 * p + 1] - self.bev_range[1]) / (
+                            self.bev_range[4] - self.bev_range[1])
+                pos_gt_bboxes_normalized[..., 3 * p + 2] = (pos_gt_bboxes[..., 3 * p + 2] - self.bev_range[2]) / (
+                            self.bev_range[5] - self.bev_range[2])
             pos_gt_bboxes_targets = pos_gt_bboxes_normalized
         else:
             img_h, img_w, _ = img_meta['img_shape']
@@ -338,10 +341,10 @@ class CustomDETRHead(DETRHead):
             # Thus the learning target should be normalized by the image size, also
             # the box format should be converted from defaultly x1y1x2y2 to cxcywh.
             factor = bbox_pred.new_tensor([img_w, img_h, img_w,
-                                        img_h]).unsqueeze(0)
+                                           img_h]).unsqueeze(0)
             pos_gt_bboxes_normalized = sampling_result.pos_gt_bboxes / factor
             pos_gt_bboxes_targets = bbox_xyxy_to_cxcywh(pos_gt_bboxes_normalized)
-            
+
         bbox_targets[pos_inds] = pos_gt_bboxes_targets
         return (labels, label_weights, bbox_targets, bbox_weights, pos_inds,
                 neg_inds, pos_assigned_gt_inds)
@@ -360,12 +363,15 @@ class CustomDETRHead(DETRHead):
 
             det_bboxes = bbox_pred
             for p in range(self.num_reg_dim // 3):
-                det_bboxes[..., 3*p] = det_bboxes[..., 3*p] * (self.bev_range[3] - self.bev_range[0]) + self.bev_range[0]
-                det_bboxes[..., 3*p+1] = det_bboxes[..., 3*p+1] * (self.bev_range[4] - self.bev_range[1]) + self.bev_range[1]
-                det_bboxes[..., 3*p+2] = det_bboxes[..., 3*p+2] * (self.bev_range[5] - self.bev_range[2]) + self.bev_range[2]
-                det_bboxes[..., 3*p].clamp_(min=self.bev_range[0], max=self.bev_range[3])
-                det_bboxes[..., 3*p+1].clamp_(min=self.bev_range[1], max=self.bev_range[4])
-                det_bboxes[..., 3*p+2].clamp_(min=self.bev_range[2], max=self.bev_range[5])
+                det_bboxes[..., 3 * p] = det_bboxes[..., 3 * p] * (self.bev_range[3] - self.bev_range[0]) + \
+                                         self.bev_range[0]
+                det_bboxes[..., 3 * p + 1] = det_bboxes[..., 3 * p + 1] * (self.bev_range[4] - self.bev_range[1]) + \
+                                             self.bev_range[1]
+                det_bboxes[..., 3 * p + 2] = det_bboxes[..., 3 * p + 2] * (self.bev_range[5] - self.bev_range[2]) + \
+                                             self.bev_range[2]
+                det_bboxes[..., 3 * p].clamp_(min=self.bev_range[0], max=self.bev_range[3])
+                det_bboxes[..., 3 * p + 1].clamp_(min=self.bev_range[1], max=self.bev_range[4])
+                det_bboxes[..., 3 * p + 2].clamp_(min=self.bev_range[2], max=self.bev_range[5])
         else:
             # exclude background
             if self.loss_cls.use_sigmoid:

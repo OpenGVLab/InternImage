@@ -1,8 +1,6 @@
 import torch
-
+from mmdet.core.bbox.assigners import AssignResult, BaseAssigner
 from mmdet.core.bbox.builder import BBOX_ASSIGNERS
-from mmdet.core.bbox.assigners import AssignResult
-from mmdet.core.bbox.assigners import BaseAssigner
 from mmdet.core.bbox.match_costs import build_match_cost
 
 try:
@@ -36,8 +34,8 @@ class HungarianLinesAssigner(BaseAssigner):
                      type='MapQueriesCost',
                      cls_cost=dict(type='ClassificationCost', weight=1.),
                      reg_cost=dict(type='LinesCost', weight=1.0),
-                    ),
-                 pc_range=None, 
+                 ),
+                 pc_range=None,
                  **kwargs):
 
         self.pc_range = pc_range
@@ -110,7 +108,8 @@ class HungarianLinesAssigner(BaseAssigner):
             matched_row_inds, matched_col_inds = linear_sum_assignment(cost)
         except:
             print('cost max{}, min{}'.format(cost.max(), cost.min()))
-            import ipdb; ipdb.set_trace()
+            import ipdb
+            ipdb.set_trace()
         matched_row_inds = torch.from_numpy(matched_row_inds).to(
             preds['lines'].device)
         matched_col_inds = torch.from_numpy(matched_col_inds).to(

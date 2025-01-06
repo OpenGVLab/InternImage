@@ -161,4 +161,3 @@ optimizer_config = dict(_delete_=True, grad_clip=dict(max_norm=0.1, norm_type=2)
 checkpoint_config = dict(by_epoch=False, interval=1000, max_keep_ckpts=1)
 evaluation = dict(interval=2000, metric='mIoU', save_best='mIoU')
 # fp16 = dict(loss_scale=dict(init_scale=512))
-

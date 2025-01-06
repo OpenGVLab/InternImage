@@ -4,15 +4,15 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
+import argparse
 import os
 import time
-import argparse
 
 import torch
-from tqdm import tqdm
-
 from config import get_config
 from models import build_model
+from tqdm import tqdm
+
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -31,12 +31,14 @@ def get_args():
     cfg = get_config(args)
     return args, cfg
 
+
 def get_model(args, cfg):
     model = build_model(cfg)
     ckpt = torch.load(args.ckpt, map_location='cpu')['model']
 
     model.load_state_dict(ckpt)
     return model
+
 
 def speed_test(model, input):
     # warmup
@@ -50,7 +52,8 @@ def speed_test(model, input):
         _ = model(input)
     end = time.time()
     th = 100 / (end - start)
-    print(f"using time: {end - start}, throughput {th}")
+    print(f'using time: {end - start}, throughput {th}')
+
 
 def torch2onnx(args, cfg):
     model = get_model(args, cfg).cuda()
@@ -65,6 +68,7 @@ def torch2onnx(args, cfg):
                       output_names=['output'])
 
     return model
+
 
 def onnx2trt(args):
     from mmdeploy.backend.tensorrt import from_onnx
@@ -82,6 +86,7 @@ def onnx2trt(args):
         ),
         max_workspace_size=2**30,
     )
+
 
 def check(args, cfg):
     from mmdeploy.backend.tensorrt.wrapper import TRTWrapper
@@ -105,6 +110,7 @@ def check(args, cfg):
     speed_test(model, x)
     speed_test(trt_model, dict(input=x))
 
+
 def main():
     args, cfg = get_args()
 
@@ -116,6 +122,7 @@ def main():
         onnx2trt(args)
         print('onnx -> trt: success')
         check(args, cfg)
+
 
 if __name__ == '__main__':
     main()

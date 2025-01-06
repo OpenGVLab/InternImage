@@ -1,11 +1,9 @@
+import mmcv
 import torch
+from mmdet.models.builder import LOSSES
+from mmdet.models.losses.utils import weighted_loss
 from torch import nn as nn
 from torch.nn import functional as F
-from mmdet.models.losses import l1_loss
-from mmdet.models.losses.utils import weighted_loss
-import mmcv
-
-from mmdet.models.builder import LOSSES
 
 
 @mmcv.jit(derivate=True, coderize=True)
@@ -62,7 +60,7 @@ class LinesLoss(nn.Module):
             target (torch.Tensor): The learning target of the prediction.
                 shape: [bs, ...]
             weight (torch.Tensor, optional): The weight of loss for each
-                prediction. Defaults to None. 
+                prediction. Defaults to None.
                 it's useful when the predictions are not all valid.
             avg_factor (int, optional): Average factor that is used to average
                 the loss. Defaults to None.
@@ -77,7 +75,7 @@ class LinesLoss(nn.Module):
         loss = smooth_l1_loss(
             pred, target, weight, reduction=reduction, avg_factor=avg_factor, beta=self.beta)
 
-        return loss*self.loss_weight
+        return loss * self.loss_weight
 
 
 @mmcv.jit(derivate=True, coderize=True)
@@ -123,7 +121,8 @@ class MasksLoss(nn.Module):
         loss = bce(pred, target, weight, reduction=reduction,
                    avg_factor=avg_factor)
 
-        return loss*self.loss_weight
+        return loss * self.loss_weight
+
 
 @mmcv.jit(derivate=True, coderize=True)
 @weighted_loss
@@ -165,6 +164,6 @@ class LenLoss(nn.Module):
             reduction_override if reduction_override else self.reduction)
 
         loss = ce(pred, target, weight, reduction=reduction,
-                   avg_factor=avg_factor)
+                  avg_factor=avg_factor)
 
-        return loss*self.loss_weight
+        return loss * self.loss_weight

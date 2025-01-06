@@ -11,7 +11,7 @@ def fix_lyft(root_folder='./data/lyft', version='v1.01'):
     root_folder = os.path.join(root_folder, f'{version}-train')
     lidar_path = os.path.join(root_folder, lidar_path)
     assert os.path.isfile(lidar_path), f'Please download the complete Lyft ' \
-        f'dataset and make sure {lidar_path} is present.'
+                                       f'dataset and make sure {lidar_path} is present.'
     points = np.fromfile(lidar_path, dtype=np.float32, count=-1)
     try:
         points.reshape([-1, 5])

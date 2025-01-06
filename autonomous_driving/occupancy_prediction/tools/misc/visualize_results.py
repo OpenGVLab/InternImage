@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+
 import mmcv
 from mmcv import Config
-
 from mmdet3d.datasets import build_dataset
 
 

@@ -5,16 +5,13 @@ import shutil
 import tempfile
 import time
 
+import mmcv
 import numpy as np
-
 import torch
 import torch.distributed as dist
 import torch.nn.functional as F
-
-import mmcv
 from mmcv.image import tensor2imgs
 from mmcv.runner import get_dist_info
-
 from mmdet.core import encode_mask_results
 
 
@@ -42,11 +39,11 @@ def prompt_sam_with_bboxes(sam_predictor, data, box_result):
         # `antialias=True` is provided in official implementation of SAM,
         # which may raise TypeError in PyTorch of previous versions.
         transformed_img = F.interpolate(
-            img, target_size, mode="bilinear",
+            img, target_size, mode='bilinear',
             align_corners=False, antialias=True)
     except TypeError:
         transformed_img = F.interpolate(
-            img, target_size, mode="bilinear", align_corners=False)
+            img, target_size, mode='bilinear', align_corners=False)
     # Pad to 1024 x 1024
     h, w = transformed_img.shape[-2:]
     pad_h = sam_predictor.model.image_encoder.img_size - h
@@ -152,4 +149,3 @@ def single_gpu_test(model,
         for _ in range(batch_size):
             prog_bar.update()
     return results
-

@@ -4,9 +4,9 @@ from pathlib import Path
 
 import mmcv
 import numpy as np
+from mmdet3d.core.bbox import box_np_ops, points_cam2img
 from nuscenes.utils.geometry_utils import view_points
 
-from mmdet3d.core.bbox import box_np_ops, points_cam2img
 from .kitti_data_utils import WaymoInfoGatherer, get_kitti_image_info
 from .nuscenes_converter import post_process_coords
 
@@ -507,7 +507,7 @@ def get_2d_boxes(info, occluded, mono3d=True):
         src = np.array([0.5, 1.0, 0.5])
         loc = loc + dim * (dst - src)
         offset = (info['calib']['P2'][0, 3] - info['calib']['P0'][0, 3]) \
-            / info['calib']['P2'][0, 0]
+                 / info['calib']['P2'][0, 0]
         loc_3d = np.copy(loc)
         loc_3d[0, 0] += offset
         gt_bbox_3d = np.concatenate([loc, dim, rot], axis=1).astype(np.float32)

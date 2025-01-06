@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 from mmcv.runner import BaseModule
-
 from mmdet.core import bbox_xyxy_to_cxcywh
 from mmdet.models.utils.transformer import inverse_sigmoid
 
@@ -160,7 +159,7 @@ class DnQueryGenerator(BaseModule):
             m = known_labels_expand.long().to('cuda')
             input_label_embed = label_enc(m)
             input_bbox_embed = inverse_sigmoid(known_bbox_expand, eps=1e-3)
-            
+
             padding_label = torch.zeros(pad_size, self.hidden_dim).cuda()
             padding_bbox = torch.zeros(pad_size, 4).cuda()
 

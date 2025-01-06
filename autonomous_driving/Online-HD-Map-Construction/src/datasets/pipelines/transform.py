@@ -1,6 +1,5 @@
-import numpy as np
 import mmcv
-
+import numpy as np
 from mmdet.datasets.builder import PIPELINES
 
 
@@ -82,25 +81,25 @@ class PadMultiViewImages(object):
         if self.change_intrinsics:
             post_intrinsics, post_ego2imgs = [], []
             for img, oshape, cam_intrinsic, ego2img in zip(results['img'], \
-                    original_shape, results['cam_intrinsics'], results['ego2img']):
+                                                           original_shape, results['cam_intrinsics'],
+                                                           results['ego2img']):
                 scaleW = img.shape[1] / oshape[1]
                 scaleH = img.shape[0] / oshape[0]
 
-                rot_resize_matrix = np.array([ 
-                                        [scaleW, 0,      0,    0],
-                                        [0,      scaleH, 0,    0],
-                                        [0,      0,      1,    0],
-                                        [0,      0,      0,    1]])
+                rot_resize_matrix = np.array([
+                    [scaleW, 0, 0, 0],
+                    [0, scaleH, 0, 0],
+                    [0, 0, 1, 0],
+                    [0, 0, 0, 1]])
                 post_intrinsic = rot_resize_matrix[:3, :3] @ cam_intrinsic
                 post_ego2img = rot_resize_matrix @ ego2img
                 post_intrinsics.append(post_intrinsic)
                 post_ego2imgs.append(post_ego2img)
-        
+
             results.update({
                 'cam_intrinsics': post_intrinsics,
                 'ego2img': post_ego2imgs,
             })
-
 
         results['img_shape'] = [img.shape for img in padded_img]
         results['img_fixed_size'] = self.size
@@ -135,16 +134,17 @@ class ResizeMultiViewImages(object):
         size (tuple, optional): resize target size, (h, w).
         change_intrinsics (bool): whether to update intrinsics.
     """
+
     def __init__(self, size, change_intrinsics=True):
         self.size = size
         self.change_intrinsics = change_intrinsics
 
-    def __call__(self, results:dict):
+    def __call__(self, results: dict):
 
         new_imgs, post_intrinsics, post_ego2imgs = [], [], []
 
-        for img,  cam_intrinsic, ego2img in zip(results['img'], \
-                results['cam_intrinsics'], results['ego2img']):
+        for img, cam_intrinsic, ego2img in zip(results['img'], \
+                                               results['cam_intrinsics'], results['ego2img']):
             tmp, scaleW, scaleH = mmcv.imresize(img,
                                                 # NOTE: mmcv.imresize expect (w, h) shape
                                                 (self.size[1], self.size[0]),
@@ -152,10 +152,10 @@ class ResizeMultiViewImages(object):
             new_imgs.append(tmp)
 
             rot_resize_matrix = np.array([
-                [scaleW, 0,      0,    0],
-                [0,      scaleH, 0,    0],
-                [0,      0,      1,    0],
-                [0,      0,      0,    1]])
+                [scaleW, 0, 0, 0],
+                [0, scaleH, 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]])
             post_intrinsic = rot_resize_matrix[:3, :3] @ cam_intrinsic
             post_ego2img = rot_resize_matrix @ ego2img
             post_intrinsics.append(post_intrinsic)
@@ -170,7 +170,7 @@ class ResizeMultiViewImages(object):
             })
 
         return results
-    
+
     def __repr__(self):
         repr_str = self.__class__.__name__
         repr_str += f'(size={self.size}, '

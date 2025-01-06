@@ -71,8 +71,8 @@ class IntermediateLayerGetter:
 
 
 def main(args, config):
-    from models import build_model
     import torchvision.transforms as T
+    from models import build_model
     from PIL import Image
 
     model = build_model(config)
@@ -110,13 +110,14 @@ def main(args, config):
 
 if __name__ == '__main__':
     import argparse
+
     import torch
     from config import get_config
 
     parser = argparse.ArgumentParser('Get Intermediate Layer Output')
-    parser.add_argument('--cfg', type=str, required=True, metavar="FILE", help='Path to config file')
-    parser.add_argument('--img', type=str, required=True, metavar="FILE", help='Path to img file')
-    parser.add_argument("--keys", default=None, nargs='+', help="The intermediate layer's keys you want to save.")
+    parser.add_argument('--cfg', type=str, required=True, metavar='FILE', help='Path to config file')
+    parser.add_argument('--img', type=str, required=True, metavar='FILE', help='Path to img file')
+    parser.add_argument('--keys', default=None, nargs='+', help="The intermediate layer's keys you want to save.")
     parser.add_argument('--resume', help='resume from checkpoint')
     parser.add_argument('--save', action='store_true', help='Save the results.')
     args = parser.parse_args()

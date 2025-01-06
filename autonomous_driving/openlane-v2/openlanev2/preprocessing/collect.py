@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # collect.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -26,7 +26,7 @@ from tqdm import tqdm
 from ..io import io
 
 
-def collect(root_path : str, data_dict : dict, collection : str, point_interval : int = 1) -> None:
+def collect(root_path: str, data_dict: dict, collection: str, point_interval: int = 1) -> None:
     r"""
     Load meta data of data in data_dict,
     and store in a .pkl with split as file name.
@@ -43,14 +43,15 @@ def collect(root_path : str, data_dict : dict, collection : str, point_interval 
         not subsampling as default.
 
     """
-    data_list = [(split, segment_id, timestamp.split('.')[0]) \
+    data_list = [
+        (split, segment_id, timestamp.split('.')[0]) \
         for split, segment_ids in data_dict.items() \
-            for segment_id, timestamps in segment_ids.items() \
-                for timestamp in timestamps
+        for segment_id, timestamps in segment_ids.items() \
+        for timestamp in timestamps
     ]
     meta = {
         (split, segment_id, timestamp): io.json_load(f'{root_path}/{split}/{segment_id}/info/{timestamp}.json') \
-            for split, segment_id, timestamp in tqdm(data_list, desc=f'collecting {collection}', ncols=80)
+        for split, segment_id, timestamp in tqdm(data_list, desc=f'collecting {collection}', ncols=80)
     }
 
     for identifier, frame in meta.items():
@@ -64,10 +65,14 @@ def collect(root_path : str, data_dict : dict, collection : str, point_interval 
         if 'annotation' not in frame:
             continue
         for i, lane_centerline in enumerate(frame['annotation']['lane_centerline']):
-            meta[identifier]['annotation']['lane_centerline'][i]['points'] = np.array(lane_centerline['points'][::point_interval], dtype=np.float32)
+            meta[identifier]['annotation']['lane_centerline'][i]['points'] = np.array(
+                lane_centerline['points'][::point_interval], dtype=np.float32)
         for i, traffic_element in enumerate(frame['annotation']['traffic_element']):
-            meta[identifier]['annotation']['traffic_element'][i]['points'] = np.array(traffic_element['points'], dtype=np.float32)
-        meta[identifier]['annotation']['topology_lclc'] = np.array(meta[identifier]['annotation']['topology_lclc'], dtype=np.int8)
-        meta[identifier]['annotation']['topology_lcte'] = np.array(meta[identifier]['annotation']['topology_lcte'], dtype=np.int8)
+            meta[identifier]['annotation']['traffic_element'][i]['points'] = np.array(traffic_element['points'],
+                                                                                      dtype=np.float32)
+        meta[identifier]['annotation']['topology_lclc'] = np.array(meta[identifier]['annotation']['topology_lclc'],
+                                                                   dtype=np.int8)
+        meta[identifier]['annotation']['topology_lcte'] = np.array(meta[identifier]['annotation']['topology_lcte'],
+                                                                   dtype=np.int8)
 
     io.pickle_dump(f'{root_path}/{collection}.pkl', meta)

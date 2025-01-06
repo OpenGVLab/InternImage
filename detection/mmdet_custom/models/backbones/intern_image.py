@@ -4,18 +4,18 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
+from collections import OrderedDict
+
 import torch
 import torch.nn as nn
-from collections import OrderedDict
-import torch.utils.checkpoint as checkpoint
-from timm.models.layers import trunc_normal_, DropPath
-from mmcv.runner import _load_checkpoint
-from mmcv.cnn import constant_init, trunc_normal_init
-from mmdet.utils import get_root_logger
-from mmdet.models.builder import BACKBONES
 import torch.nn.functional as F
-
+import torch.utils.checkpoint as checkpoint
+from mmcv.cnn import constant_init, trunc_normal_init
+from mmcv.runner import _load_checkpoint
+from mmdet.models.builder import BACKBONES
+from mmdet.utils import get_root_logger
 from ops_dcnv3 import modules as dcnv3
+from timm.models.layers import DropPath, trunc_normal_
 
 
 class to_channels_first(nn.Module):
@@ -86,7 +86,7 @@ class CrossAttention(nn.Module):
         attn_head_dim (int, optional): Dimension of attention head.
         out_dim (int, optional): Dimension of output.
     """
-    
+
     def __init__(self,
                  dim,
                  num_heads=8,
@@ -178,7 +178,7 @@ class AttentiveBlock(nn.Module):
         attn_head_dim (int, optional): Dimension of attention head. Default: None.
         out_dim (int, optional): Dimension of output. Default: None.
     """
-    
+
     def __init__(self,
                  dim,
                  num_heads,
@@ -187,7 +187,7 @@ class AttentiveBlock(nn.Module):
                  drop=0.,
                  attn_drop=0.,
                  drop_path=0.,
-                 norm_layer="LN",
+                 norm_layer='LN',
                  attn_head_dim=None,
                  out_dim=None):
         super().__init__()
@@ -593,10 +593,10 @@ class InternImage(nn.Module):
         logger.info(f'using activation layer: {act_layer}')
         logger.info(f'using main norm layer: {norm_layer}')
         logger.info(f'using dpr: {drop_path_type}, {drop_path_rate}')
-        logger.info(f"level2_post_norm: {level2_post_norm}")
-        logger.info(f"level2_post_norm_block_ids: {level2_post_norm_block_ids}")
-        logger.info(f"res_post_norm: {res_post_norm}")
-        logger.info(f"use_dcn_v4_op: {use_dcn_v4_op}")
+        logger.info(f'level2_post_norm: {level2_post_norm}')
+        logger.info(f'level2_post_norm_block_ids: {level2_post_norm_block_ids}')
+        logger.info(f'res_post_norm: {res_post_norm}')
+        logger.info(f'use_dcn_v4_op: {use_dcn_v4_op}')
 
         in_chans = 3
         self.patch_embed = StemLayer(in_chans=in_chans,

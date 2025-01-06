@@ -4,7 +4,6 @@ from os import path as osp
 
 import mmcv
 import numpy as np
-
 from mmdet3d.core.bbox import limit_period
 
 
@@ -61,7 +60,6 @@ def update_outdoor_dbinfos(root_dir, out_dir, pkl_files):
 
 
 def update_nuscenes_or_lyft_infos(root_dir, out_dir, pkl_files):
-
     print(f'{pkl_files} will be modified because '
           f'of the refactor of the LIDAR coordinate system.')
     if root_dir == out_dir:
@@ -89,7 +87,7 @@ def update_nuscenes_or_lyft_infos(root_dir, out_dir, pkl_files):
 
 
 parser = argparse.ArgumentParser(description='Arg parser for data coords '
-                                 'update due to coords sys refactor.')
+                                             'update due to coords sys refactor.')
 parser.add_argument('dataset', metavar='kitti', help='name of the dataset')
 parser.add_argument(
     '--root-dir',

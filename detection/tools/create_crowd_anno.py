@@ -1,12 +1,14 @@
 import argparse
-import os
-import pickle as pkl
-import numpy as np
-import random
-from PIL import Image
 import concurrent.futures
 import json
+import os
+import pickle as pkl
+import random
+
 import mmcv
+import numpy as np
+from PIL import Image
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Generate MMDetection Annotations for Crowdhuman-like dataset')
@@ -16,12 +18,14 @@ def parse_args():
     args = parser.parse_args()
     return args.dataset, args.dataset_split
 
+
 def load_func(fpath):
     assert os.path.exists(fpath)
     with open(fpath, 'r') as fid:
         lines = fid.readlines()
     records = [json.loads(line.strip('\n')) for line in lines]
     return records
+
 
 def decode_annotations(records, dataset_path):
     rec_ids = list(range(len(records)))
@@ -80,16 +84,17 @@ def decode_annotations(records, dataset_path):
     )
     return json_dict
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     dataset_name, dataset_type = parse_args()
     dataset_path = 'data/%s/' % dataset_name
     ch_file_path = dataset_path + 'annotations/annotation_%s.odgt' % dataset_type
     json_file_path = dataset_path + 'annotations/annotation_%s.json' % dataset_type
 
     records = load_func(ch_file_path)
-    print("Loading Annotations Done")
+    print('Loading Annotations Done')
 
     json_dict = decode_annotations(records, dataset_path)
 
-    print("Parsing Bbox Number: %d" % len(json_dict['annotations']))
+    print('Parsing Bbox Number: %d' % len(json_dict['annotations']))
     mmcv.dump(json_dict, json_file_path)

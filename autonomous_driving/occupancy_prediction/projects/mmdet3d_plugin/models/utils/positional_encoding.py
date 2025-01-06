@@ -1,5 +1,3 @@
-import math
-
 import torch
 import torch.nn as nn
 from mmcv.cnn.bricks.transformer import POSITIONAL_ENCODING
@@ -58,7 +56,8 @@ class LearnedPositionalEncoding3D(BaseModule):
         pos = torch.cat(
             (x_embed.unsqueeze(0).unsqueeze(0).repeat(l, h, 1, 1),
              y_embed.unsqueeze(1).unsqueeze(0).repeat(l, 1, w, 1),
-             z_embed.unsqueeze(1).unsqueeze(1).repeat(1, h, w, 1)),dim=-1).permute(3, 0, 1, 2).unsqueeze(0).repeat(mask.shape[0],1, 1, 1, 1)
+             z_embed.unsqueeze(1).unsqueeze(1).repeat(1, h, w, 1)), dim=-1).permute(3, 0, 1, 2).unsqueeze(0).repeat(
+            mask.shape[0], 1, 1, 1, 1)
         return pos
 
     def __repr__(self):

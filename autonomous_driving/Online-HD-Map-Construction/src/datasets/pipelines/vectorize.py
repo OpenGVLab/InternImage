@@ -1,8 +1,10 @@
+from typing import Dict, List, Tuple, Union
+
 import numpy as np
 from mmdet.datasets.builder import PIPELINES
-from shapely.geometry import LineString
 from numpy.typing import NDArray
-from typing import List, Tuple, Union, Dict
+from shapely.geometry import LineString
+
 
 @PIPELINES.register_module(force=True)
 class VectorizeMap(object):
@@ -20,14 +22,14 @@ class VectorizeMap(object):
         sample_dist (float): interpolate distance. Set to -1 to ignore.
     """
 
-    def __init__(self, 
-                 roi_size: Union[Tuple, List], 
+    def __init__(self,
+                 roi_size: Union[Tuple, List],
                  normalize: bool,
                  coords_dim: int,
-                 simplify: bool=False, 
-                 sample_num: int=-1, 
-                 sample_dist: float=-1, 
-        ):
+                 simplify: bool = False,
+                 sample_num: int = -1,
+                 sample_dist: float = -1,
+                 ):
         self.coords_dim = coords_dim
         self.sample_num = sample_num
         self.sample_dist = sample_dist
@@ -45,46 +47,46 @@ class VectorizeMap(object):
 
     def interp_fixed_num(self, line: LineString) -> NDArray:
         ''' Interpolate a line to fixed number of points.
-        
+
         Args:
             line (LineString): line
-        
+
         Returns:
             points (array): interpolated points, shape (N, 2)
         '''
 
         distances = np.linspace(0, line.length, self.sample_num)
-        sampled_points = np.array([list(line.interpolate(distance).coords) 
-            for distance in distances]).squeeze()
+        sampled_points = np.array([list(line.interpolate(distance).coords)
+                                   for distance in distances]).squeeze()
 
         return sampled_points
 
     def interp_fixed_dist(self, line: LineString) -> NDArray:
         ''' Interpolate a line at fixed interval.
-        
+
         Args:
             line (LineString): line
-        
+
         Returns:
             points (array): interpolated points, shape (N, 2)
         '''
 
         distances = list(np.arange(self.sample_dist, line.length, self.sample_dist))
         # make sure to sample at least two points when sample_dist > line.length
-        distances = [0,] + distances + [line.length,] 
-        
+        distances = [0, ] + distances + [line.length, ]
+
         sampled_points = np.array([list(line.interpolate(distance).coords)
-                                for distance in distances]).squeeze()
-        
+                                   for distance in distances]).squeeze()
+
         return sampled_points
-    
+
     def get_vectorized_lines(self, map_geoms: Dict) -> Dict:
-        ''' Vectorize map elements. Iterate over the input dict and apply the 
+        ''' Vectorize map elements. Iterate over the input dict and apply the
         specified sample funcion.
-        
+
         Args:
             line (LineString): line
-        
+
         Returns:
             vectors (array): dict of vectorized map elements.
         '''
@@ -110,22 +112,22 @@ class VectorizeMap(object):
                 elif geom.geom_type == 'Polygon':
                     # polygon objects will not be vectorized
                     continue
-                
+
                 else:
                     raise ValueError('map geoms must be either LineString or Polygon!')
         return vectors
-    
+
     def normalize_line(self, line: NDArray) -> NDArray:
         ''' Convert points to range (0, 1).
-        
+
         Args:
             line (LineString): line
-        
+
         Returns:
             normalized (array): normalized points.
         '''
 
-        origin = -np.array([self.roi_size[0]/2, self.roi_size[1]/2])
+        origin = -np.array([self.roi_size[0] / 2, self.roi_size[1] / 2])
 
         line[:, :2] = line[:, :2] - origin
 
@@ -134,7 +136,7 @@ class VectorizeMap(object):
         line[:, :2] = line[:, :2] / (self.roi_size + eps)
 
         return line
-    
+
     def __call__(self, input_dict):
         map_geoms = input_dict['map_geoms']
 
@@ -145,7 +147,7 @@ class VectorizeMap(object):
         repr_str = self.__class__.__name__
         repr_str += f'(simplify={self.simplify}, '
         repr_str += f'sample_num={self.sample_num}), '
-        repr_str += f'sample_dist={self.sample_dist}), ' 
+        repr_str += f'sample_dist={self.sample_dist}), '
         repr_str += f'roi_size={self.roi_size})'
         repr_str += f'normalize={self.normalize})'
         repr_str += f'coords_dim={self.coords_dim})'

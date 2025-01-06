@@ -1,31 +1,28 @@
 import copy
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from mmcv.cnn import Conv2d, Linear
-from mmcv.runner import force_fp32
-from torch.distributions.categorical import Categorical
-
-from mmdet.core import (multi_apply, build_assigner, build_sampler,
-                        reduce_mean)
-from mmdet.models import HEADS
-from .detr_bbox import DETRBboxHead
-from mmdet.models.utils.transformer import inverse_sigmoid
-from mmdet.models import build_loss
-from mmcv.cnn import Linear, build_activation_layer, bias_init_with_prob
+from mmcv.cnn import (Conv2d, Linear, bias_init_with_prob,
+                      build_activation_layer)
 from mmcv.cnn.bricks.transformer import build_positional_encoding
+from mmcv.runner import force_fp32
+from mmdet.core import build_assigner, build_sampler, multi_apply, reduce_mean
+from mmdet.models import HEADS, build_loss
 from mmdet.models.utils import build_transformer
+from mmdet.models.utils.transformer import inverse_sigmoid
+
 
 @HEADS.register_module(force=True)
 class MapElementDetector(nn.Module):
 
-    def __init__(self, 
-                 canvas_size=(400, 200), 
-                 discrete_output=False, 
-                 separate_detect=False, 
-                 mode='xyxy', 
-                 bbox_size=None, 
-                 coord_dim=2, 
+    def __init__(self,
+                 canvas_size=(400, 200),
+                 discrete_output=False,
+                 separate_detect=False,
+                 mode='xyxy',
+                 bbox_size=None,
+                 coord_dim=2,
                  kp_coord_dim=2,
                  num_classes=3,
                  in_channels=128,
@@ -41,8 +38,8 @@ class MapElementDetector(nn.Module):
                  positional_encoding: dict = None,
                  loss_cls: dict = None,
                  loss_reg: dict = None,
-                 train_cfg: dict = None,):
-        
+                 train_cfg: dict = None, ):
+
         super().__init__()
 
         assigner = train_cfg['assigner']
@@ -65,7 +62,7 @@ class MapElementDetector(nn.Module):
         if loss_cls['use_sigmoid']:
             self.cls_out_channels = num_classes
         else:
-            self.cls_out_channels = num_classes+1
+            self.cls_out_channels = num_classes + 1
 
         self.iterative = iterative
         self.num_reg_fcs = num_reg_fcs
@@ -82,7 +79,7 @@ class MapElementDetector(nn.Module):
 
         self.separate_detect = separate_detect
         self.discrete_output = discrete_output
-        self.bbox_size = 3 if mode=='sce' else 2
+        self.bbox_size = 3 if mode == 'sce' else 2
         if bbox_size is not None:
             self.bbox_size = bbox_size
         self.coord_dim = coord_dim  # for xyz
@@ -115,16 +112,16 @@ class MapElementDetector(nn.Module):
 
         # query_pos_embed & query_embed
         self.query_embedding = nn.Embedding(self.num_query,
-                                            self.embed_dims*2)
-        
-        # for bbox parameter xstart, ystart, xend, yend
-        self.bbox_embedding = nn.Embedding( self.bbox_size, 
-                                            self.embed_dims*2)
+                                            self.embed_dims * 2)
 
-    def _init_branch(self,):
+        # for bbox parameter xstart, ystart, xend, yend
+        self.bbox_embedding = nn.Embedding(self.bbox_size,
+                                           self.embed_dims * 2)
+
+    def _init_branch(self, ):
         """Initialize classification branch and regression branch of head."""
 
-        fc_cls = Linear(self.embed_dims*self.bbox_size, self.cls_out_channels)
+        fc_cls = Linear(self.embed_dims * self.bbox_size, self.cls_out_channels)
         # fc_cls = Linear(self.embed_dims, self.cls_out_channels)
 
         reg_branch = []
@@ -135,12 +132,13 @@ class MapElementDetector(nn.Module):
 
         if self.discrete_output:
             reg_branch.append(nn.Linear(
-                self.embed_dims, max(self.canvas_size), bias=True,))
+                self.embed_dims, max(self.canvas_size), bias=True, ))
         else:
             reg_branch.append(nn.Linear(
-                self.embed_dims, self.coord_dim, bias=True,))
+                self.embed_dims, self.coord_dim, bias=True, ))
 
         reg_branch = nn.Sequential(*reg_branch)
+
         # add sigmoid or not
 
         def _get_clones(module, N):
@@ -240,29 +238,29 @@ class MapElementDetector(nn.Module):
                     [nb_dec, bs, num_query, num_points, 2].
         '''
 
-        (global_context_embedding, sequential_context_embeddings) =\
+        (global_context_embedding, sequential_context_embeddings) = \
             self._prepare_context(context)
 
         x = sequential_context_embeddings
         B, C, H, W = x.shape
 
-        query_embedding = self.query_embedding.weight[None,:,None].repeat(B, 1, self.bbox_size, 1)
+        query_embedding = self.query_embedding.weight[None, :, None].repeat(B, 1, self.bbox_size, 1)
         bbox_embed = self.bbox_embedding.weight
-        query_embedding = query_embedding + bbox_embed[None,None]
-        query_embedding = query_embedding.view(B, -1, C*2)
+        query_embedding = query_embedding + bbox_embed[None, None]
+        query_embedding = query_embedding.view(B, -1, C * 2)
 
         img_masks = x.new_zeros((B, H, W))
         pos_embed = self.positional_encoding(img_masks)
 
         # outs_dec: [nb_dec, bs, num_query, embed_dim]
         hs, init_reference, inter_references = self.transformer(
-                    [x,],
-                    [img_masks.type(torch.bool)],
-                    query_embedding,
-                    [pos_embed],
-                    reg_branches= self.reg_branches if self.iterative else None,  # noqa:E501
-                    cls_branches= None,  # noqa:E501
-            )
+            [x, ],
+            [img_masks.type(torch.bool)],
+            query_embedding,
+            [pos_embed],
+            reg_branches=self.reg_branches if self.iterative else None,  # noqa:E501
+            cls_branches=None,  # noqa:E501
+        )
         outs_dec = hs.permute(0, 2, 1, 3)
 
         outputs = []
@@ -271,23 +269,23 @@ class MapElementDetector(nn.Module):
                 reference = init_reference
             else:
                 reference = inter_references[i - 1]
-            outputs.append(self.get_prediction(i,query_feat,reference))
+            outputs.append(self.get_prediction(i, query_feat, reference))
 
         return outputs
 
     def get_prediction(self, level, query_feat, reference):
 
         bs, num_query, h = query_feat.shape
-        query_feat = query_feat.view(bs, -1, self.bbox_size,h)
+        query_feat = query_feat.view(bs, -1, self.bbox_size, h)
 
         ocls = self.pre_branches['cls'][level](query_feat.flatten(-2))
         # ocls = ocls.mean(-2)
         reference = inverse_sigmoid(reference)
-        reference = reference.view(bs, -1, self.bbox_size,self.coord_dim)
+        reference = reference.view(bs, -1, self.bbox_size, self.coord_dim)
 
         tmp = self.pre_branches['reg'][level](query_feat)
-        tmp[...,:self.kp_coord_dim] =  tmp[...,:self.kp_coord_dim] + reference[...,:self.kp_coord_dim]
-        lines = tmp.sigmoid() # bs, num_query, self.bbox_size,2
+        tmp[..., :self.kp_coord_dim] = tmp[..., :self.kp_coord_dim] + reference[..., :self.kp_coord_dim]
+        lines = tmp.sigmoid()  # bs, num_query, self.bbox_size,2
 
         lines = lines * self.canvas_size[:self.coord_dim]
         lines = lines.flatten(-2)
@@ -295,7 +293,7 @@ class MapElementDetector(nn.Module):
         return dict(
             lines=lines,  # [bs, num_query, bboxsize*2]
             scores=ocls,  # [bs, num_query, num_class]
-            embeddings= query_feat, # [bs, num_query, bbox_size, h]
+            embeddings=query_feat,  # [bs, num_query, bbox_size, h]
         )
 
     @force_fp32(apply_to=('score_pred', 'lines_pred', 'gt_lines'))
@@ -333,7 +331,7 @@ class MapElementDetector(nn.Module):
 
         num_pred_lines = len(lines_pred)
         # assigner and sampler
-        assign_result = self.assigner.assign(preds=dict(lines=lines_pred, scores=score_pred,),
+        assign_result = self.assigner.assign(preds=dict(lines=lines_pred, scores=score_pred, ),
                                              gts=dict(lines=gt_lines,
                                                       labels=gt_labels, ),
                                              gt_bboxes_ignore=gt_bboxes_ignore)
@@ -345,10 +343,10 @@ class MapElementDetector(nn.Module):
 
         # label targets 0: foreground, 1: background
         if self.separate_detect:
-            labels = gt_lines.new_full((num_pred_lines, ), 1, dtype=torch.long)
+            labels = gt_lines.new_full((num_pred_lines,), 1, dtype=torch.long)
         else:
             labels = gt_lines.new_full(
-                (num_pred_lines, ), self.num_classes, dtype=torch.long)
+                (num_pred_lines,), self.num_classes, dtype=torch.long)
         labels[pos_inds] = gt_labels[sampling_result.pos_assigned_gt_inds]
         label_weights = gt_lines.new_ones(num_pred_lines)
 
@@ -421,11 +419,11 @@ class MapElementDetector(nn.Module):
 
         (labels_list, label_weights_list,
          lines_targets_list, lines_weights_list,
-         pos_inds_list, neg_inds_list,pos_gt_inds_list) = multi_apply(
-             self._get_target_single,
-             preds['scores'], lines_pred,
-             class_label, bbox,
-             gt_bboxes_ignore=gt_bboxes_ignore_list)
+         pos_inds_list, neg_inds_list, pos_gt_inds_list) = multi_apply(
+            self._get_target_single,
+            preds['scores'], lines_pred,
+            class_label, bbox,
+            gt_bboxes_ignore=gt_bboxes_ignore_list)
 
         num_total_pos = sum((inds.numel() for inds in pos_inds_list))
         num_total_neg = sum((inds.numel() for inds in neg_inds_list))
@@ -464,7 +462,7 @@ class MapElementDetector(nn.Module):
         """
 
         # Get target for each sample
-        new_gts, num_total_pos, num_total_neg, pos_inds_list, pos_gt_inds_list =\
+        new_gts, num_total_pos, num_total_neg, pos_inds_list, pos_gt_inds_list = \
             self.get_targets(preds, gts, gt_bboxes_ignore_list)
 
         # Batched all data
@@ -473,7 +471,7 @@ class MapElementDetector(nn.Module):
 
         # construct weighted avg_factor to match with the official DETR repo
         cls_avg_factor = num_total_pos * 1.0 + \
-            num_total_neg * self.bg_cls_weight
+                         num_total_neg * self.bg_cls_weight
         if self.sync_cls_avg_factor:
             cls_avg_factor = reduce_mean(
                 preds['scores'].new_tensor([cls_avg_factor]))
@@ -499,7 +497,7 @@ class MapElementDetector(nn.Module):
         # position NLL loss
         if self.discrete_output:
             loss_reg = -(preds['lines'].log_prob(new_gts['bboxs']) *
-                         new_gts['bboxs_weights']).sum()/(num_total_pos)
+                         new_gts['bboxs_weights']).sum() / (num_total_pos)
         else:
             loss_reg = self.reg_loss(
                 preds['lines'], new_gts['bboxs'], new_gts['bboxs_weights'], avg_factor=num_total_pos)
@@ -613,7 +611,7 @@ class MapElementDetector(nn.Module):
             result_dict['bbox'].append(det_preds)
             result_dict['scores'].append(scores)
             result_dict['labels'].append(det_labels)
-            result_dict['lines_bs_idx'].extend([i]*nline)
+            result_dict['lines_bs_idx'].extend([i] * nline)
 
         # for down stream polyline
         _bboxs = torch.cat(result_dict['bbox'], dim=0)

@@ -141,8 +141,8 @@ class Waymo2KITTI(object):
         """
         for img in frame.images:
             img_path = f'{self.image_save_dir}{str(img.name - 1)}/' + \
-                f'{self.prefix}{str(file_idx).zfill(3)}' + \
-                f'{str(frame_idx).zfill(3)}.jpg'
+                       f'{self.prefix}{str(file_idx).zfill(3)}' + \
+                       f'{str(frame_idx).zfill(3)}.jpg'
             with open(img_path, 'wb') as fp:
                 fp.write(img.image)
 
@@ -171,7 +171,7 @@ class Waymo2KITTI(object):
                 self.cart_to_homo(T_front_cam_to_ref) @ T_vehicle_to_cam
             if camera.name == 1:  # FRONT = 1, see dataset.proto for details
                 self.T_velo_to_front_cam = Tr_velo_to_cam.copy()
-            Tr_velo_to_cam = Tr_velo_to_cam[:3, :].reshape((12, ))
+            Tr_velo_to_cam = Tr_velo_to_cam[:3, :].reshape((12,))
             Tr_velo_to_cams.append([f'{i:e}' for i in Tr_velo_to_cam])
 
             # intrinsic parameters
@@ -189,11 +189,11 @@ class Waymo2KITTI(object):
         # camera 0 is unknown in the proto
         for i in range(5):
             calib_context += 'P' + str(i) + ': ' + \
-                ' '.join(camera_calibs[i]) + '\n'
+                             ' '.join(camera_calibs[i]) + '\n'
         calib_context += 'R0_rect' + ': ' + ' '.join(R0_rect) + '\n'
         for i in range(5):
             calib_context += 'Tr_velo_to_cam_' + str(i) + ': ' + \
-                ' '.join(Tr_velo_to_cams[i]) + '\n'
+                             ' '.join(Tr_velo_to_cams[i]) + '\n'
 
         with open(
                 f'{self.calib_save_dir}/{self.prefix}' +
@@ -253,7 +253,7 @@ class Waymo2KITTI(object):
             (points, intensity, elongation, mask_indices))
 
         pc_path = f'{self.point_cloud_save_dir}/{self.prefix}' + \
-            f'{str(file_idx).zfill(3)}{str(frame_idx).zfill(3)}.bin'
+                  f'{str(file_idx).zfill(3)}{str(frame_idx).zfill(3)}.bin'
         point_cloud.astype(np.float32).tofile(pc_path)
 
     def save_label(self, frame, file_idx, frame_idx):
@@ -321,7 +321,7 @@ class Waymo2KITTI(object):
 
             # project bounding box to the virtual reference frame
             pt_ref = self.T_velo_to_front_cam @ \
-                np.array([x, y, z, 1]).reshape((4, 1))
+                     np.array([x, y, z, 1]).reshape((4, 1))
             x, y, z, _ = pt_ref.flatten().tolist()
 
             rotation_y = -obj.box.heading - np.pi / 2
@@ -333,13 +333,13 @@ class Waymo2KITTI(object):
             alpha = -10
 
             line = my_type + \
-                ' {} {} {} {} {} {} {} {} {} {} {} {} {} {}\n'.format(
-                    round(truncated, 2), occluded, round(alpha, 2),
-                    round(bounding_box[0], 2), round(bounding_box[1], 2),
-                    round(bounding_box[2], 2), round(bounding_box[3], 2),
-                    round(height, 2), round(width, 2), round(length, 2),
-                    round(x, 2), round(y, 2), round(z, 2),
-                    round(rotation_y, 2))
+                   ' {} {} {} {} {} {} {} {} {} {} {} {} {} {}\n'.format(
+                       round(truncated, 2), occluded, round(alpha, 2),
+                       round(bounding_box[0], 2), round(bounding_box[1], 2),
+                       round(bounding_box[2], 2), round(bounding_box[3], 2),
+                       round(height, 2), round(width, 2), round(length, 2),
+                       round(x, 2), round(y, 2), round(z, 2),
+                       round(rotation_y, 2))
 
             if self.save_track_id:
                 line_all = line[:-1] + ' ' + name + ' ' + track_id + '\n'

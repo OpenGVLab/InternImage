@@ -4,12 +4,12 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
+import io
 import os
 import zipfile
-import io
+
 import numpy as np
-from PIL import Image
-from PIL import ImageFile
+from PIL import Image, ImageFile
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -96,7 +96,7 @@ class ZipReader(object):
         try:
             im = Image.open(io.BytesIO(data))
         except:
-            print("ERROR IMG LOADED: ", path_img)
+            print('ERROR IMG LOADED: ', path_img)
             random_img = np.random.rand(224, 224, 3) * 255
             im = Image.fromarray(np.uint8(random_img))
         return im

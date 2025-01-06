@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # utils.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -21,19 +21,19 @@
 # ==============================================================================
 
 TRAFFIC_ELEMENT_ATTRIBUTE = {
-    'unknown':          0,
-    'red':              1,
-    'green':            2,
-    'yellow':           3,
-    'go_straight':      4,
-    'turn_left':        5,
-    'turn_right':       6,
-    'no_left_turn':     7,
-    'no_right_turn':    8,
-    'u_turn':           9,
-    'no_u_turn':        10,
-    'slight_left':      11,
-    'slight_right':     12,
+    'unknown': 0,
+    'red': 1,
+    'green': 2,
+    'yellow': 3,
+    'go_straight': 4,
+    'turn_left': 5,
+    'turn_right': 6,
+    'no_left_turn': 7,
+    'no_right_turn': 8,
+    'u_turn': 9,
+    'no_u_turn': 10,
+    'slight_left': 11,
+    'slight_right': 12,
 }
 
 

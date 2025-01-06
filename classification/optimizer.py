@@ -35,7 +35,7 @@ def build_optimizer(config, model):
     optimizer = None
     use_zero = config.TRAIN.OPTIMIZER.USE_ZERO
     if use_zero:
-        print(f"\nUse Zero!")
+        print(f'\nUse Zero!')
         if opt_lower == 'sgd':
             # an ugly implementation
             # this problem is fixed after torch 1.12
@@ -119,7 +119,7 @@ def set_weight_decay_and_lr(
                 if f'levels.{i}' in name:
                     param.requires_grad = False
         # 1. check wd
-        if len(param.shape) == 1 or name.endswith(".bias") or (
+        if len(param.shape) == 1 or name.endswith('.bias') or (
                 name in skip_list) or check_keywords_in_name(
                     name, skip_keywords):
             wd = 0.

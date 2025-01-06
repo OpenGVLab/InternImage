@@ -1,17 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 
+import mmcv_custom  # noqa: F401,F403
+import mmseg_custom  # noqa: F401,F403
 import numpy as np
 import torch
 from mmcv import Config, DictAction
-
 from mmseg.models import build_segmentor
-import mmcv_custom   # noqa: F401,F403
-import mmseg_custom   # noqa: F401,F403
 
 try:
-    from mmcv.cnn.utils.flops_counter import flops_to_string, params_to_string
     from mmcv.cnn import get_model_complexity_info
+    from mmcv.cnn.utils.flops_counter import flops_to_string, params_to_string
 except ImportError:
     raise ImportError('Please upgrade mmcv to >0.6.2')
 
@@ -44,8 +43,10 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+
 def dcnv3_flops(n, k, c):
     return 5 * n * k * c
+
 
 def get_flops(model, input_shape):
     flops, params = get_model_complexity_info(model, input_shape, as_strings=False)
@@ -66,7 +67,7 @@ def get_flops(model, input_shape):
     flops = flops + temp
     return flops_to_string(flops), params_to_string(params)
 
-    
+
 if __name__ == '__main__':
 
     args = parse_args()
@@ -93,7 +94,7 @@ if __name__ == '__main__':
         cfg.model,
         train_cfg=cfg.get('train_cfg'),
         test_cfg=cfg.get('test_cfg'))
-    
+
     if torch.cuda.is_available():
         model.cuda()
     model.eval()

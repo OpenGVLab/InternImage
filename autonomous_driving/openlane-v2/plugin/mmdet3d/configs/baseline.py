@@ -1,6 +1,6 @@
 custom_imports = dict(imports=['projects.openlanev2.baseline'])
 
-method_para = dict(n_control=5) # #point for each curve
+method_para = dict(n_control=5)  # #point for each curve
 
 _dim_ = 128
 
@@ -19,26 +19,26 @@ model = dict(
         init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet18')),
     img_neck=dict(
         type='CustomFPN',
-        in_channels=[_dim_*2, _dim_*4],
+        in_channels=[_dim_ * 2, _dim_ * 4],
         out_channels=_dim_,
         num_outs=1,
         start_level=0,
         out_ids=[0]),
     img_view_transformer=dict(
         type='CustomIPMViewTransformer',
-        num_cam=7,        
+        num_cam=7,
         xbound=[-50.0, 50.0, 1.0],
         ybound=[-25.0, 25.0, 1.0],
         zbound=[-3.0, 2.0, 0.5],
         out_channels=_dim_),
     lc_head=dict(
         type='CustomDETRHead',
-        num_classes=1, 
+        num_classes=1,
         in_channels=_dim_,
         num_query=50,
         object_type='lane',
         num_layers=1,
-        num_reg_dim=method_para['n_control']*3,
+        num_reg_dim=method_para['n_control'] * 3,
         loss_cls=dict(
             type='FocalLoss',
             use_sigmoid=True,
@@ -46,17 +46,17 @@ model = dict(
             alpha=0.25,
             loss_weight=1.0),
         loss_bbox=dict(type='L1Loss', loss_weight=2.5),
-        loss_iou=dict(type='GIoULoss', loss_weight=0.0), # dummy
+        loss_iou=dict(type='GIoULoss', loss_weight=0.0),  # dummy
         train_cfg=dict(
             assigner=dict(
                 type='LaneHungarianAssigner',
                 cls_cost=dict(type='FocalLossCost', weight=1.0),
                 reg_cost=dict(type='LaneL1Cost', weight=2.5),
-                iou_cost=dict(type='IoUCost', weight=0.0))), # dummy
+                iou_cost=dict(type='IoUCost', weight=0.0))),  # dummy
         bev_range=[-50.0, -25.0, -3.0, 50.0, 25.0, 2.0]),
     te_head=dict(
         type='CustomDETRHead',
-        num_classes=13, 
+        num_classes=13,
         in_channels=_dim_,
         num_query=30,
         object_type='bbox',
@@ -120,7 +120,7 @@ train_pipeline = [
             'gt_topology_lclc', 'gt_topology_lcte',
         ],
         meta_keys=[
-            'scene_token', 'sample_idx', 'img_paths', 
+            'scene_token', 'sample_idx', 'img_paths',
             'img_shape', 'scale_factor', 'pad_shape',
             'lidar2img', 'can_bus',
         ],
@@ -138,7 +138,7 @@ test_pipeline = [
             'img',
         ],
         meta_keys=[
-            'scene_token', 'sample_idx', 'img_paths', 
+            'scene_token', 'sample_idx', 'img_paths',
             'img_shape', 'scale_factor', 'pad_shape',
             'lidar2img', 'can_bus',
         ],

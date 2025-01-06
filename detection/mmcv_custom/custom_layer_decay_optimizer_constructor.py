@@ -10,18 +10,18 @@ https://github.com/microsoft/unilm/blob/master/beit/semantic_segmentation/mmcv_c
 
 import json
 
-from mmcv.runner import OPTIMIZER_BUILDERS, DefaultOptimizerConstructor
-from mmcv.runner import get_dist_info
+from mmcv.runner import (OPTIMIZER_BUILDERS, DefaultOptimizerConstructor,
+                         get_dist_info)
 from mmdet.utils import get_root_logger
 
 
 def get_num_layer_for_swin(var_name, num_max_layer, depths):
-    if var_name.startswith("backbone.patch_embed"):
+    if var_name.startswith('backbone.patch_embed'):
         return 0
-    elif "level_embeds" in var_name:
+    elif 'level_embeds' in var_name:
         return 0
-    elif var_name.startswith("backbone.layers") or var_name.startswith(
-            "backbone.levels"):
+    elif var_name.startswith('backbone.layers') or var_name.startswith(
+            'backbone.levels'):
         if var_name.split('.')[3] not in ['downsample', 'norm']:
             stage_id = int(var_name.split('.')[2])
             layer_id = int(var_name.split('.')[4])
@@ -74,64 +74,64 @@ class CustomLayerDecayOptimizerConstructor(DefaultOptimizerConstructor):
         depths = self.paramwise_cfg.get('depths')
         offset_lr_scale = self.paramwise_cfg.get('offset_lr_scale', 1.0)
 
-        logger.info("Build CustomLayerDecayOptimizerConstructor %f - %d" %
+        logger.info('Build CustomLayerDecayOptimizerConstructor %f - %d' %
                     (layer_decay_rate, num_layers))
         weight_decay = self.base_wd
 
         for name, param in module.named_parameters():
             if not param.requires_grad:
                 continue  # frozen weights
-            if len(param.shape) == 1 or name.endswith(".bias") or \
-                    "relative_position" in name or \
-                    "norm" in name or\
-                    "sampling_offsets" in name:
-                group_name = "no_decay"
+            if len(param.shape) == 1 or name.endswith('.bias') or \
+                    'relative_position' in name or \
+                    'norm' in name or\
+                    'sampling_offsets' in name:
+                group_name = 'no_decay'
                 this_weight_decay = 0.
             else:
-                group_name = "decay"
+                group_name = 'decay'
                 this_weight_decay = weight_decay
 
             layer_id = get_num_layer_for_swin(name, num_layers, depths)
             if layer_id == num_layers - 1 and dino_head and \
-                    ("sampling_offsets" in name or "reference_points" in name):
-                group_name = "layer_%d_%s_0.1x" % (layer_id, group_name)
-            elif "sampling_offsets" in name or "reference_points" in name:
-                group_name = "layer_%d_%s_offset_lr_scale" % (layer_id,
+                    ('sampling_offsets' in name or 'reference_points' in name):
+                group_name = 'layer_%d_%s_0.1x' % (layer_id, group_name)
+            elif 'sampling_offsets' in name or 'reference_points' in name:
+                group_name = 'layer_%d_%s_offset_lr_scale' % (layer_id,
                                                               group_name)
             else:
-                group_name = "layer_%d_%s" % (layer_id, group_name)
+                group_name = 'layer_%d_%s' % (layer_id, group_name)
 
             if group_name not in parameter_groups:
                 scale = layer_decay_rate ** (num_layers - layer_id - 1)
                 if scale < 1 and backbone_small_lr == True:
                     scale = scale * 0.1
-                if "0.1x" in group_name:
+                if '0.1x' in group_name:
                     scale = scale * 0.1
-                if "offset_lr_scale" in group_name:
+                if 'offset_lr_scale' in group_name:
                     scale = scale * offset_lr_scale
 
                 parameter_groups[group_name] = {
-                    "weight_decay": this_weight_decay,
-                    "params": [],
-                    "param_names": [],
-                    "lr_scale": scale,
-                    "group_name": group_name,
-                    "lr": scale * self.base_lr,
+                    'weight_decay': this_weight_decay,
+                    'params': [],
+                    'param_names': [],
+                    'lr_scale': scale,
+                    'group_name': group_name,
+                    'lr': scale * self.base_lr,
                 }
 
-            parameter_groups[group_name]["params"].append(param)
-            parameter_groups[group_name]["param_names"].append(name)
+            parameter_groups[group_name]['params'].append(param)
+            parameter_groups[group_name]['param_names'].append(name)
         rank, _ = get_dist_info()
         if rank == 0:
             to_display = {}
             for key in parameter_groups:
                 to_display[key] = {
-                    "param_names": parameter_groups[key]["param_names"],
-                    "lr_scale": parameter_groups[key]["lr_scale"],
-                    "lr": parameter_groups[key]["lr"],
-                    "weight_decay": parameter_groups[key]["weight_decay"],
+                    'param_names': parameter_groups[key]['param_names'],
+                    'lr_scale': parameter_groups[key]['lr_scale'],
+                    'lr': parameter_groups[key]['lr'],
+                    'weight_decay': parameter_groups[key]['weight_decay'],
                 }
-            logger.info("Param groups = %s" % json.dumps(to_display, indent=2))
+            logger.info('Param groups = %s' % json.dumps(to_display, indent=2))
 
         # state_dict = module.state_dict()
         # for group_name in parameter_groups:

@@ -1,27 +1,28 @@
 import copy
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from mmcv.cnn import Conv2d, Linear
+from mmcv.cnn import Linear
 from mmcv.runner import force_fp32
-from torch.distributions.categorical import Categorical
-
 from mmdet.core import multi_apply, reduce_mean
 from mmdet.models import HEADS
+from torch.distributions.categorical import Categorical
+
 from .detr_head import DETRMapFixedNumHead
 
 
 @HEADS.register_module(force=True)
 class DETRBboxHead(DETRMapFixedNumHead):
 
-    def __init__(self, *args, canvas_size=(400, 200), discrete_output=True, separate_detect=True, 
-        mode='xyxy', bbox_size=None, coord_dim=2, kp_coord_dim=2,
-        **kwargs):
+    def __init__(self, *args, canvas_size=(400, 200), discrete_output=True, separate_detect=True,
+                 mode='xyxy', bbox_size=None, coord_dim=2, kp_coord_dim=2,
+                 **kwargs):
         self.canvas_size = canvas_size  # hard code
 
         self.separate_detect = separate_detect
         self.discrete_output = discrete_output
-        self.bbox_size = 3 if mode=='sce' else 2
+        self.bbox_size = 3 if mode == 'sce' else 2
         if bbox_size is not None:
             self.bbox_size = bbox_size
         self.coord_dim = coord_dim  # for xyz
@@ -31,7 +32,7 @@ class DETRBboxHead(DETRMapFixedNumHead):
         del self.canvas_size
         self.register_buffer('canvas_size', torch.tensor(canvas_size))
         self._init_embedding()
-        
+
     def _init_embedding(self):
 
         # for bbox parameter xstart, ystart, xend, yend
@@ -42,12 +43,12 @@ class DETRBboxHead(DETRMapFixedNumHead):
 
         self.img_coord_embed = nn.Linear(2, self.embed_dims)
 
-    def _init_branch(self,):
+    def _init_branch(self, ):
         """Initialize classification branch and regression branch of head."""
-        
+
         # add sigmoid or not
         if self.separate_detect:
-            if self.cls_out_channels == self.num_classes+1:
+            if self.cls_out_channels == self.num_classes + 1:
                 self.cls_out_channels = 2
             else:
                 self.cls_out_channels = 1
@@ -62,10 +63,10 @@ class DETRBboxHead(DETRMapFixedNumHead):
 
         if self.discrete_output:
             reg_branch.append(nn.Linear(
-                self.embed_dims, max(self.canvas_size), bias=True,))
+                self.embed_dims, max(self.canvas_size), bias=True, ))
         else:
             reg_branch.append(nn.Linear(
-                self.embed_dims, self.bbox_size*self.coord_dim, bias=True,))
+                self.embed_dims, self.bbox_size * self.coord_dim, bias=True, ))
 
         reg_branch = nn.Sequential(*reg_branch)
 
@@ -133,12 +134,12 @@ class DETRBboxHead(DETRMapFixedNumHead):
                     [nb_dec, bs, num_query, num_points, 2].
         '''
 
-        (global_context_embedding, sequential_context_embeddings) =\
+        (global_context_embedding, sequential_context_embeddings) = \
             self._prepare_context(batch, context)
 
         if self.separate_detect:
             query_embedding = self.query_embedding.weight[None] + \
-                global_context_embedding[:, None]
+                              global_context_embedding[:, None]
         else:
             B = sequential_context_embeddings.shape[0]
             query_embedding = self.query_embedding.weight[None].repeat(B, 1, 1)
@@ -166,18 +167,18 @@ class DETRBboxHead(DETRMapFixedNumHead):
             pos = []
             for i in range(4):
                 pos_embeds = self.bbox_embedding.weight[i]
-                _pos = self.pre_branches['reg'](query_feat+pos_embeds)
+                _pos = self.pre_branches['reg'](query_feat + pos_embeds)
                 pos.append(_pos)
 
             # # y mask
             # _vert_mask = torch.arange(logits.shape[-1], device=logits.device)
             # vertices_mask_y = (_vert_mask < self.canvas_size[1]+1)
             # logits[:,1::2] = logits[:,1::2]*vertices_mask_y - ~vertices_mask_y*1e9
-            logits = torch.stack(pos, dim=-2)/1.
+            logits = torch.stack(pos, dim=-2) / 1.
             lines = Categorical(logits=logits)
         else:
             lines = self.pre_branches['reg'](query_feat).sigmoid()
-            lines = lines.unflatten(-1, (self.bbox_size, self.coord_dim))*self.canvas_size
+            lines = lines.unflatten(-1, (self.bbox_size, self.coord_dim)) * self.canvas_size
             lines = lines.flatten(-2)
 
         return dict(
@@ -220,7 +221,7 @@ class DETRBboxHead(DETRMapFixedNumHead):
 
         num_pred_lines = len(lines_pred)
         # assigner and sampler
-        assign_result = self.assigner.assign(preds=dict(lines=lines_pred, scores=score_pred,),
+        assign_result = self.assigner.assign(preds=dict(lines=lines_pred, scores=score_pred, ),
                                              gts=dict(lines=gt_lines,
                                                       labels=gt_labels, ),
                                              gt_bboxes_ignore=gt_bboxes_ignore)
@@ -232,10 +233,10 @@ class DETRBboxHead(DETRMapFixedNumHead):
 
         # label targets 0: foreground, 1: background
         if self.separate_detect:
-            labels = gt_lines.new_full((num_pred_lines, ), 1, dtype=torch.long)
+            labels = gt_lines.new_full((num_pred_lines,), 1, dtype=torch.long)
         else:
             labels = gt_lines.new_full(
-                (num_pred_lines, ), self.num_classes, dtype=torch.long)
+                (num_pred_lines,), self.num_classes, dtype=torch.long)
         labels[pos_inds] = gt_labels[sampling_result.pos_assigned_gt_inds]
         label_weights = gt_lines.new_ones(num_pred_lines)
 
@@ -308,11 +309,11 @@ class DETRBboxHead(DETRMapFixedNumHead):
 
         (labels_list, label_weights_list,
          lines_targets_list, lines_weights_list,
-         pos_inds_list, neg_inds_list,pos_gt_inds_list) = multi_apply(
-             self._get_target_single,
-             preds['scores'], lines_pred,
-             class_label, bbox,
-             gt_bboxes_ignore=gt_bboxes_ignore_list)
+         pos_inds_list, neg_inds_list, pos_gt_inds_list) = multi_apply(
+            self._get_target_single,
+            preds['scores'], lines_pred,
+            class_label, bbox,
+            gt_bboxes_ignore=gt_bboxes_ignore_list)
 
         num_total_pos = sum((inds.numel() for inds in pos_inds_list))
         num_total_neg = sum((inds.numel() for inds in neg_inds_list))
@@ -351,7 +352,7 @@ class DETRBboxHead(DETRMapFixedNumHead):
         """
 
         # Get target for each sample
-        new_gts, num_total_pos, num_total_neg, pos_inds_list, pos_gt_inds_list =\
+        new_gts, num_total_pos, num_total_neg, pos_inds_list, pos_gt_inds_list = \
             self.get_targets(preds, gts, gt_bboxes_ignore_list)
 
         # Batched all data
@@ -360,7 +361,7 @@ class DETRBboxHead(DETRMapFixedNumHead):
 
         # construct weighted avg_factor to match with the official DETR repo
         cls_avg_factor = num_total_pos * 1.0 + \
-            num_total_neg * self.bg_cls_weight
+                         num_total_neg * self.bg_cls_weight
         if self.sync_cls_avg_factor:
             cls_avg_factor = reduce_mean(
                 preds['scores'].new_tensor([cls_avg_factor]))
@@ -386,7 +387,7 @@ class DETRBboxHead(DETRMapFixedNumHead):
         # position NLL loss
         if self.discrete_output:
             loss_reg = -(preds['lines'].log_prob(new_gts['bboxs']) *
-                         new_gts['bboxs_weights']).sum()/(num_total_pos)
+                         new_gts['bboxs_weights']).sum() / (num_total_pos)
         else:
             loss_reg = self.reg_loss(
                 preds['lines'], new_gts['bboxs'], new_gts['bboxs_weights'], avg_factor=num_total_pos)
@@ -408,9 +409,9 @@ class DETRBboxHead(DETRMapFixedNumHead):
         pos_msk = label == 0
         neg_msk = ~pos_msk
 
-        loss_cls = -(p.log()*pos_msk + (1-p).log()*neg_msk)
+        loss_cls = -(p.log() * pos_msk + (1 - p).log() * neg_msk)
 
-        loss_cls = (loss_cls * weights).sum()/cls_avg_factor
+        loss_cls = (loss_cls * weights).sum() / cls_avg_factor
 
         return loss_cls
 
@@ -465,7 +466,7 @@ class DETRBboxHead(DETRMapFixedNumHead):
             result_dict['bbox'].append(det_preds)
             result_dict['scores'].append(scores)
             result_dict['labels'].append(det_labels)
-            result_dict['lines_bs_idx'].extend([i]*nline)
+            result_dict['lines_bs_idx'].extend([i] * nline)
 
         # for down stream polyline
         _bboxs = torch.cat(result_dict['bbox'], dim=0)

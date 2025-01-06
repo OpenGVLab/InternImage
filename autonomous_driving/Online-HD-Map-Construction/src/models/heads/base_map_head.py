@@ -3,7 +3,6 @@ from abc import ABCMeta, abstractmethod
 import torch.nn as nn
 from mmcv.runner import auto_fp16
 from mmcv.utils import print_log
-
 from mmdet.utils import get_root_logger
 
 
@@ -24,10 +23,10 @@ class BaseMapHead(nn.Module, metaclass=ABCMeta):
             logger = get_root_logger()
             print_log(f'load model from: {pretrained}', logger=logger)
 
-    @auto_fp16(apply_to=('img', ))
+    @auto_fp16(apply_to=('img',))
     def forward(self, *args, **kwargs):
         pass
-        
+
     @abstractmethod
     def loss(self, pred, gt):
         '''
@@ -42,7 +41,7 @@ class BaseMapHead(nn.Module, metaclass=ABCMeta):
             )
         '''
         return
-        
+
     @abstractmethod
     def post_process(self, pred):
         '''

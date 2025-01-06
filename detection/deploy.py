@@ -6,9 +6,9 @@ import os.path as osp
 from functools import partial
 
 import mmcv
+import mmcv_custom
+import mmdet_custom
 import torch.multiprocessing as mp
-from torch.multiprocessing import Process, set_start_method
-
 from mmdeploy.apis import (create_calib_input_data, extract_model,
                            get_predefined_partition_cfg, torch2onnx,
                            torch2torchscript, visualize_model)
@@ -18,9 +18,8 @@ from mmdeploy.backend.sdk.export_info import export2SDK
 from mmdeploy.utils import (IR, Backend, get_backend, get_calib_filename,
                             get_ir_config, get_partition_config,
                             get_root_logger, load_config, target_wrapper)
+from torch.multiprocessing import Process, set_start_method
 
-import mmcv_custom
-import mmdet_custom
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Export model to backends.')
@@ -242,9 +241,8 @@ def main():
 
     # ncnn quantization
     if backend == Backend.NCNN and quant:
-        from onnx2ncnn_quant_table import get_table
-
         from mmdeploy.apis.ncnn import get_quant_model_file, ncnn2int8
+        from onnx2ncnn_quant_table import get_table
         model_param_paths = backend_files[::2]
         model_bin_paths = backend_files[1::2]
         backend_files = []

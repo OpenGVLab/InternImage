@@ -12,17 +12,16 @@ import time
 import warnings
 
 import mmcv
+import mmcv_custom  # noqa: F401,F403
+import mmseg_custom  # noqa: F401,F403
 import torch
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
-                         wrap_fp16_model, load_state_dict)
+                         load_state_dict, wrap_fp16_model)
 from mmcv.utils import DictAction
 from mmseg.apis import multi_gpu_test, single_gpu_test
 from mmseg.datasets import build_dataloader, build_dataset
 from mmseg.models import build_segmentor
-
-import mmcv_custom   # noqa: F401,F403
-import mmseg_custom   # noqa: F401,F403
 
 
 def parse_args():
@@ -197,7 +196,7 @@ def main():
         load_state_dict(model.module, checkpoint['state_dict'], strict=False)
     else:
         load_state_dict(model, checkpoint['state_dict'], strict=False)
-    
+
     if 'CLASSES' in checkpoint.get('meta', {}):
         model.CLASSES = checkpoint['meta']['CLASSES']
     else:

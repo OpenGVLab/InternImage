@@ -4,12 +4,13 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
-import torch
-import os
 import math
-from torch.utils.data.sampler import Sampler
-import torch.distributed as dist
+import os
+
 import numpy as np
+import torch
+import torch.distributed as dist
+from torch.utils.data.sampler import Sampler
 
 
 class SubsetRandomSampler(torch.utils.data.Sampler):
@@ -57,12 +58,12 @@ class NodeDistributedSampler(Sampler):
         if num_replicas is None:
             if not dist.is_available():
                 raise RuntimeError(
-                    "Requires distributed package to be available")
+                    'Requires distributed package to be available')
             num_replicas = dist.get_world_size()
         if rank is None:
             if not dist.is_available():
                 raise RuntimeError(
-                    "Requires distributed package to be available")
+                    'Requires distributed package to be available')
             rank = dist.get_rank()
         if local_rank is None:
             local_rank = int(os.environ.get('LOCAL_RANK', 0))

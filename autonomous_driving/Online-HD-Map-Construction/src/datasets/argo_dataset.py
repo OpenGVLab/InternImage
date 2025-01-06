@@ -1,10 +1,13 @@
-from .base_dataset import BaseMapDataset
-from mmdet.datasets import DATASETS
-import numpy as np
-from time import time
-import mmcv
 import os
+from time import time
+
+import mmcv
+import numpy as np
+from mmdet.datasets import DATASETS
 from shapely.geometry import LineString
+
+from .base_dataset import BaseMapDataset
+
 
 @DATASETS.register_module()
 class AV2Dataset(BaseMapDataset):
@@ -22,9 +25,9 @@ class AV2Dataset(BaseMapDataset):
         test_mode (bool): whether in test mode
     """
 
-    def __init__(self, **kwargs,):
+    def __init__(self, **kwargs, ):
         super().__init__(**kwargs)
-    
+
     def load_annotations(self, ann_file):
         """Load annotations from ann_file.
 
@@ -34,20 +37,20 @@ class AV2Dataset(BaseMapDataset):
         Returns:
             list[dict]: List of annotations.
         """
-        
+
         start_time = time()
         ann = mmcv.load(ann_file)
         samples = []
         for seg_id, sequence in ann.items():
             samples.extend(sequence)
         samples = samples[::self.interval]
-        
+
         print(f'collected {len(samples)} samples in {(time() - start_time):.2f}s')
         self.samples = samples
 
     def get_sample(self, idx):
-        """Get data sample. For each sample, map extractor will be applied to extract 
-        map elements. 
+        """Get data sample. For each sample, map extractor will be applied to extract
+        map elements.
 
         Args:
             idx (int): data index
@@ -57,7 +60,7 @@ class AV2Dataset(BaseMapDataset):
         """
 
         sample = self.samples[idx]
-        
+
         if not self.test_mode:
             ann = sample['annotation']
 
@@ -66,7 +69,7 @@ class AV2Dataset(BaseMapDataset):
             for k, v in ann.items():
                 if k in self.cat2id.keys():
                     map_label2geom[self.cat2id[k]] = [LineString(np.array(l)[:, :3]) for l in v]
-        
+
         ego2img_rts = []
         cams = sample['sensor']
         for c in cams.values():
@@ -87,10 +90,10 @@ class AV2Dataset(BaseMapDataset):
             # extrinsics are 4x4 tranform matrix, NOTE: **ego2cam**
             'cam_extrinsics': [c['extrinsic'] for c in cams.values()],
             'ego2img': ego2img_rts,
-            'ego2global_translation': pose['ego2global_translation'], 
+            'ego2global_translation': pose['ego2global_translation'],
             'ego2global_rotation': pose['ego2global_rotation'],
         }
         if not self.test_mode:
-            input_dict.update({'map_geoms': map_label2geom}) # {0: List[ped_crossing(LineString)], 1: ...}})
+            input_dict.update({'map_geoms': map_label2geom})  # {0: List[ped_crossing(LineString)], 1: ...}})
 
         return input_dict

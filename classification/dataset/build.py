@@ -5,14 +5,15 @@
 # --------------------------------------------------------
 
 import os
-import torch
+
 import numpy as np
+import torch
 import torch.distributed as dist
+from timm.data import Mixup, create_transform
 from torchvision import transforms
-from timm.data import Mixup
-from timm.data import create_transform
+
 from .cached_image_folder import ImageCephDataset
-from .samplers import SubsetRandomSampler, NodeDistributedSampler
+from .samplers import NodeDistributedSampler, SubsetRandomSampler
 
 try:
     from torchvision.transforms import InterpolationMode
@@ -50,7 +51,7 @@ class TTA(torch.nn.Module):
         return out
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(size={self.size}, scale={self.scales})"
+        return f'{self.__class__.__name__}(size={self.size}, scale={self.scales})'
 
 
 def build_loader(config):
@@ -58,16 +59,16 @@ def build_loader(config):
     dataset_train, config.MODEL.NUM_CLASSES = build_dataset('train',
                                                             config=config)
     config.freeze()
-    print(f"local rank {config.LOCAL_RANK} / global rank {dist.get_rank()}"
-          "successfully build train dataset")
+    print(f'local rank {config.LOCAL_RANK} / global rank {dist.get_rank()}'
+          'successfully build train dataset')
 
     dataset_val, _ = build_dataset('val', config=config)
-    print(f"local rank {config.LOCAL_RANK} / global rank {dist.get_rank()}"
-          "successfully build val dataset")
+    print(f'local rank {config.LOCAL_RANK} / global rank {dist.get_rank()}'
+          'successfully build val dataset')
 
     dataset_test, _ = build_dataset('test', config=config)
-    print(f"local rank {config.LOCAL_RANK} / global rank {dist.get_rank()}"
-          "successfully build test dataset")
+    print(f'local rank {config.LOCAL_RANK} / global rank {dist.get_rank()}'
+          'successfully build test dataset')
 
     num_tasks = dist.get_world_size()
     global_rank = dist.get_rank()

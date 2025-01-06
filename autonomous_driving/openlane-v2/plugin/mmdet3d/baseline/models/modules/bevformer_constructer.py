@@ -1,19 +1,17 @@
 import numpy as np
 import torch
 import torch.nn as nn
+from mmcv.cnn import xavier_init
+from mmcv.cnn.bricks.transformer import (build_positional_encoding,
+                                         build_transformer_layer_sequence)
+from mmcv.runner.base_module import BaseModule
+from mmdet3d.models import NECKS
 from torch.nn.init import normal_
 from torchvision.transforms.functional import rotate
 
-from mmcv.cnn import xavier_init
-from mmcv.cnn.bricks.transformer import build_transformer_layer_sequence, build_positional_encoding
-from mmcv.runner.base_module import BaseModule
-from mmcv.runner import force_fp32, auto_fp16
-from mmdet.models.utils.builder import TRANSFORMER
-from mmdet3d.models import NECKS
-
-from .temporal_self_attention import TemporalSelfAttention
-from .spatial_cross_attention import MSDeformableAttention3D
 from .decoder import CustomMSDeformableAttention
+from .spatial_cross_attention import MSDeformableAttention3D
+from .temporal_self_attention import TemporalSelfAttention
 
 
 @NECKS.register_module()
@@ -69,7 +67,7 @@ class BEVFormerConstructer(BaseModule):
 
     def init_layers(self):
         self.bev_embedding = nn.Embedding(
-                self.bev_h * self.bev_w, self.embed_dims)
+            self.bev_h * self.bev_w, self.embed_dims)
         self.level_embeds = nn.Parameter(torch.Tensor(
             self.num_feature_levels, self.embed_dims))
         self.cams_embeds = nn.Parameter(
@@ -82,7 +80,7 @@ class BEVFormerConstructer(BaseModule):
         )
         if self.can_bus_norm:
             self.can_bus_mlp.add_module('norm', nn.LayerNorm(self.embed_dims))
- 
+
     def init_weights(self):
         """Initialize the transformer weights."""
         for p in self.parameters():
@@ -117,9 +115,9 @@ class BEVFormerConstructer(BaseModule):
 
         # obtain rotation angle and shift with ego motion
         delta_x = np.array([each['can_bus'][0]
-                           for each in img_metas])
+                            for each in img_metas])
         delta_y = np.array([each['can_bus'][1]
-                           for each in img_metas])
+                            for each in img_metas])
         ego_angle = np.array(
             [each['can_bus'][-2] / np.pi * 180 for each in img_metas])
 
@@ -129,9 +127,9 @@ class BEVFormerConstructer(BaseModule):
         translation_angle = np.arctan2(delta_y, delta_x) / np.pi * 180
         bev_angle = ego_angle - translation_angle
         shift_y = translation_length * \
-            np.cos(bev_angle / 180 * np.pi) / grid_length_y / self.bev_h
+                  np.cos(bev_angle / 180 * np.pi) / grid_length_y / self.bev_h
         shift_x = translation_length * \
-            np.sin(bev_angle / 180 * np.pi) / grid_length_x / self.bev_w
+                  np.sin(bev_angle / 180 * np.pi) / grid_length_x / self.bev_w
         shift_y = shift_y * self.use_shift
         shift_x = shift_x * self.use_shift
         shift = bev_queries.new_tensor(
@@ -167,7 +165,7 @@ class BEVFormerConstructer(BaseModule):
             if self.use_cams_embeds:
                 feat = feat + self.cams_embeds[:, None, None, :].to(feat.dtype)
             feat = feat + self.level_embeds[None,
-                                            None, lvl:lvl + 1, :].to(feat.dtype)
+                          None, lvl:lvl + 1, :].to(feat.dtype)
             spatial_shapes.append(spatial_shape)
             feat_flatten.append(feat)
 
@@ -196,4 +194,3 @@ class BEVFormerConstructer(BaseModule):
         )
 
         return bev_embed
-

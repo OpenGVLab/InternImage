@@ -11,10 +11,8 @@ plugin_dir = 'projects/mmdet3d_plugin/'
 point_cloud_range = [-40, -40, -1.0, 40, 40, 5.4]
 voxel_size = [0.2, 0.2, 8]
 
-
-
 img_norm_cfg = dict(
-   mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 # For nuScenes we usually do 10-class detection
 class_names = [
     'car', 'truck', 'construction_vehicle', 'bus', 'trailer', 'barrier',
@@ -29,12 +27,12 @@ input_modality = dict(
     use_external=True)
 
 _dim_ = 256
-_pos_dim_ = _dim_//2
-_ffn_dim_ = _dim_*2
+_pos_dim_ = _dim_ // 2
+_ffn_dim_ = _dim_ * 2
 _num_levels_ = 4
 bev_h_ = 200
 bev_w_ = 200
-queue_length = 4 # each sequence contains `queue_length` frames.
+queue_length = 4  # each sequence contains `queue_length` frames.
 pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask_rcnn_internimage_s_fpn_3x_coco.pth'
 model = dict(
     type='BEVFormerOcc',
@@ -81,7 +79,7 @@ model = dict(
         #     alpha=0.25,
         #     loss_weight=10.0),
         use_mask=False,
-        loss_occ= dict(
+        loss_occ=dict(
             type='CrossEntropyLoss',
             use_sigmoid=False,
             loss_weight=1.0),
@@ -134,28 +132,28 @@ model = dict(
 
         ),
 
-
-    # model training and testing settings
-    train_cfg=dict(pts=dict(
-        grid_size=[512, 512, 1],
-        voxel_size=voxel_size,
-        point_cloud_range=point_cloud_range,
-        out_size_factor=4,
-        assigner=dict(
-            type='HungarianAssigner3D',
-            cls_cost=dict(type='FocalLossCost', weight=2.0),
-            reg_cost=dict(type='BBox3DL1Cost', weight=0.25),
-            iou_cost=dict(type='IoUCost', weight=0.0), # Fake cost. This is just to make it compatible with DETR head.
-            pc_range=point_cloud_range)))))
+        # model training and testing settings
+        train_cfg=dict(pts=dict(
+            grid_size=[512, 512, 1],
+            voxel_size=voxel_size,
+            point_cloud_range=point_cloud_range,
+            out_size_factor=4,
+            assigner=dict(
+                type='HungarianAssigner3D',
+                cls_cost=dict(type='FocalLossCost', weight=2.0),
+                reg_cost=dict(type='BBox3DL1Cost', weight=0.25),
+                iou_cost=dict(type='IoUCost', weight=0.0),
+                # Fake cost. This is just to make it compatible with DETR head.
+                pc_range=point_cloud_range)))))
 
 dataset_type = 'NuSceneOcc'
 data_root = 'data/occ3d-nus/'
 file_client_args = dict(backend='disk')
-occ_gt_data_root='data/occ3d-nus'
+occ_gt_data_root = 'data/occ3d-nus'
 
 train_pipeline = [
     dict(type='LoadMultiViewImageFromFiles', to_float32=True),
-    dict(type='LoadOccGTFromFile',data_root=occ_gt_data_root),
+    dict(type='LoadOccGTFromFile', data_root=occ_gt_data_root),
     dict(type='PhotoMetricDistortionMultiViewImage'),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True, with_attr_label=False),
     dict(type='ObjectRangeFilter', point_cloud_range=point_cloud_range),
@@ -163,12 +161,12 @@ train_pipeline = [
     dict(type='NormalizeMultiviewImage', **img_norm_cfg),
     dict(type='PadMultiViewImage', size_divisor=32),
     dict(type='DefaultFormatBundle3D', class_names=class_names),
-    dict(type='CustomCollect3D', keys=[ 'img','voxel_semantics','mask_lidar','mask_camera'] )
+    dict(type='CustomCollect3D', keys=['img', 'voxel_semantics', 'mask_lidar', 'mask_camera'])
 ]
 
 test_pipeline = [
     dict(type='LoadMultiViewImageFromFiles', to_float32=True),
-    dict(type='LoadOccGTFromFile',data_root=occ_gt_data_root),
+    dict(type='LoadOccGTFromFile', data_root=occ_gt_data_root),
     dict(type='NormalizeMultiviewImage', **img_norm_cfg),
     dict(type='PadMultiViewImage', size_divisor=32),
     dict(
@@ -205,7 +203,7 @@ data = dict(
     val=dict(type=dataset_type,
              data_root=data_root,
              ann_file=data_root + 'occ_infos_temporal_val.pkl',
-             pipeline=test_pipeline,  bev_size=(bev_h_, bev_w_),
+             pipeline=test_pipeline, bev_size=(bev_h_, bev_w_),
              classes=class_names, modality=input_modality, samples_per_gpu=1),
     test=dict(type=dataset_type,
               data_root=data_root,
@@ -223,7 +221,7 @@ optimizer = dict(
     constructor='CustomLayerDecayOptimizerConstructor',
     paramwise_cfg=dict(
         num_layers=33, layer_decay_rate=1.0,
-                       depths=[4, 4, 21,4]))
+        depths=[4, 4, 21, 4]))
 
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 # learning policy

@@ -1,4 +1,5 @@
 import torch
+
 file_path = './ckpts/bevformer_v4.pth'
 model = torch.load(file_path, map_location='cpu')
 all = 0

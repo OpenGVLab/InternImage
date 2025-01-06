@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # assigners.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -21,10 +21,9 @@
 # ==============================================================================
 
 import torch
-from scipy.optimize import linear_sum_assignment
-
+from mmdet.core.bbox.assigners import AssignResult, HungarianAssigner
 from mmdet.core.bbox.builder import BBOX_ASSIGNERS
-from mmdet.core.bbox.assigners import HungarianAssigner, AssignResult
+from scipy.optimize import linear_sum_assignment
 
 
 @BBOX_ASSIGNERS.register_module()
@@ -43,10 +42,10 @@ class LaneHungarianAssigner(HungarianAssigner):
         num_gts, num_lanes = gt_lanes.size(0), lane_pred.size(0)
 
         # 1. assign -1 by default
-        assigned_gt_inds = lane_pred.new_full((num_lanes, ),
+        assigned_gt_inds = lane_pred.new_full((num_lanes,),
                                               -1,
                                               dtype=torch.long)
-        assigned_labels = lane_pred.new_full((num_lanes, ),
+        assigned_labels = lane_pred.new_full((num_lanes,),
                                              -1,
                                              dtype=torch.long)
         if num_gts == 0 or num_lanes == 0:

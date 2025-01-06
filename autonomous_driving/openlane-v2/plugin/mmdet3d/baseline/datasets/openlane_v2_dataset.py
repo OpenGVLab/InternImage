@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # openlane_v2_dataset.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -21,21 +21,19 @@
 # ==============================================================================
 
 import os
-import cv2
-import torch
-import numpy as np
 from math import factorial
-from pyquaternion import Quaternion
 
+import cv2
 import mmcv
-from mmdet.datasets import DATASETS
+import numpy as np
+import torch
 from mmdet3d.datasets import Custom3DDataset
-
+from mmdet.datasets import DATASETS
 from openlanev2.dataset import Collection
 from openlanev2.evaluation import evaluate as openlanev2_evaluate
 from openlanev2.preprocessing import check_results
 from openlanev2.visualization.utils import COLOR_DICT
-
+from pyquaternion import Quaternion
 
 COLOR_GT = (0, 255, 0)
 COLOR_GT_TOPOLOGY = (0, 127, 0)
@@ -45,12 +43,11 @@ COLOR_DICT = {k: (v[2], v[1], v[0]) for k, v in COLOR_DICT.items()}
 
 
 def render_pv(images, lidar2imgs, gt_lc, pred_lc, gt_te, gt_te_attr, pred_te, pred_te_attr):
-
     results = []
 
     for idx, (image, lidar2img) in enumerate(zip(images, lidar2imgs)):
 
-        if gt_lc is not None :
+        if gt_lc is not None:
             for lc in gt_lc:
                 xyz1 = np.concatenate([lc, np.ones((lc.shape[0], 1))], axis=1)
                 xyz1 = xyz1 @ lidar2img.T
@@ -74,8 +71,8 @@ def render_pv(images, lidar2imgs, gt_lc, pred_lc, gt_te, gt_te_attr, pred_te, pr
                 points_2d = points_2d.astype(int)
                 image = cv2.polylines(image, points_2d[None], False, COLOR_PRED, 2)
 
-        if idx == 0: # front view image
-            
+        if idx == 0:  # front view image
+
             if gt_te is not None:
                 for bbox, attr in zip(gt_te, gt_te_attr):
                     b = bbox.astype(np.int32)
@@ -90,10 +87,10 @@ def render_pv(images, lidar2imgs, gt_lc, pred_lc, gt_te, gt_te_attr, pred_te, pr
 
     return results
 
+
 def render_corner_rectangle(img, pt1, pt2, color,
                             corner_thickness=3, edge_thickness=2,
                             centre_cross=False, lineType=cv2.LINE_8):
-
     corner_length = min(abs(pt1[0] - pt2[0]), abs(pt1[1] - pt2[1])) // 4
     e_args = [color, edge_thickness, lineType]
     c_args = [color, corner_thickness, lineType]
@@ -118,11 +115,11 @@ def render_corner_rectangle(img, pt1, pt2, color,
         cx, cy = int((pt1[0] + pt2[0]) / 2), int((pt1[1] + pt2[1]) / 2)
         img = cv2.line(img, (cx - corner_length, cy), (cx + corner_length, cy), *e_args)
         img = cv2.line(img, (cx, cy - corner_length), (cx, cy + corner_length), *e_args)
-    
+
     return img
 
-def render_front_view(image, lidar2img, gt_lc, pred_lc, gt_te, pred_te, gt_topology_lcte, pred_topology_lcte):
 
+def render_front_view(image, lidar2img, gt_lc, pred_lc, gt_te, pred_te, gt_topology_lcte, pred_topology_lcte):
     if gt_topology_lcte is not None:
         for lc_idx, lcte in enumerate(gt_topology_lcte):
             for te_idx, connected in enumerate(lcte):
@@ -137,7 +134,7 @@ def render_front_view(image, lidar2img, gt_lc, pred_lc, gt_te, pred_te, gt_topol
                     p1 = (xyz1[:, :2] / xyz1[:, 2:3])[0].astype(int)
 
                     te = gt_te[te_idx]
-                    p2 = np.array([(te[0]+te[2])/2, te[3]]).astype(int)
+                    p2 = np.array([(te[0] + te[2]) / 2, te[3]]).astype(int)
 
                     image = cv2.arrowedLine(image, (p2[0], p2[1]), (p1[0], p1[1]), COLOR_GT_TOPOLOGY, tipLength=0.03)
 
@@ -155,23 +152,25 @@ def render_front_view(image, lidar2img, gt_lc, pred_lc, gt_te, pred_te, gt_topol
                     p1 = (xyz1[:, :2] / xyz1[:, 2:3])[0].astype(int)
 
                     te = pred_te[te_idx]
-                    p2 = np.array([(te[0]+te[2])/2, te[3]]).astype(int)
+                    p2 = np.array([(te[0] + te[2]) / 2, te[3]]).astype(int)
 
                     image = cv2.arrowedLine(image, (p2[0], p2[1]), (p1[0], p1[1]), COLOR_PRED_TOPOLOGY, tipLength=0.03)
 
     return image
-    
-def render_bev(gt_lc=None, pred_lc=None, gt_topology_lclc=None, pred_topology_lclc=None, map_size=[-52, 52, -27, 27], scale=20):
 
-    image = np.zeros((int(scale*(map_size[1]-map_size[0])), int(scale*(map_size[3] - map_size[2])), 3), dtype=np.uint8)
+
+def render_bev(gt_lc=None, pred_lc=None, gt_topology_lclc=None, pred_topology_lclc=None, map_size=[-52, 52, -27, 27],
+               scale=20):
+    image = np.zeros((int(scale * (map_size[1] - map_size[0])), int(scale * (map_size[3] - map_size[2])), 3),
+                     dtype=np.uint8)
 
     if gt_lc is not None:
         for lc in gt_lc:
             draw_coor = (scale * (-lc[:, :2] + np.array([map_size[1], map_size[3]]))).astype(np.int)
-            image = cv2.polylines(image, [draw_coor[:, [1,0]]], False, COLOR_GT, max(round(scale * 0.2), 1))
+            image = cv2.polylines(image, [draw_coor[:, [1, 0]]], False, COLOR_GT, max(round(scale * 0.2), 1))
             image = cv2.circle(image, (draw_coor[0, 1], draw_coor[0, 0]), max(round(scale * 0.5), 3), COLOR_GT, -1)
             image = cv2.circle(image, (draw_coor[-1, 1], draw_coor[-1, 0]), max(round(scale * 0.5), 3), COLOR_GT, -1)
-    
+
     if gt_topology_lclc is not None:
         for l1_idx, lclc in enumerate(gt_topology_lclc):
             for l2_idx, connected in enumerate(lclc):
@@ -182,12 +181,13 @@ def render_bev(gt_lc=None, pred_lc=None, gt_topology_lclc=None, pred_topology_lc
                     l2_mid = len(l2) // 2
                     p1 = (scale * (-l1[l1_mid, :2] + np.array([map_size[1], map_size[3]]))).astype(np.int)
                     p2 = (scale * (-l2[l2_mid, :2] + np.array([map_size[1], map_size[3]]))).astype(np.int)
-                    image = cv2.arrowedLine(image, (p1[1], p1[0]), (p2[1], p2[0]), COLOR_GT_TOPOLOGY, max(round(scale * 0.1), 1), tipLength=0.03)
+                    image = cv2.arrowedLine(image, (p1[1], p1[0]), (p2[1], p2[0]), COLOR_GT_TOPOLOGY,
+                                            max(round(scale * 0.1), 1), tipLength=0.03)
 
     if pred_lc is not None:
         for lc in pred_lc:
             draw_coor = (scale * (-lc[:, :2] + np.array([map_size[1], map_size[3]]))).astype(np.int)
-            image = cv2.polylines(image, [draw_coor[:, [1,0]]], False, COLOR_PRED, max(round(scale * 0.2), 1))
+            image = cv2.polylines(image, [draw_coor[:, [1, 0]]], False, COLOR_PRED, max(round(scale * 0.2), 1))
             image = cv2.circle(image, (draw_coor[0, 1], draw_coor[0, 0]), max(round(scale * 0.5), 3), COLOR_PRED, -1)
             image = cv2.circle(image, (draw_coor[-1, 1], draw_coor[-1, 0]), max(round(scale * 0.5), 3), COLOR_PRED, -1)
 
@@ -201,13 +201,14 @@ def render_bev(gt_lc=None, pred_lc=None, gt_topology_lclc=None, pred_topology_lc
                     l2_mid = len(l2) // 2
                     p1 = (scale * (-l1[l1_mid, :2] + np.array([map_size[1], map_size[3]]))).astype(np.int)
                     p2 = (scale * (-l2[l2_mid, :2] + np.array([map_size[1], map_size[3]]))).astype(np.int)
-                    image = cv2.arrowedLine(image, (p1[1], p1[0]), (p2[1], p2[0]), COLOR_PRED_TOPOLOGY, max(round(scale * 0.1), 1), tipLength=0.03)
+                    image = cv2.arrowedLine(image, (p1[1], p1[0]), (p2[1], p2[0]), COLOR_PRED_TOPOLOGY,
+                                            max(round(scale * 0.1), 1), tipLength=0.03)
 
     return image
 
+
 @DATASETS.register_module()
 class OpenLaneV2SubsetADataset(Custom3DDataset):
-
     CLASSES = [None]
 
     def __init__(self,
@@ -216,18 +217,19 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
                  collection,
                  pipeline,
                  test_mode,
-                ):
+                 ):
         self.ann_file = f'{meta_root}/{collection}.pkl'
         super().__init__(
-            data_root=data_root, 
-            ann_file=self.ann_file, 
-            pipeline=pipeline, 
+            data_root=data_root,
+            ann_file=self.ann_file,
+            pipeline=pipeline,
             test_mode=test_mode,
         )
 
     def load_annotations(self, ann_file):
         ann_file = ann_file.name.split('.pkl')[0].split('/')
-        self.collection = Collection(data_root=self.data_root, meta_root='/'.join(ann_file[:-1]), collection=ann_file[-1])
+        self.collection = Collection(data_root=self.data_root, meta_root='/'.join(ann_file[:-1]),
+                                     collection=ann_file[-1])
         return self.collection.keys
 
     def get_data_info(self, index):
@@ -243,7 +245,6 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
         trans = []
         cam2imgs = []
         for i, camera in enumerate(frame.get_camera_list()):
-
             assert camera == 'ring_front_center' if i == 0 else True, \
                 'the first image should be the front view'
 
@@ -299,10 +300,12 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
         frame = self.collection.get_frame_via_identifier((split, segment_id, timestamp))
 
         gt_lc = np.array([lc['points'] for lc in frame.get_annotations_lane_centerlines()], dtype=np.float32)
-        gt_lc_labels = np.zeros((len(gt_lc), ), dtype=np.int64)
+        gt_lc_labels = np.zeros((len(gt_lc),), dtype=np.int64)
 
-        gt_te = np.array([element['points'].flatten() for element in frame.get_annotations_traffic_elements()], dtype=np.float32).reshape(-1, 4)
-        gt_te_labels = np.array([element['attribute']for element in frame.get_annotations_traffic_elements()], dtype=np.int64)
+        gt_te = np.array([element['points'].flatten() for element in frame.get_annotations_traffic_elements()],
+                         dtype=np.float32).reshape(-1, 4)
+        gt_te_labels = np.array([element['attribute'] for element in frame.get_annotations_traffic_elements()],
+                                dtype=np.int64)
 
         gt_topology_lclc = frame.get_annotations_topology_lclc()
         gt_topology_lcte = frame.get_annotations_topology_lcte()
@@ -318,7 +321,7 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
             'gt_topology_lclc': gt_topology_lclc,
             'gt_topology_lcte': gt_topology_lcte,
         }
-    
+
     def pre_pipeline(self, results):
         pass
 
@@ -330,30 +333,30 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
         example = self.pipeline(input_dict)
         return example
 
-    def evaluate(self, 
-                 results, 
+    def evaluate(self,
+                 results,
                  logger=None,
                  dump=None,
                  dump_dir=None,
-                 visualization=False, 
+                 visualization=False,
                  visualization_dir=None,
                  visualization_num=None,
                  **kwargs):
-        
+
         if logger:
             logger.info(f'Start formating...')
         pred_dict = self.format_preds(results)
 
         if dump:
             assert dump_dir is not None
-            assert check_results(pred_dict), "Please fill the missing keys."
+            assert check_results(pred_dict), 'Please fill the missing keys.'
             output_path = os.path.join(dump_dir, 'result.pkl')
             mmcv.dump(pred_dict, output_path)
 
         if visualization:
             assert visualization_dir is not None
             self.visualize(pred_dict, visualization_dir, visualization_num, **kwargs)
-        
+
         if logger:
             logger.info(f'Start evaluatation...')
         metric_results = {}
@@ -373,7 +376,7 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
             'results': {},
         }
         for index, result in enumerate(results):
-            prediction = {                
+            prediction = {
                 'lane_centerline': [],
                 'traffic_element': [],
                 'topology_lclc': None,
@@ -390,6 +393,7 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
 
             def comb(n, k):
                 return factorial(n) // (factorial(k) * factorial(n - k))
+
             n_points = 11
             n_control = lanes.shape[1]
             A = np.zeros((n_points, n_control))
@@ -434,11 +438,11 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
         return predictions
 
     def visualize(self, pred_dict, visualization_dir, visualization_num, confidence_threshold=0.3, **kwargs):
-        
+
         assert visualization_dir, 'Please specify visualization_dir for saving visualization.'
 
         print('\nStart visualization...\n')
-            
+
         for index, (key, prediction) in enumerate(pred_dict['results'].items()):
             if visualization_num and index >= visualization_num:
                 print(f'\nOnly {visualization_num} frames are visualized.\n')
@@ -475,13 +479,15 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
             # filter topology
             pred_topology_lclc = prediction['topology_lclc'][pred_lc_mask][:, pred_lc_mask] > confidence_threshold
             pred_topology_lcte = prediction['topology_lcte'][pred_lc_mask][:, pred_te_mask] > confidence_threshold
-            
+
             data_info = self.get_data_info(index)
             if frame.get_annotations():
                 gt_lc = np.array([lc['points'] for lc in frame.get_annotations_lane_centerlines()])
 
-                gt_te = np.array([element['points'].flatten() for element in frame.get_annotations_traffic_elements()]).reshape(-1, 4)
-                gt_te_attr = np.array([element['attribute']for element in frame.get_annotations_traffic_elements()])
+                gt_te = np.array(
+                    [element['points'].flatten() for element in frame.get_annotations_traffic_elements()]).reshape(-1,
+                                                                                                                   4)
+                gt_te_attr = np.array([element['attribute'] for element in frame.get_annotations_traffic_elements()])
 
                 gt_topology_lclc = frame.get_annotations_topology_lclc()
                 gt_topology_lcte = frame.get_annotations_topology_lcte()
@@ -492,12 +498,13 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
 
             images = [mmcv.imread(img_path) for img_path in data_info['img_paths']]
             images = render_pv(
-                images, data_info['lidar2img'], 
-                gt_lc=gt_lc, pred_lc=pred_lc, 
+                images, data_info['lidar2img'],
+                gt_lc=gt_lc, pred_lc=pred_lc,
                 gt_te=gt_te, gt_te_attr=gt_te_attr, pred_te=pred_te, pred_te_attr=pred_te_attr,
             )
             for cam_idx, image in enumerate(images):
-                output_path = os.path.join(visualization_dir, f'{"/".join(key)}/pv_{frame.get_camera_list()[cam_idx]}.jpg')
+                output_path = os.path.join(visualization_dir,
+                                           f'{"/".join(key)}/pv_{frame.get_camera_list()[cam_idx]}.jpg')
                 mmcv.imwrite(image, output_path)
 
             img_pts = [
@@ -519,12 +526,13 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
 
             front_view = render_front_view(
                 images[0], data_info['lidar2img'][0],
-                gt_lc=gt_lc, pred_lc=pred_lc, 
+                gt_lc=gt_lc, pred_lc=pred_lc,
                 gt_te=gt_te, pred_te=pred_te,
                 gt_topology_lcte=gt_topology_lcte,
                 pred_topology_lcte=pred_topology_lcte,
             )
-            output_path = os.path.join(visualization_dir, f'{"/".join(key)}/pv_{frame.get_camera_list()[0]}_topology.jpg')
+            output_path = os.path.join(visualization_dir,
+                                       f'{"/".join(key)}/pv_{frame.get_camera_list()[0]}_topology.jpg')
             mmcv.imwrite(front_view, output_path)
 
             # render bev
@@ -540,7 +548,7 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
                 info = '-'
 
             bev_lane = render_bev(
-                gt_lc=gt_lc, pred_lc=pred_lc, 
+                gt_lc=gt_lc, pred_lc=pred_lc,
                 map_size=[-52, 55, -27, 27], scale=20,
             )
             bev_lane = cv2.putText(bev_lane, info, (30, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.8, COLOR_GT, 2)
@@ -553,7 +561,7 @@ class OpenLaneV2SubsetADataset(Custom3DDataset):
                 map_size=[-52, 55, -27, 27], scale=20,
             )
             bev_pred = render_bev(
-                pred_lc=pred_lc,  
+                pred_lc=pred_lc,
                 pred_topology_lclc=pred_topology_lclc,
                 map_size=[-52, 55, -27, 27], scale=20,
             )

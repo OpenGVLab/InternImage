@@ -9,7 +9,6 @@ import torch
 import torch.distributed as dist
 from mmcv.image import tensor2imgs
 from mmcv.runner import get_dist_info
-
 from mmdet.core import encode_mask_results
 
 
@@ -120,7 +119,7 @@ def collect_results_cpu(result_part, size, tmpdir=None):
     if tmpdir is None:
         MAX_LEN = 512
         # 32 is whitespace
-        dir_tensor = torch.full((MAX_LEN, ),
+        dir_tensor = torch.full((MAX_LEN,),
                                 32,
                                 dtype=torch.uint8,
                                 device='cuda')

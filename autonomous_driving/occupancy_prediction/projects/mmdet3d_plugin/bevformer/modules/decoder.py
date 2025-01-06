@@ -4,28 +4,21 @@
 #  Modified by Zhiqi Li
 # ---------------------------------------------
 
-from mmcv.ops.multi_scale_deform_attn import multi_scale_deformable_attn_pytorch
-import mmcv
-import cv2 as cv
-import copy
+import math
 import warnings
-from matplotlib import pyplot as plt
-import numpy as np
+
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from mmcv.cnn import xavier_init, constant_init
-from mmcv.cnn.bricks.registry import (ATTENTION,
-                                      TRANSFORMER_LAYER_SEQUENCE)
+from mmcv.cnn import constant_init, xavier_init
+from mmcv.cnn.bricks.registry import ATTENTION, TRANSFORMER_LAYER_SEQUENCE
 from mmcv.cnn.bricks.transformer import TransformerLayerSequence
-import math
-from mmcv.runner.base_module import BaseModule, ModuleList, Sequential
-from mmcv.utils import (ConfigDict, build_from_cfg, deprecated_api_warning,
-                        to_2tuple)
+from mmcv.ops.multi_scale_deform_attn import \
+    multi_scale_deformable_attn_pytorch
+from mmcv.runner.base_module import BaseModule
+from mmcv.utils import deprecated_api_warning, ext_loader
 
-from mmcv.utils import ext_loader
-from .multi_scale_deformable_attn_function import MultiScaleDeformableAttnFunction_fp32, \
-    MultiScaleDeformableAttnFunction_fp16
+from .multi_scale_deformable_attn_function import \
+    MultiScaleDeformableAttnFunction_fp32
 
 ext_module = ext_loader.load_ext(
     '_ext', ['ms_deform_attn_backward', 'ms_deform_attn_forward'])
@@ -109,9 +102,9 @@ class DetectionTransformerDecoder(TransformerLayerSequence):
 
                 new_reference_points = torch.zeros_like(reference_points)
                 new_reference_points[..., :2] = tmp[
-                    ..., :2] + inverse_sigmoid(reference_points[..., :2])
+                                                ..., :2] + inverse_sigmoid(reference_points[..., :2])
                 new_reference_points[..., 2:3] = tmp[
-                    ..., 4:5] + inverse_sigmoid(reference_points[..., 2:3])
+                                                 ..., 4:5] + inverse_sigmoid(reference_points[..., 2:3])
 
                 new_reference_points = new_reference_points.sigmoid()
 
@@ -311,13 +304,13 @@ class CustomMSDeformableAttention(BaseModule):
             offset_normalizer = torch.stack(
                 [spatial_shapes[..., 1], spatial_shapes[..., 0]], -1)
             sampling_locations = reference_points[:, :, None, :, None, :] \
-                + sampling_offsets \
-                / offset_normalizer[None, None, None, :, None, :]
+                                 + sampling_offsets \
+                                 / offset_normalizer[None, None, None, :, None, :]
         elif reference_points.shape[-1] == 4:
             sampling_locations = reference_points[:, :, None, :, None, :2] \
-                + sampling_offsets / self.num_points \
-                * reference_points[:, :, None, :, None, 2:] \
-                * 0.5
+                                 + sampling_offsets / self.num_points \
+                                 * reference_points[:, :, None, :, None, 2:] \
+                                 * 0.5
         else:
             raise ValueError(
                 f'Last dim of reference_points must be'

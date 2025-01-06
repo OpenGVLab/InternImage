@@ -1,18 +1,17 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import Conv2d, Linear, build_activation_layer
 from mmcv.cnn.bricks.transformer import FFN, build_positional_encoding
 from mmcv.runner import force_fp32
-
 from mmdet.core import (bbox_cxcywh_to_xyxy, bbox_xyxy_to_cxcywh,
                         build_assigner, build_sampler, multi_apply,
                         reduce_mean)
-from mmdet.models.utils import build_transformer
 from mmdet.models.builder import HEADS, build_loss
 from mmdet.models.dense_heads.anchor_free_head import AnchorFreeHead
-import numpy as np
+from mmdet.models.utils import build_transformer
 
 
 @HEADS.register_module(force=True)
@@ -91,11 +90,11 @@ class DETRHead(AnchorFreeHead):
             # assert isinstance(class_weight, float), 'Expected ' \
             #     'class_weight to have type float. Found ' \
             #     f'{type(class_weight)}.'
-           
+
             # NOTE following the official DETR rep0, bg_cls_weight means
             # relative classification weight of the no-object class.
             bg_cls_weight = loss_cls.get('bg_cls_weight', class_weight)
-            
+
             assert isinstance(bg_cls_weight, float), 'Expected ' \
                 'bg_cls_weight to have type float. Found ' \
                 f'{type(bg_cls_weight)}.'
@@ -130,7 +129,7 @@ class DETRHead(AnchorFreeHead):
             # DETR sampling=False, so use PseudoSampler
             sampler_cfg = dict(type='PseudoSampler')
             self.sampler = build_sampler(sampler_cfg, context=self)
-            
+
         self.num_query = num_query
         self.num_classes = num_classes
         self.in_channels = in_channels
@@ -369,7 +368,7 @@ class DETRHead(AnchorFreeHead):
         else:
             fed_loss_classes = unique_gt_classes
         return fed_loss_classes
-    
+
     def loss_single(self,
                     cls_scores,
                     bbox_preds,

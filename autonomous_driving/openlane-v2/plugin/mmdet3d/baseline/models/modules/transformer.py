@@ -4,22 +4,17 @@
 #  Modified by Zhiqi Li
 # ---------------------------------------------
 
-import numpy as np
 import torch
 import torch.nn as nn
 from mmcv.cnn import xavier_init
 from mmcv.cnn.bricks.transformer import build_transformer_layer_sequence
+from mmcv.runner import auto_fp16
 from mmcv.runner.base_module import BaseModule
-
 from mmdet.models.utils.builder import TRANSFORMER
-from torch.nn.init import normal_
-from mmcv.runner.base_module import BaseModule
-from torchvision.transforms.functional import rotate
-from .temporal_self_attention import TemporalSelfAttention
-from .spatial_cross_attention import MSDeformableAttention3D
+
 from .decoder import CustomMSDeformableAttention
-from mmcv.runner import force_fp32, auto_fp16
-import pdb
+from .spatial_cross_attention import MSDeformableAttention3D
+from .temporal_self_attention import TemporalSelfAttention
 
 
 @TRANSFORMER.register_module()
@@ -61,7 +56,6 @@ class PerceptionTransformer(BaseModule):
                 except AttributeError:
                     m.init_weights()
         xavier_init(self.reference_points, distribution='uniform', bias=0.)
-
 
     @auto_fp16(apply_to=('mlvl_feats', 'bev_queries', 'object_query_embed', 'prev_bev', 'bev_pos'))
     def forward(self,

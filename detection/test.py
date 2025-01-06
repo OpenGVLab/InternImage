@@ -11,6 +11,8 @@ import time
 import warnings
 
 import mmcv
+import mmcv_custom  # noqa: F401,F403
+import mmdet_custom  # noqa: F401,F403
 import torch
 from mmcv import Config, DictAction
 from mmcv.cnn import fuse_conv_bn
@@ -21,8 +23,6 @@ from mmdet.apis import multi_gpu_test, single_gpu_test
 from mmdet.datasets import (build_dataloader, build_dataset,
                             replace_ImageToTensor)
 from mmdet.models import build_detector
-import mmdet_custom  # noqa: F401,F403
-import mmcv_custom  # noqa: F401,F403
 
 
 def parse_args():

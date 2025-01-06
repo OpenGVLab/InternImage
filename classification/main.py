@@ -4,34 +4,32 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
-import os
-import time
-import random
 import argparse
 import datetime
-import numpy as np
+import os
+import random
 import subprocess
+import time
+from contextlib import suppress
 
+import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
-from timm.utils import ModelEma, ApexScaler
-from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
-from timm.utils import accuracy, AverageMeter
-
 from config import get_config
-from models import build_model
 from dataset import build_loader
-from lr_scheduler import build_scheduler
-from optimizer import build_optimizer
-from logger import create_logger
-from utils import NativeScalerWithGradNormCount as NativeScaler
-from utils import (load_checkpoint, load_pretrained, save_checkpoint,
-                   get_grad_norm, auto_resume_helper, reduce_tensor,
-                   load_ema_checkpoint, MyAverageMeter)
-
-from contextlib import suppress
 from ddp_hooks import fp16_compress_hook
+from logger import create_logger
+from lr_scheduler import build_scheduler
+from models import build_model
+from optimizer import build_optimizer
+from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
+from timm.utils import ApexScaler, AverageMeter, ModelEma, accuracy
+from utils import MyAverageMeter
+from utils import NativeScalerWithGradNormCount as NativeScaler
+from utils import (auto_resume_helper, get_grad_norm, load_checkpoint,
+                   load_ema_checkpoint, load_pretrained, reduce_tensor,
+                   save_checkpoint)
 
 try:
     from apex import amp
@@ -60,10 +58,10 @@ def parse_option():
     parser.add_argument('--cfg',
                         type=str,
                         required=True,
-                        metavar="FILE",
+                        metavar='FILE',
                         help='path to config file')
     parser.add_argument(
-        "--opts",
+        '--opts',
         help="Modify config options by adding 'KEY VALUE' pairs. ",
         default=None,
         nargs='+')
@@ -71,7 +69,7 @@ def parse_option():
     # easy config modification
     parser.add_argument('--batch-size',
                         type=int,
-                        help="batch size for single GPU")
+                        help='batch size for single GPU')
     parser.add_argument('--dataset',
                         type=str,
                         help='dataset name',
@@ -98,11 +96,11 @@ def parse_option():
     parser.add_argument('--accumulation-steps',
                         type=int,
                         default=1,
-                        help="gradient accumulation steps")
+                        help='gradient accumulation steps')
     parser.add_argument(
         '--use-checkpoint',
         action='store_true',
-        help="whether to use gradient checkpointing to save memory")
+        help='whether to use gradient checkpointing to save memory')
     parser.add_argument(
         '--amp-opt-level',
         type=str,
@@ -128,10 +126,10 @@ def parse_option():
     parser.add_argument(
         '--use-zero',
         action='store_true',
-        help="whether to use ZeroRedundancyOptimizer (ZeRO) to save memory")
+        help='whether to use ZeroRedundancyOptimizer (ZeRO) to save memory')
 
     # distributed training
-    parser.add_argument("--local-rank",
+    parser.add_argument('--local-rank',
                         type=int,
                         required=True,
                         help='local rank for DistributedDataParallel')
@@ -152,14 +150,14 @@ def throughput(data_loader, model, logger):
         for i in range(50):
             model(images)
         torch.cuda.synchronize()
-        logger.info(f"throughput averaged with 30 times")
+        logger.info(f'throughput averaged with 30 times')
         tic1 = time.time()
         for i in range(30):
             model(images)
         torch.cuda.synchronize()
         tic2 = time.time()
         logger.info(
-            f"batch_size {batch_size} throughput {30 * batch_size / (tic2 - tic1)}"
+            f'batch_size {batch_size} throughput {30 * batch_size / (tic2 - tic1)}'
         )
         return
 
@@ -170,7 +168,7 @@ def main(config):
         data_loader_val, data_loader_test, mixup_fn = build_loader(config)
 
     # build runner
-    logger.info(f"Creating model:{config.MODEL.TYPE}/{config.MODEL.NAME}")
+    logger.info(f'Creating model:{config.MODEL.TYPE}/{config.MODEL.NAME}')
     model = build_model(config)
     model.cuda()
     logger.info(str(model))
@@ -178,7 +176,7 @@ def main(config):
     # build optimizer
     optimizer = build_optimizer(config, model)
 
-    if config.AMP_OPT_LEVEL != "O0":
+    if config.AMP_OPT_LEVEL != 'O0':
         config.defrost()
         if has_native_amp:
             config.native_amp = True
@@ -189,14 +187,14 @@ def main(config):
         else:
             use_amp = None
             logger.warning(
-                "Neither APEX or native Torch AMP is available, using float32. "
-                "Install NVIDA apex or upgrade to PyTorch 1.6")
+                'Neither APEX or native Torch AMP is available, using float32. '
+                'Install NVIDA apex or upgrade to PyTorch 1.6')
         config.freeze()
 
     # setup automatic mixed-precision (AMP) loss scaling and op casting
     amp_autocast = suppress  # do nothing
     loss_scaler = None
-    if config.AMP_OPT_LEVEL != "O0":
+    if config.AMP_OPT_LEVEL != 'O0':
         if use_amp == 'apex':
             model, optimizer = amp.initialize(model,
                                               optimizer,
@@ -223,16 +221,16 @@ def main(config):
         model.register_comm_hook(state=None, hook=fp16_compress_hook)
         logger.info('using fp16_compress_hook!')
     except:
-        logger.info("cannot register fp16_compress_hook!")
+        logger.info('cannot register fp16_compress_hook!')
 
     model_without_ddp = model.module
 
     n_parameters = sum(p.numel() for p in model.parameters()
                        if p.requires_grad)
-    logger.info(f"number of params: {n_parameters}")
+    logger.info(f'number of params: {n_parameters}')
     if hasattr(model_without_ddp, 'flops'):
         flops = model_without_ddp.flops()
-        logger.info(f"number of GFLOPs: {flops / 1e9}")
+        logger.info(f'number of GFLOPs: {flops / 1e9}')
 
     # build learning rate scheduler
     lr_scheduler = build_scheduler(config, optimizer, len(data_loader_train)) \
@@ -256,7 +254,7 @@ def main(config):
         if resume_file:
             if config.MODEL.RESUME:
                 logger.warning(
-                    f"auto-resume changing resume file from {config.MODEL.RESUME} to {resume_file}"
+                    f'auto-resume changing resume file from {config.MODEL.RESUME} to {resume_file}'
                 )
             config.defrost()
             config.MODEL.RESUME = resume_file
@@ -274,14 +272,14 @@ def main(config):
         if data_loader_val is not None:
             acc1, acc5, loss = validate(config, data_loader_val, model)
             logger.info(
-                f"Accuracy of the network on the {len(dataset_val)} test images: {acc1:.1f}%"
+                f'Accuracy of the network on the {len(dataset_val)} test images: {acc1:.1f}%'
             )
     elif config.MODEL.PRETRAINED:
         load_pretrained(config, model_without_ddp, logger)
         if data_loader_val is not None:
             acc1, acc5, loss = validate(config, data_loader_val, model)
             logger.info(
-                f"Accuracy of the network on the {len(dataset_val)} test images: {acc1:.1f}%"
+                f'Accuracy of the network on the {len(dataset_val)} test images: {acc1:.1f}%'
             )
 
     # evaluate EMA
@@ -289,12 +287,12 @@ def main(config):
     if config.TRAIN.EMA.ENABLE:
         # Important to create EMA model after cuda(), DP wrapper, and AMP but before SyncBN and DDP wrapper
         model_ema = ModelEma(model, decay=config.TRAIN.EMA.DECAY)
-        print("Using EMA with decay = %.8f" % config.TRAIN.EMA.DECAY)
+        print('Using EMA with decay = %.8f' % config.TRAIN.EMA.DECAY)
         if config.MODEL.RESUME:
             load_ema_checkpoint(config, model_ema, logger)
             acc1, acc5, loss = validate(config, data_loader_val, model_ema.ema)
             logger.info(
-                f"Accuracy of the ema network on the {len(dataset_val)} test images: {acc1:.1f}%"
+                f'Accuracy of the ema network on the {len(dataset_val)} test images: {acc1:.1f}%'
             )
 
     if config.THROUGHPUT_MODE:
@@ -304,7 +302,7 @@ def main(config):
         return
 
     # train
-    logger.info("Start training")
+    logger.info('Start training')
     start_time = time.time()
     for epoch in range(config.TRAIN.START_EPOCH, config.TRAIN.EPOCHS):
         data_loader_train.sampler.set_epoch(epoch)
@@ -337,7 +335,7 @@ def main(config):
         if data_loader_val is not None and epoch % config.EVAL_FREQ == 0:
             acc1, acc5, loss = validate(config, data_loader_val, model, epoch)
             logger.info(
-                f"Accuracy of the network on the {len(dataset_val)} test images: {acc1:.1f}%"
+                f'Accuracy of the network on the {len(dataset_val)} test images: {acc1:.1f}%'
             )
             if dist.get_rank() == 0 and acc1 > max_accuracy:
                 save_checkpoint(config,
@@ -357,7 +355,7 @@ def main(config):
                 acc1, acc5, loss = validate(config, data_loader_val,
                                             model_ema.ema, epoch)
                 logger.info(
-                    f"Accuracy of the ema network on the {len(dataset_val)} test images: {acc1:.1f}%"
+                    f'Accuracy of the ema network on the {len(dataset_val)} test images: {acc1:.1f}%'
                 )
                 if dist.get_rank() == 0 and acc1 > max_ema_accuracy:
                     save_checkpoint(config,
@@ -411,7 +409,7 @@ def train_one_epoch(config,
             samples, targets = mixup_fn(samples, targets)
 
         if not obsolete_torch_version(TORCH_VERSION,
-                                      (1, 9)) and config.AMP_OPT_LEVEL != "O0":
+                                      (1, 9)) and config.AMP_OPT_LEVEL != 'O0':
             with amp_autocast(dtype=amp_type):
                 outputs = model(samples)
         else:
@@ -420,7 +418,7 @@ def train_one_epoch(config,
 
         if config.TRAIN.ACCUMULATION_STEPS > 1:
             if not obsolete_torch_version(
-                    TORCH_VERSION, (1, 9)) and config.AMP_OPT_LEVEL != "O0":
+                    TORCH_VERSION, (1, 9)) and config.AMP_OPT_LEVEL != 'O0':
                 with amp_autocast(dtype=amp_type):
                     loss = criterion(outputs, targets)
                     loss = loss / config.TRAIN.ACCUMULATION_STEPS
@@ -428,7 +426,7 @@ def train_one_epoch(config,
                 with amp_autocast():
                     loss = criterion(outputs, targets)
                     loss = loss / config.TRAIN.ACCUMULATION_STEPS
-            if config.AMP_OPT_LEVEL != "O0":
+            if config.AMP_OPT_LEVEL != 'O0':
                 is_second_order = hasattr(optimizer, 'is_second_order') and \
                     optimizer.is_second_order
                 grad_norm = loss_scaler(loss,
@@ -458,14 +456,14 @@ def train_one_epoch(config,
                 lr_scheduler.step_update(epoch * num_steps + idx)
         else:
             if not obsolete_torch_version(
-                    TORCH_VERSION, (1, 9)) and config.AMP_OPT_LEVEL != "O0":
+                    TORCH_VERSION, (1, 9)) and config.AMP_OPT_LEVEL != 'O0':
                 with amp_autocast(dtype=amp_type):
                     loss = criterion(outputs, targets)
             else:
                 with amp_autocast():
                     loss = criterion(outputs, targets)
             optimizer.zero_grad()
-            if config.AMP_OPT_LEVEL != "O0":
+            if config.AMP_OPT_LEVEL != 'O0':
                 is_second_order = hasattr(optimizer, 'is_second_order') and \
                     optimizer.is_second_order
                 grad_norm = loss_scaler(loss,
@@ -513,7 +511,7 @@ def train_one_epoch(config,
                 f'mem {memory_used:.0f}MB')
     epoch_time = time.time() - start
     logger.info(
-        f"EPOCH {epoch} training takes {datetime.timedelta(seconds=int(epoch_time))}"
+        f'EPOCH {epoch} training takes {datetime.timedelta(seconds=int(epoch_time))}'
     )
 
 
@@ -578,35 +576,35 @@ def validate(config, data_loader, model, epoch=None):
 if __name__ == '__main__':
     _, config = parse_option()
 
-    if config.AMP_OPT_LEVEL != "O0":
-        assert has_native_amp, "Please update pytorch(1.6+) to support amp!"
+    if config.AMP_OPT_LEVEL != 'O0':
+        assert has_native_amp, 'Please update pytorch(1.6+) to support amp!'
 
     # init distributed env
     if 'SLURM_PROCID' in os.environ and int(os.environ['SLURM_TASKS_PER_NODE']) != 1:
-        print("\nDist init: SLURM")
+        print('\nDist init: SLURM')
         rank = int(os.environ['SLURM_PROCID'])
         gpu = rank % torch.cuda.device_count()
         config.defrost()
         config.LOCAL_RANK = gpu
         config.freeze()
 
-        world_size = int(os.environ["SLURM_NTASKS"])
-        if "MASTER_PORT" not in os.environ:
-            os.environ["MASTER_PORT"] = "29501"
-        node_list = os.environ["SLURM_NODELIST"]
+        world_size = int(os.environ['SLURM_NTASKS'])
+        if 'MASTER_PORT' not in os.environ:
+            os.environ['MASTER_PORT'] = '29501'
+        node_list = os.environ['SLURM_NODELIST']
         addr = subprocess.getoutput(
-            f"scontrol show hostname {node_list} | head -n1")
-        if "MASTER_ADDR" not in os.environ:
-            os.environ["MASTER_ADDR"] = addr
+            f'scontrol show hostname {node_list} | head -n1')
+        if 'MASTER_ADDR' not in os.environ:
+            os.environ['MASTER_ADDR'] = addr
 
         os.environ['RANK'] = str(rank)
         os.environ['LOCAL_RANK'] = str(gpu)
         os.environ['LOCAL_SIZE'] = str(torch.cuda.device_count())
         os.environ['WORLD_SIZE'] = str(world_size)
     if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
-        rank = int(os.environ["RANK"])
+        rank = int(os.environ['RANK'])
         world_size = int(os.environ['WORLD_SIZE'])
-        print(f"RANK and WORLD_SIZE in environ: {rank}/{world_size}")
+        print(f'RANK and WORLD_SIZE in environ: {rank}/{world_size}')
     else:
         rank = -1
         world_size = -1
@@ -647,13 +645,13 @@ if __name__ == '__main__':
     os.makedirs(config.OUTPUT, exist_ok=True)
     logger = create_logger(output_dir=config.OUTPUT,
                            dist_rank=dist.get_rank(),
-                           name=f"{config.MODEL.NAME}")
+                           name=f'{config.MODEL.NAME}')
 
     if dist.get_rank() == 0:
-        path = os.path.join(config.OUTPUT, "config.json")
-        with open(path, "w") as f:
+        path = os.path.join(config.OUTPUT, 'config.json')
+        with open(path, 'w') as f:
             f.write(config.dump())
-        logger.info(f"Full config saved to {path}")
+        logger.info(f'Full config saved to {path}')
 
     # print config
     logger.info(config.dump())

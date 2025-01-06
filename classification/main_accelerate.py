@@ -4,31 +4,29 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
-import datetime
 import argparse
-import os
-import time
+import datetime
 import logging
+import os
 import random
-
-import torch
-import torch.backends.cudnn as cudnn
-import numpy as np
-from accelerate import Accelerator
-from accelerate import GradScalerKwargs
-from accelerate.logging import get_logger
-from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
-from timm.utils import AverageMeter, accuracy, ModelEma
-from tqdm import tqdm
+import time
 import warnings
 
+import numpy as np
+import torch
+import torch.backends.cudnn as cudnn
+from accelerate import Accelerator, GradScalerKwargs
+from accelerate.logging import get_logger
 from config import get_config
-from models import build_model
 from dataset import build_loader2
-from lr_scheduler import build_scheduler
-from optimizer import build_optimizer
-from utils import load_pretrained, load_ema_checkpoint
 from ddp_hooks import fp16_compress_hook
+from lr_scheduler import build_scheduler
+from models import build_model
+from optimizer import build_optimizer
+from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
+from timm.utils import AverageMeter, ModelEma, accuracy
+from tqdm import tqdm
+from utils import load_ema_checkpoint, load_pretrained
 
 logger = get_logger(__name__)
 warnings.filterwarnings('ignore')
@@ -37,11 +35,11 @@ warnings.filterwarnings('ignore')
 def parse_option():
     parser = argparse.ArgumentParser(
         'InternImage training and evaluation script', add_help=False)
-    parser.add_argument('--cfg', type=str, required=True, metavar="FILE", help='path to config file')
-    parser.add_argument("--opts", help="Modify config options by adding 'KEY VALUE' pairs. ", default=None, nargs='+')
+    parser.add_argument('--cfg', type=str, required=True, metavar='FILE', help='path to config file')
+    parser.add_argument('--opts', help="Modify config options by adding 'KEY VALUE' pairs. ", default=None, nargs='+')
 
     # easy config modification
-    parser.add_argument('--batch-size', type=int, help="batch size for single GPU")
+    parser.add_argument('--batch-size', type=int, help='batch size for single GPU')
     parser.add_argument('--dataset', type=str, help='dataset name', default=None)
     parser.add_argument('--data-path', type=str, help='path to dataset')
     parser.add_argument('--zip', action='store_true', help='use zipped dataset instead of folder dataset')
@@ -58,16 +56,16 @@ def parse_option():
     parser.add_argument('--eval', action='store_true', help='Perform evaluation only')
     parser.add_argument('--throughput', action='store_true', help='Test throughput only')
     parser.add_argument('--save-ckpt-num', default=1, type=int)
-    parser.add_argument('--accumulation-steps', type=int, default=1, help="gradient accumulation steps")
+    parser.add_argument('--accumulation-steps', type=int, default=1, help='gradient accumulation steps')
     parser.add_argument('--disable-grad-scalar', action='store_true', help='disable Grad Scalar')
     parser.add_argument(
-        "--logger",
+        '--logger',
         type=str,
-        default="tensorboard",
-        choices=["tensorboard", "wandb"],
+        default='tensorboard',
+        choices=['tensorboard', 'wandb'],
         help=(
-            "Whether to use [tensorboard](https://www.tensorflow.org/tensorboard) or [wandb](https://www.wandb.ai)"
-            " for experiment tracking and logging of model metrics and model checkpoints"
+            'Whether to use [tensorboard](https://www.tensorflow.org/tensorboard) or [wandb](https://www.wandb.ai)'
+            ' for experiment tracking and logging of model metrics and model checkpoints'
         ),
     )
 
@@ -91,10 +89,10 @@ def seed_everything(seed, rank):
 
 
 def save_config(config):
-    path = os.path.join(config.OUTPUT, "config.json")
-    with open(path, "w") as f:
+    path = os.path.join(config.OUTPUT, 'config.json')
+    with open(path, 'w') as f:
         f.write(config.dump())
-    logger.info(f"Full config saved to {path}")
+    logger.info(f'Full config saved to {path}')
 
 
 def build_criterion(config):
@@ -140,7 +138,7 @@ def setup_autoresume(config):
 
         if resume_file:
             if config.MODEL.RESUME:
-                logger.warning(f"auto-resume changing resume file from {config.MODEL.RESUME} to {resume_file}")
+                logger.warning(f'auto-resume changing resume file from {config.MODEL.RESUME} to {resume_file}')
             config.defrost()
             config.MODEL.RESUME = resume_file
             config.freeze()
@@ -200,10 +198,10 @@ def load_checkpoint_if_needed(accelerator, config, lr_scheduler=None):
 def log_model_statistic(model_wo_ddp):
     n_parameters = sum(p.numel() for p in model_wo_ddp.parameters()
                        if p.requires_grad)
-    logger.info(f"number of params: {n_parameters}")
+    logger.info(f'number of params: {n_parameters}')
     if hasattr(model_wo_ddp, 'flops'):
         flops = model_wo_ddp.flops()
-        logger.info(f"number of GFLOPs: {flops / 1e9}")
+        logger.info(f'number of GFLOPs: {flops / 1e9}')
 
 
 def train_epoch(*, model, optimizer, data_loader, scheduler, criterion, mixup_fn,
@@ -316,15 +314,15 @@ def train(config, accelerator: Accelerator):
         model.register_comm_hook(state=None, hook=fp16_compress_hook)
         logger.info('using fp16_compress_hook!')
     except:
-        logger.info("cannot register fp16_compress_hook!")
+        logger.info('cannot register fp16_compress_hook!')
 
     max_acc = load_checkpoint_if_needed(accelerator, config, lr_scheduler)
 
-    logger.info(f"Created model:{config.MODEL.TYPE}/{config.MODEL.NAME}")
+    logger.info(f'Created model:{config.MODEL.TYPE}/{config.MODEL.NAME}')
     logger.info(str(model))
-    logger.info("Effective Optimizer Steps: {}".format(effective_update_steps_per_epoch))
-    logger.info("Start training")
-    logger.info("Max accuracy: {}".format(max_acc))
+    logger.info('Effective Optimizer Steps: {}'.format(effective_update_steps_per_epoch))
+    logger.info('Start training')
+    logger.info('Max accuracy: {}'.format(max_acc))
     log_model_statistic(accelerator.unwrap_model(model))
 
     for epoch in range(config.TRAIN.START_EPOCH, config.TRAIN.EPOCHS):
@@ -346,8 +344,8 @@ def main():
     args, config = parse_option()
     os.makedirs(config.OUTPUT, exist_ok=True)
     logging.basicConfig(
-        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-        datefmt="%m/%d/%Y %H:%M:%S",
+        format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
+        datefmt='%m/%d/%Y %H:%M:%S',
         filename=os.path.join(config.OUTPUT, 'run.log'),
         level=logging.INFO,
     )

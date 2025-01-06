@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import tempfile
+
 import torch
 from mmcv import Config
 from mmcv.runner import load_state_dict
-
 from mmdet3d.models import build_detector
 
 
@@ -104,13 +104,13 @@ def main():
 
     EXTRACT_KEYS = {
         'bbox_head.conv_pred.conv_cls.weight':
-        ('bbox_head.conv_pred.conv_out.weight', [(0, 2), (-NUM_CLASSES, -1)]),
+            ('bbox_head.conv_pred.conv_out.weight', [(0, 2), (-NUM_CLASSES, -1)]),
         'bbox_head.conv_pred.conv_cls.bias':
-        ('bbox_head.conv_pred.conv_out.bias', [(0, 2), (-NUM_CLASSES, -1)]),
+            ('bbox_head.conv_pred.conv_out.bias', [(0, 2), (-NUM_CLASSES, -1)]),
         'bbox_head.conv_pred.conv_reg.weight':
-        ('bbox_head.conv_pred.conv_out.weight', [(2, -NUM_CLASSES)]),
+            ('bbox_head.conv_pred.conv_out.weight', [(2, -NUM_CLASSES)]),
         'bbox_head.conv_pred.conv_reg.bias':
-        ('bbox_head.conv_pred.conv_out.bias', [(2, -NUM_CLASSES)])
+            ('bbox_head.conv_pred.conv_out.bias', [(2, -NUM_CLASSES)])
     }
 
     # Delete some useless keys

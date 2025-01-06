@@ -5,6 +5,7 @@
 # --------------------------------------------------------
 
 import os
+
 import yaml
 from yacs.config import CfgNode as CN
 
@@ -80,7 +81,6 @@ _C.MODEL.INTERN_IMAGE.LEVEL2_POST_NORM = False
 _C.MODEL.INTERN_IMAGE.LEVEL2_POST_NORM_BLOCK_IDS = None
 _C.MODEL.INTERN_IMAGE.CENTER_FEATURE_SCALE = False
 _C.MODEL.INTERN_IMAGE.REMOVE_CENTER = False
-
 
 
 # -----------------------------------------------------------------------------

@@ -2,6 +2,7 @@ import mmcv
 import numpy as np
 from mmdet.datasets.builder import PIPELINES
 
+
 @PIPELINES.register_module(force=True)
 class LoadMultiViewImagesFromFiles(object):
     """Load multi channel images from a list of separate channel files.
@@ -56,5 +57,5 @@ class LoadMultiViewImagesFromFiles(object):
 
     def __repr__(self):
         """str: Return a string that describes the module."""
-        return f'{self.__class__.__name__} (to_float32={self.to_float32}, '\
-            f"color_type='{self.color_type}')"
+        return f'{self.__class__.__name__} (to_float32={self.to_float32}, ' \
+               f"color_type='{self.color_type}')"

@@ -3,17 +3,13 @@
 # ---------------------------------------------
 #  Modified by Tianyu Li
 # ---------------------------------------------
-import time
-import copy
-import numpy as np
-import torch
 
-from mmcv.runner import force_fp32, auto_fp16
-from mmdet.core import bbox2result
-from mmdet.models import DETECTORS
-from mmdet.models.builder import build_head
+import torch
+from mmcv.runner import auto_fp16
 from mmdet3d.models.builder import build_neck
 from mmdet3d.models.detectors.mvx_two_stage import MVXTwoStageDetector
+from mmdet.models import DETECTORS
+from mmdet.models.builder import build_head
 
 
 @DETECTORS.register_module()
@@ -79,7 +75,6 @@ class ROAD_BEVFormer(MVXTwoStageDetector):
             'prev_angle': 0,
         }
 
-
     def extract_img_feat(self, img, img_metas, len_queue=None):
         """Extract features of images."""
         B = img.size(0)
@@ -108,7 +103,7 @@ class ROAD_BEVFormer(MVXTwoStageDetector):
         for img_feat in img_feats:
             BN, C, H, W = img_feat.size()
             if len_queue is not None:
-                img_feats_reshaped.append(img_feat.view(int(B/len_queue), len_queue, int(BN / B), C, H, W))
+                img_feats_reshaped.append(img_feat.view(int(B / len_queue), len_queue, int(BN / B), C, H, W))
             else:
                 img_feats_reshaped.append(img_feat.view(B, int(BN / B), C, H, W))
         return img_feats_reshaped
@@ -118,7 +113,7 @@ class ROAD_BEVFormer(MVXTwoStageDetector):
         """Extract features from images and points."""
 
         img_feats = self.extract_img_feat(img, img_metas, len_queue=len_queue)
-        
+
         return img_feats
 
     def forward_dummy(self, img):
@@ -139,7 +134,7 @@ class ROAD_BEVFormer(MVXTwoStageDetector):
             return self.forward_train(**kwargs)
         else:
             return self.forward_test(**kwargs)
-    
+
     def obtain_history_bev(self, imgs_queue, img_metas_list):
         """Obtain history BEV features iteratively. To save GPU memory, gradients are not calculated.
         """
@@ -148,7 +143,7 @@ class ROAD_BEVFormer(MVXTwoStageDetector):
         with torch.no_grad():
             prev_bev = None
             bs, len_queue, num_cams, C, H, W = imgs_queue.shape
-            imgs_queue = imgs_queue.reshape(bs*len_queue, num_cams, C, H, W)
+            imgs_queue = imgs_queue.reshape(bs * len_queue, num_cams, C, H, W)
             img_feats_list = self.extract_feat(img=imgs_queue, len_queue=len_queue)
             for i in range(len_queue):
                 img_metas = [each[i] for each in img_metas_list]
@@ -183,7 +178,8 @@ class ROAD_BEVFormer(MVXTwoStageDetector):
         lane_feats = outs['history_states']
 
         if self.lclc_head is not None:
-            lclc_losses = self.lclc_head.forward_train(lane_feats, lane_assign_result, lane_feats, lane_assign_result, gt_topology_lclc)
+            lclc_losses = self.lclc_head.forward_train(lane_feats, lane_assign_result, lane_feats, lane_assign_result,
+                                                       gt_topology_lclc)
             for loss in lclc_losses:
                 losses['lclc_head.' + loss] = lclc_losses[loss]
 
@@ -201,13 +197,15 @@ class ROAD_BEVFormer(MVXTwoStageDetector):
 
             te_losses = {}
             bbox_outs = self.bbox_head(front_view_img_feats, bbox_img_metas)
-            bbox_losses, te_assign_result = self.bbox_head.loss(bbox_outs, gt_te, gt_te_labels, bbox_img_metas, gt_bboxes_ignore)
+            bbox_losses, te_assign_result = self.bbox_head.loss(bbox_outs, gt_te, gt_te_labels, bbox_img_metas,
+                                                                gt_bboxes_ignore)
             for loss in bbox_losses:
                 te_losses['bbox_head.' + loss] = bbox_losses[loss]
 
             if self.lcte_head is not None:
                 te_feats = bbox_outs['history_states']
-                lcte_losses = self.lcte_head.forward_train(lane_feats, lane_assign_result, te_feats, te_assign_result, gt_topology_lcte)
+                lcte_losses = self.lcte_head.forward_train(lane_feats, lane_assign_result, te_feats, te_assign_result,
+                                                           gt_topology_lcte)
                 for loss in lcte_losses:
                     te_losses['lcte_head.' + loss] = lcte_losses[loss]
 
@@ -263,7 +261,7 @@ class ROAD_BEVFormer(MVXTwoStageDetector):
             bbox_results = self.bbox_head.get_bboxes(bbox_outs, bbox_img_metas, rescale=rescale)
         else:
             bbox_results = [None for _ in range(batchsize)]
-        
+
         if self.bbox_head is not None and self.lcte_head is not None:
             te_feats = bbox_outs['history_states']
             lcte_results = self.lcte_head.get_relationship(lane_feats, te_feats)
@@ -280,7 +278,8 @@ class ROAD_BEVFormer(MVXTwoStageDetector):
         results_list = [dict() for i in range(len(img_metas))]
         new_prev_bev, bbox_results, lane_results, lclc_results, lcte_results = self.simple_test_pts(
             img_feats, img_metas, img, prev_bev, rescale=rescale)
-        for result_dict, bbox, lane, lclc, lcte in zip(results_list, bbox_results, lane_results, lclc_results, lcte_results):
+        for result_dict, bbox, lane, lclc, lcte in zip(results_list, bbox_results, lane_results, lclc_results,
+                                                       lcte_results):
             result_dict['pred_te'] = bbox
             result_dict['pred_lc'] = lane
             result_dict['pred_topology_lclc'] = lclc

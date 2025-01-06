@@ -17,14 +17,15 @@ from mmcv.cnn import fuse_conv_bn
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
                          wrap_fp16_model)
+from mmdet.apis import multi_gpu_test
 from mmdet.datasets import (build_dataloader, build_dataset,
                             replace_ImageToTensor)
 from mmdet.models import build_detector
-from mmdet.apis import multi_gpu_test
-import detection.mmdet_custom  # noqa: F401,F403
-import detection.mmcv_custom  # noqa: F401,F403
+from segment_anything import SamPredictor, sam_model_registry
 
-from segment_anything import sam_model_registry, SamPredictor
+import detection.mmcv_custom  # noqa: F401,F403
+import detection.mmdet_custom  # noqa: F401,F403
+
 try:
     from .engine import single_gpu_test
 except ImportError:

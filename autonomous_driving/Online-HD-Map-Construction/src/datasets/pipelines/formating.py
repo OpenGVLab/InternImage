@@ -1,9 +1,9 @@
 import numpy as np
 from mmcv.parallel import DataContainer as DC
-
 from mmdet3d.core.points import BasePoints
 from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines import to_tensor
+
 
 @PIPELINES.register_module()
 class FormatBundleMap(object):
@@ -17,10 +17,10 @@ class FormatBundleMap(object):
     - img_metas: (1) to DataContainer (cpu_only=True)
     """
 
-    def __init__(self, process_img=True, 
-                keys=['img', 'semantic_mask', 'vectors'], 
-                meta_keys=['intrinsics', 'extrinsics']):
-        
+    def __init__(self, process_img=True,
+                 keys=['img', 'semantic_mask', 'vectors'],
+                 meta_keys=['intrinsics', 'extrinsics']):
+
         self.process_img = process_img
         self.keys = keys
         self.meta_keys = meta_keys
@@ -54,7 +54,7 @@ class FormatBundleMap(object):
             else:
                 img = np.ascontiguousarray(results['img'].transpose(2, 0, 1))
                 results['img'] = DC(to_tensor(img), stack=True)
-        
+
         if 'semantic_mask' in results:
             results['semantic_mask'] = DC(to_tensor(results['semantic_mask']), stack=True)
 
@@ -62,7 +62,7 @@ class FormatBundleMap(object):
             # vectors may have different sizes
             vectors = results['vectors']
             results['vectors'] = DC(vectors, stack=False, cpu_only=True)
-        
+
         if 'polys' in results:
             results['polys'] = DC(results['polys'], stack=False, cpu_only=True)
 

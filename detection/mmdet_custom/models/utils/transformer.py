@@ -1,12 +1,13 @@
 import math
+
 import torch
 import torch.nn as nn
+from mmcv.cnn.bricks.registry import (DROPOUT_LAYERS, FEEDFORWARD_NETWORK,
+                                      TRANSFORMER_LAYER_SEQUENCE)
 from mmdet.models.utils.builder import TRANSFORMER
-from mmcv.cnn.bricks.registry import (
-    TRANSFORMER_LAYER_SEQUENCE, FEEDFORWARD_NETWORK, DROPOUT_LAYERS)
-from mmdet.models.utils.transformer import (inverse_sigmoid,
+from mmdet.models.utils.transformer import (DeformableDetrTransformer,
                                             DeformableDetrTransformerDecoder,
-                                            DeformableDetrTransformer)
+                                            inverse_sigmoid)
 
 
 def build_MLP(input_dim, hidden_dim, output_dim, num_layers):
@@ -97,7 +98,7 @@ class DinoTransformerDecoder(DeformableDetrTransformerDecoder):
                 assert reference_points.shape[-1] == 2
                 reference_points_input = \
                     reference_points[:, :, None] * valid_ratios[:, None]
-            
+
             if self.with_rp_noise and self.training:
                 device = reference_points.device
                 b, n, d = reference_points.size()

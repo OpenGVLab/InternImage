@@ -1,28 +1,26 @@
-
 # ---------------------------------------------
 # Copyright (c) OpenMMLab. All rights reserved.
 # ---------------------------------------------
 #  Modified by Zhiqi Li
 # ---------------------------------------------
 
-from mmcv.ops.multi_scale_deform_attn import multi_scale_deformable_attn_pytorch
+import math
 import warnings
+
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from mmcv.cnn import xavier_init, constant_init
-from mmcv.cnn.bricks.registry import (ATTENTION,
-                                      TRANSFORMER_LAYER,
-                                      TRANSFORMER_LAYER_SEQUENCE)
+from mmcv.cnn import constant_init, xavier_init
+from mmcv.cnn.bricks.registry import ATTENTION
 from mmcv.cnn.bricks.transformer import build_attention
-import math
-from mmcv.runner import force_fp32, auto_fp16
-
-from mmcv.runner.base_module import BaseModule, ModuleList, Sequential
-
+from mmcv.ops.multi_scale_deform_attn import \
+    multi_scale_deformable_attn_pytorch
+from mmcv.runner import force_fp32
+from mmcv.runner.base_module import BaseModule
 from mmcv.utils import ext_loader
-from .multi_scale_deformable_attn_function import MultiScaleDeformableAttnFunction_fp32, \
-    MultiScaleDeformableAttnFunction_fp16
+
+from .multi_scale_deformable_attn_function import \
+    MultiScaleDeformableAttnFunction_fp32
+
 ext_module = ext_loader.load_ext(
     '_ext', ['ms_deform_attn_backward', 'ms_deform_attn_forward'])
 
@@ -70,7 +68,7 @@ class SpatialCrossAttention(BaseModule):
     def init_weight(self):
         """Default initialization for Parameters of Module."""
         xavier_init(self.output_proj, distribution='uniform', bias=0.)
-    
+
     @force_fp32(apply_to=('query', 'key', 'value', 'query_pos', 'reference_points_cam'))
     def forward(self,
                 query,
@@ -144,12 +142,13 @@ class SpatialCrossAttention(BaseModule):
             [bs, self.num_cams, max_len, self.embed_dims])
         reference_points_rebatch = reference_points_cam.new_zeros(
             [bs, self.num_cams, max_len, D, 2])
-        
+
         for j in range(bs):
-            for i, reference_points_per_img in enumerate(reference_points_cam):   
+            for i, reference_points_per_img in enumerate(reference_points_cam):
                 index_query_per_img = indexes[i]
                 queries_rebatch[j, i, :len(index_query_per_img)] = query[j, index_query_per_img]
-                reference_points_rebatch[j, i, :len(index_query_per_img)] = reference_points_per_img[j, index_query_per_img]
+                reference_points_rebatch[j, i, :len(index_query_per_img)] = reference_points_per_img[
+                    j, index_query_per_img]
 
         num_cams, l, bs, embed_dims = key.shape
 
@@ -158,9 +157,13 @@ class SpatialCrossAttention(BaseModule):
         value = value.permute(2, 0, 1, 3).reshape(
             bs * self.num_cams, l, self.embed_dims)
 
-        queries = self.deformable_attention(query=queries_rebatch.view(bs*self.num_cams, max_len, self.embed_dims), key=key, value=value,
-                                            reference_points=reference_points_rebatch.view(bs*self.num_cams, max_len, D, 2), spatial_shapes=spatial_shapes,
-                                            level_start_index=level_start_index).view(bs, self.num_cams, max_len, self.embed_dims)
+        queries = self.deformable_attention(query=queries_rebatch.view(bs * self.num_cams, max_len, self.embed_dims),
+                                            key=key, value=value,
+                                            reference_points=reference_points_rebatch.view(bs * self.num_cams, max_len,
+                                                                                           D, 2),
+                                            spatial_shapes=spatial_shapes,
+                                            level_start_index=level_start_index).view(bs, self.num_cams, max_len,
+                                                                                      self.embed_dims)
         for j in range(bs):
             for i, index_query_per_img in enumerate(indexes):
                 slots[j, index_query_per_img] += queries[j, i, :len(index_query_per_img)]
@@ -359,7 +362,7 @@ class MSDeformableAttention3D(BaseModule):
             bs, num_query, num_Z_anchors, xy = reference_points.shape
             reference_points = reference_points[:, :, None, None, None, :, :]
             sampling_offsets = sampling_offsets / \
-                offset_normalizer[None, None, None, :, None, :]
+                               offset_normalizer[None, None, None, :, None, :]
             bs, num_query, num_heads, num_levels, num_all_points, xy = sampling_offsets.shape
             sampling_offsets = sampling_offsets.view(
                 bs, num_query, num_heads, num_levels, num_all_points // num_Z_anchors, num_Z_anchors, xy)

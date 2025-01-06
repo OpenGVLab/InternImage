@@ -6,10 +6,10 @@
 
 import torch
 import torch.nn as nn
-import torch.utils.checkpoint as checkpoint
-from timm.models.layers import trunc_normal_, DropPath
-from ops_dcnv3 import modules as opsm
 import torch.nn.functional as F
+import torch.utils.checkpoint as checkpoint
+from ops_dcnv3 import modules as opsm
+from timm.models.layers import DropPath, trunc_normal_
 
 
 class to_channels_first(nn.Module):
@@ -80,7 +80,7 @@ class CrossAttention(nn.Module):
         attn_head_dim (int, optional): Dimension of attention head.
         out_dim (int, optional): Dimension of output.
     """
-    
+
     def __init__(self,
                  dim,
                  num_heads=8,
@@ -172,7 +172,7 @@ class AttentiveBlock(nn.Module):
         attn_head_dim (int, optional): Dimension of attention head. Default: None.
         out_dim (int, optional): Dimension of output. Default: None.
     """
-    
+
     def __init__(self,
                  dim,
                  num_heads,
@@ -181,7 +181,7 @@ class AttentiveBlock(nn.Module):
                  drop=0.,
                  attn_drop=0.,
                  drop_path=0.,
-                 norm_layer="LN",
+                 norm_layer='LN',
                  attn_head_dim=None,
                  out_dim=None):
         super().__init__()
@@ -593,10 +593,10 @@ class InternImage(nn.Module):
         print(f'using activation layer: {act_layer}')
         print(f'using main norm layer: {norm_layer}')
         print(f'using dpr: {drop_path_type}, {drop_path_rate}')
-        print(f"level2_post_norm: {level2_post_norm}")
-        print(f"level2_post_norm_block_ids: {level2_post_norm_block_ids}")
-        print(f"res_post_norm: {res_post_norm}")
-        print(f"remove_center: {remove_center}")
+        print(f'level2_post_norm: {level2_post_norm}')
+        print(f'level2_post_norm_block_ids: {level2_post_norm_block_ids}')
+        print(f'res_post_norm: {res_post_norm}')
+        print(f'remove_center: {remove_center}')
 
         in_chans = 3
         self.patch_embed = StemLayer(in_chans=in_chans,
@@ -638,7 +638,7 @@ class InternImage(nn.Module):
                 remove_center=remove_center,  # for InternImage-H/G
             )
             self.levels.append(level)
-        
+
         if not use_clip_projector: # for InternImage-T/S/B/L/XL
             self.conv_head = nn.Sequential(
                 nn.Conv2d(self.num_features,
@@ -671,7 +671,7 @@ class InternImage(nn.Module):
             self.fc_norm = build_norm_layer(clip_embed_dim, norm_layer, eps=1e-6)
             self.head = nn.Linear(
                 clip_embed_dim, num_classes) if num_classes > 0 else nn.Identity()
-            
+
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.num_layers = len(depths)
         self.apply(self._init_weights)
@@ -705,16 +705,16 @@ class InternImage(nn.Module):
                 lr_ratios[tag] = decay
                 idx += 1
         # patch_embed (before stage-1)
-        lr_ratios["patch_embed"] = lr_ratios['levels.0.blocks.0.']
+        lr_ratios['patch_embed'] = lr_ratios['levels.0.blocks.0.']
         # levels.0.downsample (between stage-1 and stage-2)
-        lr_ratios["levels.0.downsample"] = lr_ratios['levels.1.blocks.0.']
-        lr_ratios["levels.0.norm"] = lr_ratios['levels.1.blocks.0.']
+        lr_ratios['levels.0.downsample'] = lr_ratios['levels.1.blocks.0.']
+        lr_ratios['levels.0.norm'] = lr_ratios['levels.1.blocks.0.']
         # levels.1.downsample (between stage-2 and stage-3)
-        lr_ratios["levels.1.downsample"] = lr_ratios['levels.2.blocks.0.']
-        lr_ratios["levels.1.norm"] = lr_ratios['levels.2.blocks.0.']
+        lr_ratios['levels.1.downsample'] = lr_ratios['levels.2.blocks.0.']
+        lr_ratios['levels.1.norm'] = lr_ratios['levels.2.blocks.0.']
         # levels.2.downsample (between stage-3 and stage-4)
-        lr_ratios["levels.2.downsample"] = lr_ratios['levels.3.blocks.0.']
-        lr_ratios["levels.2.norm"] = lr_ratios['levels.3.blocks.0.']
+        lr_ratios['levels.2.downsample'] = lr_ratios['levels.3.blocks.0.']
+        lr_ratios['levels.2.norm'] = lr_ratios['levels.3.blocks.0.']
         return lr_ratios
 
     def forward_features(self, x):
@@ -738,11 +738,11 @@ class InternImage(nn.Module):
             x, x_ = level(x, return_wo_downsample=True)
             seq_out.append(x_)
         return seq_out
-    
+
     def forward_clip_projector(self, x): # for InternImage-H/G
         xs = self.forward_features_seq_out(x)
         x1, x2, x3, x4 = xs
-        
+
         x1 = x1.permute(0, 3, 1, 2) # NHWC -> NCHW
         x2 = x2.permute(0, 3, 1, 2) # NHWC -> NCHW
         x3 = x3.permute(0, 3, 1, 2) # NHWC -> NCHW
@@ -756,9 +756,9 @@ class InternImage(nn.Module):
         x = x.flatten(-2).transpose(1, 2).contiguous()
         x = self.clip_projector(x)
         x = self.fc_norm(x)
-        
+
         return x
-    
+
     def forward(self, x):
         if self.use_clip_projector: # for InternImage-H/G
             x = self.forward_clip_projector(x)

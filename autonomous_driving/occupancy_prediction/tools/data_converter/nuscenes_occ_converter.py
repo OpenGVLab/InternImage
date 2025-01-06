@@ -3,20 +3,20 @@
 # ---------------------------------------------
 #  Modified by Xiaoyu Tian
 # ---------------------------------------------
-import mmcv
-import numpy as np
 import os
 from collections import OrderedDict
-from nuscenes.nuscenes import NuScenes
-from nuscenes.utils.geometry_utils import view_points
 from os import path as osp
-from pyquaternion import Quaternion
-from shapely.geometry import MultiPoint, box
 from typing import List, Tuple, Union
 
+import mmcv
+import numpy as np
+import simplejson as json
 from mmdet3d.core.bbox.box_np_ops import points_cam2img
 from mmdet3d.datasets import NuScenesDataset
-import simplejson as json
+from nuscenes.nuscenes import NuScenes
+from nuscenes.utils.geometry_utils import view_points
+from pyquaternion import Quaternion
+from shapely.geometry import MultiPoint, box
 
 nus_categories = ('car', 'truck', 'trailer', 'bus', 'construction_vehicle',
                   'bicycle', 'motorcycle', 'pedestrian', 'traffic_cone',
@@ -29,12 +29,12 @@ nus_attributes = ('cycle.with_rider', 'cycle.without_rider',
 
 
 def create_nuscenes_occ_infos(root_path,
-                          occ_path,
-                          out_path,
-                          can_bus_root_path,
-                          info_prefix,
-                          version='v1.0-trainval',
-                          max_sweeps=10):
+                              occ_path,
+                              out_path,
+                              can_bus_root_path,
+                              info_prefix,
+                              version='v1.0-trainval',
+                              max_sweeps=10):
     """Create info file of nuscene dataset.
 
     Given the raw data, generate its related info file in pkl format.
@@ -48,8 +48,8 @@ def create_nuscenes_occ_infos(root_path,
             Default: 10
     """
 
-    from nuscenes.nuscenes import NuScenes
     from nuscenes.can_bus.can_bus_api import NuScenesCanBus
+    from nuscenes.nuscenes import NuScenes
     print(version, root_path)
     nusc = NuScenes(version=version, dataroot=root_path, verbose=True)
     nusc_can_bus = NuScenesCanBus(dataroot=can_bus_root_path)
@@ -58,7 +58,7 @@ def create_nuscenes_occ_infos(root_path,
     available_vers = ['v1.0-trainval', 'v1.0-test', 'v1.0-mini']
     assert version in available_vers
 
-    with open(os.path.join(occ_path,'annotations.json'),'r') as f:
+    with open(os.path.join(occ_path, 'annotations.json'), 'r') as f:
         occ_anno = json.load(f)
 
     if version == 'v1.0-trainval':
@@ -89,8 +89,7 @@ def create_nuscenes_occ_infos(root_path,
     ])
     token2name = dict()
     for scene in nusc.scene:
-        token2name[scene['token']]=scene['name']
-
+        token2name[scene['token']] = scene['name']
 
     test = 'test' in version
     if test:
@@ -100,7 +99,7 @@ def create_nuscenes_occ_infos(root_path,
             len(train_scenes), len(val_scenes)))
 
     train_nusc_infos, val_nusc_infos = _fill_occ_trainval_infos(
-        nusc,occ_anno,token2name, nusc_can_bus, train_scenes, val_scenes, test, max_sweeps=max_sweeps)
+        nusc, occ_anno, token2name, nusc_can_bus, train_scenes, val_scenes, test, max_sweeps=max_sweeps)
 
     metadata = dict(version=version)
     if test:
@@ -189,13 +188,13 @@ def _get_can_bus_info(nusc, nusc_can_bus, sample):
 
 
 def _fill_occ_trainval_infos(nusc,
-                         occ_anno,
-                         token2name,
-                         nusc_can_bus,
-                         train_scenes,
-                         val_scenes,
-                         test=False,
-                         max_sweeps=10):
+                             occ_anno,
+                             token2name,
+                             nusc_can_bus,
+                             train_scenes,
+                             val_scenes,
+                             test=False,
+                             max_sweeps=10):
     """Generate the train/val infos from the raw data.
 
     Args:
@@ -213,20 +212,18 @@ def _fill_occ_trainval_infos(nusc,
     train_nusc_infos = []
     val_nusc_infos = []
     frame_idx = 0
-    scene_infos=occ_anno['scene_infos']
+    scene_infos = occ_anno['scene_infos']
 
     for sample in mmcv.track_iter_progress(nusc.sample):
-
-
 
         lidar_token = sample['data']['LIDAR_TOP']
         sd_rec = nusc.get('sample_data', sample['data']['LIDAR_TOP'])
 
         scene_token = sample['scene_token']
         scene_name = token2name[scene_token]
-        sample_token=sd_rec['sample_token']
+        sample_token = sd_rec['sample_token']
         if sample_token in scene_infos[scene_name].keys():
-            occ_sample=scene_infos[scene_name][sample_token]
+            occ_sample = scene_infos[scene_name][sample_token]
         else:
             continue
 
@@ -397,9 +394,9 @@ def obtain_sensor2top(nusc,
     l2e_r_s_mat = Quaternion(l2e_r_s).rotation_matrix
     e2g_r_s_mat = Quaternion(e2g_r_s).rotation_matrix
     R = (l2e_r_s_mat.T @ e2g_r_s_mat.T) @ (
-        np.linalg.inv(e2g_r_mat).T @ np.linalg.inv(l2e_r_mat).T)
+            np.linalg.inv(e2g_r_mat).T @ np.linalg.inv(l2e_r_mat).T)
     T = (l2e_t_s @ e2g_r_s_mat.T + e2g_t_s) @ (
-        np.linalg.inv(e2g_r_mat).T @ np.linalg.inv(l2e_r_mat).T)
+            np.linalg.inv(e2g_r_mat).T @ np.linalg.inv(l2e_r_mat).T)
     T -= e2g_t @ (np.linalg.inv(e2g_r_mat).T @ np.linalg.inv(l2e_r_mat).T
                   ) + l2e_t @ np.linalg.inv(l2e_r_mat).T
     sweep['sensor2lidar_rotation'] = R.T  # points @ R.T + T
@@ -492,8 +489,8 @@ def get_2d_boxes(nusc,
     sd_rec = nusc.get('sample_data', sample_data_token)
 
     assert sd_rec[
-        'sensor_modality'] == 'camera', 'Error: get_2d_boxes only works' \
-        ' for camera sample_data!'
+               'sensor_modality'] == 'camera', 'Error: get_2d_boxes only works' \
+                                               ' for camera sample_data!'
     if not sd_rec['is_key_frame']:
         raise ValueError(
             'The 2D re-projections are available only for keyframes.')
@@ -604,7 +601,7 @@ def get_2d_boxes(nusc,
 
 
 def post_process_coords(
-    corner_coords: List, imsize: Tuple[int, int] = (1600, 900)
+        corner_coords: List, imsize: Tuple[int, int] = (1600, 900)
 ) -> Union[Tuple[float, float, float, float], None]:
     """Get the intersection of the convex hull of the reprojected bbox corners
     and the image canvas, return None if no intersection.

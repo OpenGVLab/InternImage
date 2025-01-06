@@ -2,14 +2,14 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+from mmcv.runner import force_fp32
 from mmdet.core import (bbox_cxcywh_to_xyxy, bbox_xyxy_to_cxcywh, multi_apply,
                         reduce_mean)
-from ..utils import build_dn_generator
-from mmdet.models.utils.transformer import inverse_sigmoid
 from mmdet.models.builder import HEADS
+from mmdet.models.utils.transformer import inverse_sigmoid
+
+from ..utils import build_dn_generator
 from .deformable_detr_head import DeformableDETRHead
-from mmcv.runner import force_fp32
 
 
 @HEADS.register_module()
@@ -105,7 +105,7 @@ class DINOHead(DeformableDETRHead):
             # label_embedding won't be used in producing loss, which raises
             # RuntimeError when using distributed mode.
             hs[0] += self.label_embedding.weight[0, 0] * 0.0
-            
+
         outputs_classes = []
         outputs_coords = []
 
@@ -198,7 +198,7 @@ class DINOHead(DeformableDETRHead):
             dn_losses_cls, dn_losses_bbox, dn_losses_iou = self.loss_dn(
                 dn_cls_scores, dn_bbox_preds, gt_bboxes_list, gt_labels_list,
                 img_metas, dn_meta)
-    
+
             # collate denoising loss
             loss_dict['dn_loss_cls'] = dn_losses_cls[-1]
             loss_dict['dn_loss_bbox'] = dn_losses_bbox[-1]
@@ -211,7 +211,7 @@ class DINOHead(DeformableDETRHead):
                 loss_dict[f'd{num_dec_layer}.dn_loss_bbox'] = loss_bbox_i
                 loss_dict[f'd{num_dec_layer}.dn_loss_iou'] = loss_iou_i
                 num_dec_layer += 1
-                
+
             return loss_dict
 
     def loss_dn(self, dn_cls_scores, dn_bbox_preds, gt_bboxes_list,
@@ -257,7 +257,7 @@ class DINOHead(DeformableDETRHead):
                 1,
                 dtype=cls_scores.dtype,
                 device=cls_scores.device)
-            
+
         # Compute the average number of gt boxes across all gpus, for
         # normalization purposes
         num_total_pos = loss_cls.new_tensor([num_total_pos])

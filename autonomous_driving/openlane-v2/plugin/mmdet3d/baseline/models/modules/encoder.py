@@ -1,31 +1,28 @@
-
 # ---------------------------------------------
 # Copyright (c) OpenMMLab. All rights reserved.
 # ---------------------------------------------
 #  Modified by Zhiqi Li
 # ---------------------------------------------
 
-from .custom_base_transformer_layer import MyCustomBaseTransformerLayer
 import copy
 import warnings
-from mmcv.cnn.bricks.registry import (ATTENTION,
-                                      TRANSFORMER_LAYER,
-                                      TRANSFORMER_LAYER_SEQUENCE)
-from mmcv.cnn.bricks.transformer import TransformerLayerSequence
-from mmcv.runner import force_fp32, auto_fp16
+
 import numpy as np
 import torch
-import cv2 as cv
-import mmcv
-from mmcv.utils import TORCH_VERSION, digit_version
-from mmcv.utils import ext_loader
+from mmcv.cnn.bricks.registry import (TRANSFORMER_LAYER,
+                                      TRANSFORMER_LAYER_SEQUENCE)
+from mmcv.cnn.bricks.transformer import TransformerLayerSequence
+from mmcv.runner import auto_fp16, force_fp32
+from mmcv.utils import TORCH_VERSION, digit_version, ext_loader
+
+from .custom_base_transformer_layer import MyCustomBaseTransformerLayer
+
 ext_module = ext_loader.load_ext(
     '_ext', ['ms_deform_attn_backward', 'ms_deform_attn_forward'])
 
 
 @TRANSFORMER_LAYER_SEQUENCE.register_module()
 class BEVFormerEncoder(TransformerLayerSequence):
-
     """
     Attention with both self and cross
     Implements the decoder in DETR transformer.
@@ -98,11 +95,11 @@ class BEVFormerEncoder(TransformerLayerSequence):
         reference_points = reference_points.clone()
 
         reference_points[..., 0:1] = reference_points[..., 0:1] * \
-            (pc_range[3] - pc_range[0]) + pc_range[0]
+                                     (pc_range[3] - pc_range[0]) + pc_range[0]
         reference_points[..., 1:2] = reference_points[..., 1:2] * \
-            (pc_range[4] - pc_range[1]) + pc_range[1]
+                                     (pc_range[4] - pc_range[1]) + pc_range[1]
         reference_points[..., 2:3] = reference_points[..., 2:3] * \
-            (pc_range[5] - pc_range[2]) + pc_range[2]
+                                     (pc_range[5] - pc_range[2]) + pc_range[2]
 
         reference_points = torch.cat(
             (reference_points, torch.ones_like(reference_points[..., :1])), -1)
@@ -181,7 +178,8 @@ class BEVFormerEncoder(TransformerLayerSequence):
         intermediate = []
 
         ref_3d = self.get_reference_points(
-            bev_h, bev_w, self.pc_range[5]-self.pc_range[2], self.num_points_in_pillar, dim='3d', bs=bev_query.size(1),  device=bev_query.device, dtype=bev_query.dtype)
+            bev_h, bev_w, self.pc_range[5] - self.pc_range[2], self.num_points_in_pillar, dim='3d',
+            bs=bev_query.size(1), device=bev_query.device, dtype=bev_query.dtype)
         ref_2d = self.get_reference_points(
             bev_h, bev_w, dim='2d', bs=bev_query.size(1), device=bev_query.device, dtype=bev_query.dtype)
 
@@ -199,12 +197,12 @@ class BEVFormerEncoder(TransformerLayerSequence):
         if prev_bev is not None:
             prev_bev = prev_bev.permute(1, 0, 2)
             prev_bev = torch.stack(
-                [prev_bev, bev_query], 1).reshape(bs*2, len_bev, -1)
+                [prev_bev, bev_query], 1).reshape(bs * 2, len_bev, -1)
             hybird_ref_2d = torch.stack([shift_ref_2d, ref_2d], 1).reshape(
-                bs*2, len_bev, num_bev_level, 2)
+                bs * 2, len_bev, num_bev_level, 2)
         else:
             hybird_ref_2d = torch.stack([ref_2d, ref_2d], 1).reshape(
-                bs*2, len_bev, num_bev_level, 2)
+                bs * 2, len_bev, num_bev_level, 2)
 
         for lid, layer in enumerate(self.layers):
             output = layer(
@@ -342,7 +340,7 @@ class BEVFormerLayer(MyCustomBaseTransformerLayer):
             assert len(attn_masks) == self.num_attn, f'The length of ' \
                                                      f'attn_masks {len(attn_masks)} must be equal ' \
                                                      f'to the number of attention in ' \
-                f'operation_order {self.num_attn}'
+                                                     f'operation_order {self.num_attn}'
 
         for layer in self.operation_order:
             # temporal self attention

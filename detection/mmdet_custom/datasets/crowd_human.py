@@ -8,13 +8,11 @@ from collections import OrderedDict
 import mmcv
 import numpy as np
 from mmcv.utils import print_log
-from terminaltables import AsciiTable
-
 from mmdet.core import eval_recalls
 from mmdet.datasets.api_wrappers import COCO, COCOeval
-
-from mmdet.datasets.custom import CustomDataset
 from mmdet.datasets.builder import DATASETS
+from mmdet.datasets.custom import CustomDataset
+from terminaltables import AsciiTable
 
 
 @DATASETS.register_module()

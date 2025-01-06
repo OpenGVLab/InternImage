@@ -1,8 +1,9 @@
-from .loading import LoadMultiViewImagesFromFiles
 from .formating import FormatBundleMap
-from .transform import ResizeMultiViewImages, PadMultiViewImages, Normalize3D
-from .vectorize import VectorizeMap
+from .loading import LoadMultiViewImagesFromFiles
 from .poly_bbox import PolygonizeLocalMapBbox
+from .transform import Normalize3D, PadMultiViewImages, ResizeMultiViewImages
+from .vectorize import VectorizeMap
+
 # for argoverse
 
 __all__ = [

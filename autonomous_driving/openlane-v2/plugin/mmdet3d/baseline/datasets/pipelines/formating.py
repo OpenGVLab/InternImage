@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # formating.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -21,7 +21,6 @@
 # ==============================================================================
 
 import numpy as np
-
 from mmcv.parallel import DataContainer as DC
 from mmdet.datasets import PIPELINES
 from mmdet.datasets.pipelines import to_tensor
@@ -37,7 +36,7 @@ class CustomDefaultFormatBundle:
 
         temp = to_tensor(np.concatenate([i[None, ...] for i in results['img']], axis=0))
         results['img'] = DC(temp.permute(0, 3, 1, 2), stack=True)
-        
+
         if 'gt_lc' in results:
             results['gt_lc'] = DC(to_tensor(results['gt_lc']))
         if 'gt_lc_labels' in results:
@@ -50,5 +49,5 @@ class CustomDefaultFormatBundle:
             results['gt_topology_lclc'] = DC(to_tensor(results['gt_topology_lclc']))
         if 'gt_topology_lcte' in results:
             results['gt_topology_lcte'] = DC(to_tensor(results['gt_topology_lcte']))
-        
+
         return results

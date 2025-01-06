@@ -8,18 +8,16 @@ import copy
 import warnings
 
 import torch
-import torch.nn as nn
-
-from mmcv import ConfigDict, deprecated_api_warning
-from mmcv.cnn import Linear, build_activation_layer, build_norm_layer
-from mmcv.runner.base_module import BaseModule, ModuleList, Sequential
-
-from mmcv.cnn.bricks.registry import (ATTENTION, FEEDFORWARD_NETWORK, POSITIONAL_ENCODING,
-                                      TRANSFORMER_LAYER, TRANSFORMER_LAYER_SEQUENCE)
+from mmcv import ConfigDict
+from mmcv.cnn import build_norm_layer
+from mmcv.cnn.bricks.registry import TRANSFORMER_LAYER
+from mmcv.runner.base_module import BaseModule, ModuleList
 
 # Avoid BC-breaking of importing MultiScaleDeformableAttention from this file
 try:
-    from mmcv.ops.multi_scale_deform_attn import MultiScaleDeformableAttention  # noqa F401
+    from mmcv.ops.multi_scale_deform_attn import \
+        MultiScaleDeformableAttention  # noqa F401
+
     warnings.warn(
         ImportWarning(
             '``MultiScaleDeformableAttention`` has been moved to '
@@ -31,7 +29,8 @@ except ImportError:
     warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
                   '``mmcv.ops.multi_scale_deform_attn``, '
                   'You should install ``mmcv-full`` if you need this module. ')
-from mmcv.cnn.bricks.transformer import build_feedforward_network, build_attention
+from mmcv.cnn.bricks.transformer import (build_attention,
+                                         build_feedforward_network)
 
 
 @TRANSFORMER_LAYER.register_module()
@@ -104,10 +103,10 @@ class MyCustomBaseTransformerLayer(BaseModule):
 
         assert set(operation_order) & set(
             ['self_attn', 'norm', 'ffn', 'cross_attn']) == \
-            set(operation_order), f'The operation_order of' \
-            f' {self.__class__.__name__} should ' \
-            f'contains all four operation type ' \
-            f"{['self_attn', 'norm', 'ffn', 'cross_attn']}"
+               set(operation_order), f'The operation_order of' \
+                                     f' {self.__class__.__name__} should ' \
+                                     f'contains all four operation type ' \
+                                     f"{['self_attn', 'norm', 'ffn', 'cross_attn']}"
 
         num_attn = operation_order.count('self_attn') + operation_order.count(
             'cross_attn')
@@ -115,9 +114,9 @@ class MyCustomBaseTransformerLayer(BaseModule):
             attn_cfgs = [copy.deepcopy(attn_cfgs) for _ in range(num_attn)]
         else:
             assert num_attn == len(attn_cfgs), f'The length ' \
-                f'of attn_cfg {num_attn} is ' \
-                f'not consistent with the number of attention' \
-                f'in operation_order {operation_order}.'
+                                               f'of attn_cfg {num_attn} is ' \
+                                               f'not consistent with the number of attention' \
+                                               f'in operation_order {operation_order}.'
 
         self.num_attn = num_attn
         self.operation_order = operation_order
@@ -216,9 +215,9 @@ class MyCustomBaseTransformerLayer(BaseModule):
                           f'{self.__class__.__name__} ')
         else:
             assert len(attn_masks) == self.num_attn, f'The length of ' \
-                f'attn_masks {len(attn_masks)} must be equal ' \
-                f'to the number of attention in ' \
-                f'operation_order {self.num_attn}'
+                                                     f'attn_masks {len(attn_masks)} must be equal ' \
+                                                     f'to the number of attention in ' \
+                                                     f'operation_order {self.num_attn}'
 
         for layer in self.operation_order:
             if layer == 'self_attn':

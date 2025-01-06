@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # check.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -20,12 +20,13 @@
 # limitations under the License.
 # ==============================================================================
 
-import numpy as np
-from iso3166 import countries
 from functools import reduce
 
+import numpy as np
+from iso3166 import countries
 
-def check_results(results : dict) -> None:
+
+def check_results(results: dict) -> None:
     r"""
     Check format of results.
 
@@ -93,35 +94,42 @@ def check_results(results : dict) -> None:
 
                 points = instance['points']
                 if not isinstance(points, np.ndarray):
-                    raise Exception(f'Type of value in key [results/{token}/predictions/{key}/{instance["id"]}] should be np.ndarray')
+                    raise Exception(
+                        f'Type of value in key [results/{token}/predictions/{key}/{instance["id"]}] should be np.ndarray')
                 points = np.array(points)
                 if key == 'lane_centerline' and not (points.ndim == 2 and points.shape[1] == 3):
-                    raise Exception(f'Shape of points in instance [results/{token}/predictions/{key}/{instance["id"]}] should be (#points, 3) but not {points.shape}')
+                    raise Exception(
+                        f'Shape of points in instance [results/{token}/predictions/{key}/{instance["id"]}] should be (#points, 3) but not {points.shape}')
                 if key == 'traffic_element' and not (points.ndim == 2 and points.shape == (2, 2)):
-                    raise Exception(f'Shape of points in instance [results/{token}/predictions/{key}/{instance["id"]}] should be (2, 2) but not {points.shape}')
-                
+                    raise Exception(
+                        f'Shape of points in instance [results/{token}/predictions/{key}/{instance["id"]}] should be (2, 2) but not {points.shape}')
+
             ids[key] = [instance['id'] for instance in predictions[key]]
 
         ids_check = reduce(lambda x, y: x + y, ids.values(), [])
         if len(set(ids_check)) != len(ids_check):
             raise Exception(f'IDs are not unique in [results/{token}/predictions]')
-                
+
         if 'topology_lclc' not in predictions:
             raise Exception(f'Miss key [results/{token}/predictions/topology_lclc].')
         topology_lclc = predictions['topology_lclc']
         if not isinstance(topology_lclc, np.ndarray):
             raise Exception(f'Type of value in key [results/{token}/predictions/topology_lclc] should be np.ndarray')
         topology_lclc = np.array(topology_lclc)
-        if not (topology_lclc.ndim == 2 and topology_lclc.shape[0] == len(ids['lane_centerline']) and topology_lclc.shape[1] == len(ids['lane_centerline'])):
-            raise Exception(f'Shape of adjacent matrix of [results/{token}/predictions/topology_lclc] should be (#lane_centerline, #lane_centerline) but not {topology_lclc.shape}')
-        
+        if not (topology_lclc.ndim == 2 and topology_lclc.shape[0] == len(ids['lane_centerline']) and
+                topology_lclc.shape[1] == len(ids['lane_centerline'])):
+            raise Exception(
+                f'Shape of adjacent matrix of [results/{token}/predictions/topology_lclc] should be (#lane_centerline, #lane_centerline) but not {topology_lclc.shape}')
+
         if 'topology_lcte' not in predictions:
             raise Exception(f'Miss key [results/{token}/predictions/topology_lcte].')
         topology_lcte = predictions['topology_lcte']
         if not isinstance(topology_lcte, np.ndarray):
             raise Exception(f'Type of value in key [results/{token}/predictions/topology_lcte] should be np.ndarray')
         topology_lcte = np.array(topology_lcte)
-        if not (topology_lcte.ndim == 2 and topology_lcte.shape[0] == len(ids['lane_centerline']) and topology_lcte.shape[1] == len(ids['traffic_element'])):
-            raise Exception(f'Shape of adjacent matrix of [results/{token}/predictions/topology_lcte] should be (#lane_centerline, #traffic_element) but not {topology_lcte.shape}')
+        if not (topology_lcte.ndim == 2 and topology_lcte.shape[0] == len(ids['lane_centerline']) and
+                topology_lcte.shape[1] == len(ids['traffic_element'])):
+            raise Exception(
+                f'Shape of adjacent matrix of [results/{token}/predictions/topology_lcte] should be (#lane_centerline, #traffic_element) but not {topology_lcte.shape}')
 
     return valid

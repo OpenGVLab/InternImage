@@ -21,7 +21,6 @@ class NYUDepthV2Dataset(CustomDataset):
                'person', 'night stand', 'toilet', 'sink', 'lamp',
                'bathtub', 'bag', 'otherstructure', 'otherfurniture', 'otherprop')
 
-    
     PALETTE = [[120, 120, 120], [180, 120, 120], [6, 230, 230], [80, 50, 50],
                [4, 200, 3], [120, 120, 80], [140, 140, 140], [204, 5, 255],
                [230, 230, 230], [4, 250, 7], [224, 5, 255], [235, 255, 7],
@@ -40,4 +39,3 @@ class NYUDepthV2Dataset(CustomDataset):
             split=split,
             reduce_zero_label=True,
             **kwargs)
-        

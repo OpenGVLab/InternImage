@@ -4,17 +4,15 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
+import math
 import time
+
 import torch
 import torch.nn as nn
-import math
-from torch.autograd import gradcheck
-
 from functions.dcnv3_func import DCNv3Function, dcnv3_core_pytorch
+from torch.autograd import gradcheck
 
 H_in, W_in = 8, 8
 N, M, D = 2, 4, 16

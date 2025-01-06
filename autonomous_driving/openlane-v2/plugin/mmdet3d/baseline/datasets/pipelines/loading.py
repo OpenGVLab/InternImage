@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # loading.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -20,11 +20,10 @@
 # limitations under the License.
 # ==============================================================================
 
-import numpy as np
-
 import mmcv
-from mmdet.datasets import PIPELINES
+import numpy as np
 from mmdet3d.datasets.pipelines import LoadMultiViewImageFromFiles
+from mmdet.datasets import PIPELINES
 
 
 @PIPELINES.register_module()

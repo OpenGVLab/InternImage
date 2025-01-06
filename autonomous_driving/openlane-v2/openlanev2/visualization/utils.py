@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # utils.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -22,21 +22,20 @@
 
 import numpy as np
 
-
 THICKNESS = 4
 
 COLOR_DEFAULT = (0, 0, 255)
 COLOR_DICT = {
-    0:  COLOR_DEFAULT,
-    1:  (255, 0, 0),
-    2:  (0, 255, 0),
-    3:  (255, 255, 0),
-    4:  (255, 0, 255),
-    5:  (0, 128, 128),
-    6:  (0, 128, 0),
-    7:  (128, 0, 0),
-    8:  (128, 0, 128),
-    9:  (128, 128, 0),
+    0: COLOR_DEFAULT,
+    1: (255, 0, 0),
+    2: (0, 255, 0),
+    3: (255, 255, 0),
+    4: (255, 0, 255),
+    5: (0, 128, 128),
+    6: (0, 128, 0),
+    7: (128, 0, 0),
+    8: (128, 0, 128),
+    9: (128, 128, 0),
     10: (0, 0, 128),
     11: (64, 64, 64),
     12: (192, 192, 192),
@@ -56,7 +55,7 @@ def interp_arc(points, t=1000):
 
     Returns
     -------
-    array_like  
+    array_like
         Numpy array of shape (N,2) or (N,3)
 
     Notes
@@ -64,7 +63,7 @@ def interp_arc(points, t=1000):
     Adapted from https://github.com/johnwlambert/argoverse2-api/blob/main/src/av2/geometry/interpolate.py#L120
 
     '''
-    
+
     # filter consecutive points with same coordinate
     temp = []
     for point in points:
@@ -109,12 +108,14 @@ def interp_arc(points, t=1000):
 
     return points_interp
 
+
 def assign_attribute(annotation):
     topology_lcte = np.array(annotation['topology_lcte'], dtype=bool)
     for i in range(len(annotation['lane_centerline'])):
         annotation['lane_centerline'][i]['attributes'] = \
             set([ts['attribute'] for j, ts in enumerate(annotation['traffic_element']) if topology_lcte[i][j]])
     return annotation
+
 
 def assign_topology(annotation):
     topology_lcte = np.array(annotation['topology_lcte'], dtype=bool)

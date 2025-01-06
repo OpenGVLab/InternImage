@@ -388,8 +388,8 @@ class MaskFormerHead(BaseDecodeHead):
         # shape [num_gts, h, w] -> [num_gts * h * w]
         mask_targets = mask_targets.reshape(-1)
         # target is (1 - mask_targets) !!!
-        print("mask_pred:", mask_preds.shape)
-        print("mask_targets:", mask_targets.shape)
+        print('mask_pred:', mask_preds.shape)
+        print('mask_targets:', mask_targets.shape)
         loss_mask = self.loss_mask(
             mask_preds, 1 - mask_targets, avg_factor=num_total_masks * h * w)
 

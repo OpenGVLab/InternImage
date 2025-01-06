@@ -1,20 +1,16 @@
 import copy
 
+import mmcv
 import numpy as np
-import cv2
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import mmcv
-from mmcv.cnn import Linear, bias_init_with_prob, build_activation_layer
 from mmcv.cnn.bricks.transformer import build_feedforward_network
-from mmcv.runner import auto_fp16, force_fp32
 from mmcv.utils import TORCH_VERSION, digit_version
 from mmdet.core import build_assigner, build_sampler, multi_apply, reduce_mean
 from mmdet.models.builder import HEADS, build_loss
 from mmdet.models.dense_heads import AnchorFreeHead
 from mmdet.models.utils import build_transformer
-from mmdet.models.utils.transformer import inverse_sigmoid
 
 
 class MLP(nn.Module):
@@ -38,10 +34,10 @@ class RelationshipHead(nn.Module):
                  in_channels_o2=None,
                  shared_param=True,
                  loss_rel=dict(
-                    type='FocalLoss',
-                    use_sigmoid=True,
-                    gamma=2.0,
-                    alpha=0.25)):
+                     type='FocalLoss',
+                     use_sigmoid=True,
+                     gamma=2.0,
+                     alpha=0.25)):
         super().__init__()
 
         self.MLP_o1 = MLP(in_channels_o1, in_channels_o1, 128, 3)

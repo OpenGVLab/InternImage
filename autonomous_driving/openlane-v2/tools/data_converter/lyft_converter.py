@@ -6,9 +6,9 @@ from os import path as osp
 import mmcv
 import numpy as np
 from lyft_dataset_sdk.lyftdataset import LyftDataset as Lyft
+from mmdet3d.datasets import LyftDataset
 from pyquaternion import Quaternion
 
-from mmdet3d.datasets import LyftDataset
 from .nuscenes_converter import (get_2d_boxes, get_available_scenes,
                                  obtain_sensor2top)
 

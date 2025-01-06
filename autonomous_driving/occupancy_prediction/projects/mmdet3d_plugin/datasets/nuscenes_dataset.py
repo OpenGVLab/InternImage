@@ -1,19 +1,17 @@
 import copy
-
-import numpy as np
-from mmdet.datasets import DATASETS
-from mmdet3d.datasets import NuScenesDataset
-import mmcv
-from os import path as osp
-from mmdet.datasets import DATASETS
-import torch
-import numpy as np
-from nuscenes.eval.common.utils import quaternion_yaw, Quaternion
-from mmdet3d.core.bbox import Box3DMode, Coord3DMode, LiDARInstance3DBoxes
-from .nuscnes_eval import NuScenesEval_custom
-from projects.mmdet3d_plugin.models.utils.visual import save_tensor
-from mmcv.parallel import DataContainer as DC
 import random
+from os import path as osp
+
+import mmcv
+import numpy as np
+import torch
+from mmcv.parallel import DataContainer as DC
+from mmdet3d.core.bbox import LiDARInstance3DBoxes
+from mmdet3d.datasets import NuScenesDataset
+from mmdet.datasets import DATASETS
+from nuscenes.eval.common.utils import Quaternion, quaternion_yaw
+
+from .nuscnes_eval import NuScenesEval_custom
 
 
 @DATASETS.register_module()
@@ -28,7 +26,7 @@ class CustomNuScenesDataset(NuScenesDataset):
         self.queue_length = queue_length
         self.overlap_test = overlap_test
         self.bev_size = bev_size
-        
+
     def prepare_train_data(self, index):
         """
         Training data preparation.
@@ -38,7 +36,7 @@ class CustomNuScenesDataset(NuScenesDataset):
             dict: Training data dict of the corresponding index.
         """
         queue = []
-        index_list = list(range(index-self.queue_length, index))
+        index_list = list(range(index - self.queue_length, index))
         random.shuffle(index_list)
         index_list = sorted(index_list[1:])
         index_list.append(index)
@@ -54,7 +52,6 @@ class CustomNuScenesDataset(NuScenesDataset):
                 return None
             queue.append(example)
         return self.union2one(queue)
-
 
     def union2one(self, queue):
         imgs_list = [each['img'].data for each in queue]
@@ -127,8 +124,6 @@ class CustomNuScenesDataset(NuScenesDataset):
             box_dim=gt_bboxes_3d.shape[-1],
             origin=(0.5, 0.5, 0.5)).convert_to(self.box_mode_3d)
 
-
-
         anns_results = dict(
             gt_bboxes_3d=gt_bboxes_3d,
             gt_labels_3d=gt_labels_3d,
@@ -180,7 +175,7 @@ class CustomNuScenesDataset(NuScenesDataset):
                 # obtain lidar to image transformation matrix
                 lidar2cam_r = np.linalg.inv(cam_info['sensor2lidar_rotation'])
                 lidar2cam_t = cam_info[
-                    'sensor2lidar_translation'] @ lidar2cam_r.T
+                                  'sensor2lidar_translation'] @ lidar2cam_r.T
                 lidar2cam_rt = np.eye(4)
                 lidar2cam_rt[:3, :3] = lidar2cam_r.T
                 lidar2cam_rt[3, :3] = -lidar2cam_t

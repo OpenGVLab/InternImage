@@ -1,8 +1,8 @@
-import torch
-from torchvision.utils import make_grid
-import torchvision
-import matplotlib.pyplot as plt
 import cv2
+import matplotlib.pyplot as plt
+import torch
+import torchvision
+from torchvision.utils import make_grid
 
 
 def convert_color(img_path):
@@ -12,11 +12,11 @@ def convert_color(img_path):
     plt.close()
 
 
-def save_tensor(tensor, path, pad_value=254.0,):
+def save_tensor(tensor, path, pad_value=254.0, ):
     print('save_tensor', path)
     tensor = tensor.to(torch.float).detach().cpu()
     if tensor.type() == 'torch.BoolTensor':
-        tensor = tensor*255
+        tensor = tensor * 255
     if len(tensor.shape) == 3:
         tensor = tensor.unsqueeze(1)
     tensor = make_grid(tensor, pad_value=pad_value, normalize=False).permute(1, 2, 0).numpy().copy()

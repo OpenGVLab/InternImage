@@ -1,21 +1,19 @@
 import argparse
-import mmcv
 import os
 import os.path as osp
+
 import torch
-import warnings
-from mmcv import Config, DictAction
+from mmcv import Config
 from mmcv.cnn import fuse_conv_bn
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
                          wrap_fp16_model)
-
 from mmdet3d.apis import single_gpu_test
 from mmdet3d.datasets import build_dataloader, build_dataset
 from mmdet3d.models import build_model
+from mmdet.datasets import replace_ImageToTensor
 from mmdet_test import multi_gpu_test
 from mmdet_train import set_random_seed
-from mmdet.datasets import replace_ImageToTensor
 
 
 def parse_args():
@@ -29,13 +27,13 @@ def parse_args():
         '--fuse-conv-bn',
         action='store_true',
         help='Whether to fuse conv and bn, this will slightly increase'
-        'the inference speed')
+             'the inference speed')
     parser.add_argument(
         '--format-only',
         action='store_true',
         help='Format the output results without perform evaluation. It is'
-        'useful when you want to format the result to a specific format and '
-        'submit it to the test server')
+             'useful when you want to format the result to a specific format and '
+             'submit it to the test server')
     parser.add_argument(
         '--eval',
         action='store_true',
@@ -47,7 +45,7 @@ def parse_args():
     parser.add_argument(
         '--tmpdir',
         help='tmp directory used for collecting results from multiple '
-        'workers, available when gpu-collect is not specified')
+             'workers, available when gpu-collect is not specified')
     parser.add_argument('--seed', type=int, default=0, help='random seed')
     parser.add_argument(
         '--deterministic',
@@ -74,8 +72,8 @@ def main():
 
     if (args.eval and args.format_only) or (not args.eval and not args.format_only):
         raise ValueError('Please specify exactly one operation (eval/format) '
-        'with the argument "--eval" or "--format-only"')
-    
+                         'with the argument "--eval" or "--format-only"')
+
     if args.eval and args.split == 'test':
         raise ValueError('Cannot evaluate on test set')
 
@@ -90,7 +88,7 @@ def main():
 
     # import modules from plguin/xx, registry will be updated
     import sys
-    sys.path.append(os.path.abspath('.'))  
+    sys.path.append(os.path.abspath('.'))
     if hasattr(cfg, 'plugin'):
         if cfg.plugin:
             import importlib
@@ -106,11 +104,11 @@ def main():
                     plg_lib = importlib.import_module(_module_path)
 
                 plugin_dirs = cfg.plugin_dir
-                if not isinstance(plugin_dirs,list):
-                    plugin_dirs = [plugin_dirs,]
+                if not isinstance(plugin_dirs, list):
+                    plugin_dirs = [plugin_dirs, ]
                 for plugin_dir in plugin_dirs:
                     import_path(plugin_dir)
-                
+
             else:
                 # import dir is the dirpath for the config file
                 _module_dir = os.path.dirname(args.config)
@@ -151,10 +149,10 @@ def main():
     elif cfg.get('work_dir', None) is None:
         # use config filename as default work_dir if cfg.work_dir is None
         cfg.work_dir = osp.join('./work_dirs',
-                                osp.splitext(osp.basename(args.config))[0]) 
+                                osp.splitext(osp.basename(args.config))[0])
 
     cfg_data_dict.work_dir = cfg.work_dir
-    print('work_dir: ',cfg.work_dir)
+    print('work_dir: ', cfg.work_dir)
     dataset = build_dataset(cfg_data_dict)
     data_loader = build_dataloader(
         dataset,
@@ -181,7 +179,7 @@ def main():
             device_ids=[torch.cuda.current_device()],
             broadcast_buffers=False)
         outputs = multi_gpu_test(model, data_loader, args.tmpdir,
-                                args.gpu_collect)
+                                 args.gpu_collect)
 
     rank, _ = get_dist_info()
     if rank == 0:

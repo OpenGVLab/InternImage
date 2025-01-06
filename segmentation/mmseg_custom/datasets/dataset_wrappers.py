@@ -5,9 +5,8 @@ from itertools import chain
 import mmcv
 import numpy as np
 from mmcv.utils import build_from_cfg, print_log
-from torch.utils.data.dataset import ConcatDataset as _ConcatDataset
-
 from mmseg.datasets.builder import DATASETS
+from torch.utils.data.dataset import ConcatDataset as _ConcatDataset
 
 
 @DATASETS.register_module(force=True)

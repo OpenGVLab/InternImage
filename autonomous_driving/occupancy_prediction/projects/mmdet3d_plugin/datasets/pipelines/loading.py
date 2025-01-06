@@ -1,9 +1,8 @@
-import numpy as np
-from numpy import random
-import mmcv
-from mmdet.datasets.builder import PIPELINES
-from mmcv.parallel import DataContainer as DC
 import os
+
+import numpy as np
+from mmdet.datasets.builder import PIPELINES
+
 
 @PIPELINES.register_module()
 class LoadOccGTFromFile(object):
@@ -20,13 +19,13 @@ class LoadOccGTFromFile(object):
     def __init__(
             self,
             data_root,
-        ):
+    ):
         self.data_root = data_root
 
     def __call__(self, results):
         # print(results.keys())
         occ_gt_path = results['occ_gt_path']
-        occ_gt_path = os.path.join(self.data_root,occ_gt_path)
+        occ_gt_path = os.path.join(self.data_root, occ_gt_path)
 
         occ_labels = np.load(occ_gt_path)
         semantics = occ_labels['semantics']
@@ -36,7 +35,6 @@ class LoadOccGTFromFile(object):
         results['voxel_semantics'] = semantics
         results['mask_lidar'] = mask_lidar
         results['mask_camera'] = mask_camera
-
 
         return results
 

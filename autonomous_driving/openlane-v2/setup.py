@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # setup.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -20,8 +20,7 @@
 # limitations under the License.
 # ==============================================================================
 
-from setuptools import setup, find_packages
-
+from setuptools import find_packages, setup
 
 setup(
     name='openlanev2',

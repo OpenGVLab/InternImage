@@ -3,26 +3,25 @@ from __future__ import division
 
 import argparse
 import copy
-import mmcv
 import os
 import time
-import torch
 import warnings
-from mmcv import Config, DictAction
-from mmcv.runner import get_dist_info, init_dist, wrap_fp16_model
 from os import path as osp
 
+import mmcv
+import torch
+from mmcv import Config, DictAction
+from mmcv.runner import get_dist_info, init_dist, wrap_fp16_model
+from mmcv.utils import TORCH_VERSION, digit_version
 from mmdet import __version__ as mmdet_version
 from mmdet3d import __version__ as mmdet3d_version
-#from mmdet3d.apis import train_model
-
-from mmdet3d.datasets import build_dataset
 from mmdet3d.models import build_model
 from mmdet3d.utils import collect_env, get_root_logger
 from mmdet.apis import set_random_seed
 from mmseg import __version__ as mmseg_version
 
-from mmcv.utils import TORCH_VERSION, digit_version
+# from mmdet3d.apis import train_model
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
@@ -39,13 +38,13 @@ def parse_args():
         '--gpus',
         type=int,
         help='number of gpus to use '
-        '(only applicable to non-distributed training)')
+             '(only applicable to non-distributed training)')
     group_gpus.add_argument(
         '--gpu-ids',
         type=int,
         nargs='+',
         help='ids of gpus to use '
-        '(only applicable to non-distributed training)')
+             '(only applicable to non-distributed training)')
     parser.add_argument('--seed', type=int, default=0, help='random seed')
     parser.add_argument(
         '--deterministic',
@@ -56,18 +55,18 @@ def parse_args():
         nargs='+',
         action=DictAction,
         help='override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file (deprecate), '
-        'change to --cfg-options instead.')
+             'in xxx=yyy format will be merged into config file (deprecate), '
+             'change to --cfg-options instead.')
     parser.add_argument(
         '--cfg-options',
         nargs='+',
         action=DictAction,
         help='override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file. If the value to '
-        'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
-        'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
-        'Note that the quotation marks are necessary and that no white space '
-        'is allowed.')
+             'in xxx=yyy format will be merged into config file. If the value to '
+             'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
+             'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
+             'Note that the quotation marks are necessary and that no white space '
+             'is allowed.')
     parser.add_argument(
         '--launcher',
         choices=['none', 'pytorch', 'slurm', 'mpi'],
@@ -127,8 +126,9 @@ def main():
                     _module_path = _module_path + '.' + m
                 print(_module_path)
                 plg_lib = importlib.import_module(_module_path)
-            
-            from projects.mmdet3d_plugin.bevformer.apis import custom_train_model
+
+            from projects.mmdet3d_plugin.bevformer.apis import \
+                custom_train_model
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
@@ -141,9 +141,9 @@ def main():
         # use config filename as default work_dir if cfg.work_dir is None
         cfg.work_dir = osp.join('./work_dirs',
                                 osp.splitext(osp.basename(args.config))[0])
-    #if args.resume_from is not None:
+    # if args.resume_from is not None:
 
-    if args.resume_from is not None and osp.isfile(args.resume_from): 
+    if args.resume_from is not None and osp.isfile(args.resume_from):
         cfg.resume_from = args.resume_from
 
     if args.gpu_ids is not None:
@@ -220,12 +220,12 @@ def main():
         eval_model_config,
         train_cfg=cfg.get('train_cfg'),
         test_cfg=cfg.get('test_cfg'))
-    
+
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
         wrap_fp16_model(eval_model)
 
-    #eval_model.init_weights()
+    # eval_model.init_weights()
     eval_model.load_state_dict(model.state_dict())
 
     logger.info(f'Model:\n{model}')

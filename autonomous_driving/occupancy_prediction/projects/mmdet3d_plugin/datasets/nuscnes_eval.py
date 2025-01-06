@@ -3,73 +3,41 @@ import copy
 import json
 import os
 import time
-from typing import Tuple, Dict, Any
-import torch
-import numpy as np
+from typing import Any, Dict, Tuple
 
+import numpy as np
+import tqdm
+from matplotlib import pyplot as plt
 from nuscenes import NuScenes
 from nuscenes.eval.common.config import config_factory
 from nuscenes.eval.common.data_classes import EvalBoxes
-from nuscenes.eval.detection.data_classes import DetectionConfig
+from nuscenes.eval.common.loaders import (add_center_dist, filter_eval_boxes,
+                                          load_gt, load_prediction)
+from nuscenes.eval.common.render import setup_axis
+from nuscenes.eval.detection.algo import accumulate, calc_ap, calc_tp
+from nuscenes.eval.detection.constants import (DETECTION_NAMES,
+                                               PRETTY_DETECTION_NAMES,
+                                               PRETTY_TP_METRICS, TP_METRICS,
+                                               TP_METRICS_UNITS)
+from nuscenes.eval.detection.data_classes import (DetectionBox,
+                                                  DetectionConfig,
+                                                  DetectionMetricDataList,
+                                                  DetectionMetrics)
 from nuscenes.eval.detection.evaluate import NuScenesEval
-from pyquaternion import Quaternion
-
-from nuscenes import NuScenes
-from nuscenes.eval.common.data_classes import EvalBoxes
-from nuscenes.eval.detection.data_classes import DetectionBox
+from nuscenes.eval.detection.render import (class_pr_curve, dist_pr_curve,
+                                            summary_plot)
 from nuscenes.eval.detection.utils import category_to_detection_name
 from nuscenes.eval.tracking.data_classes import TrackingBox
 from nuscenes.utils.data_classes import Box
-from nuscenes.utils.geometry_utils import points_in_box
+from nuscenes.utils.geometry_utils import (BoxVisibility, transform_matrix,
+                                           view_points)
 from nuscenes.utils.splits import create_splits_scenes
-from nuscenes.eval.common.loaders import load_prediction, add_center_dist, filter_eval_boxes
-import tqdm
-from nuscenes.utils.geometry_utils import view_points, box_in_image, BoxVisibility, transform_matrix
-from torchvision.transforms.functional import rotate
-import pycocotools.mask as mask_util
+from pyquaternion import Quaternion
+
 # from projects.mmdet3d_plugin.models.utils.visual import save_tensor
-from torchvision.transforms.functional import rotate
-import cv2
-import argparse
-import json
-import os
-import random
-import time
-from typing import Tuple, Dict, Any
-
-import numpy as np
-
-from nuscenes import NuScenes
-from nuscenes.eval.common.config import config_factory
-from nuscenes.eval.common.data_classes import EvalBoxes
-from nuscenes.eval.common.loaders import load_prediction, load_gt, add_center_dist, filter_eval_boxes
-from nuscenes.eval.detection.algo import accumulate, calc_ap, calc_tp
-from nuscenes.eval.detection.constants import TP_METRICS
-from nuscenes.eval.detection.data_classes import DetectionConfig, DetectionMetrics, DetectionBox, \
-    DetectionMetricDataList
-from nuscenes.eval.detection.render import summary_plot, class_pr_curve, dist_pr_curve, visualize_sample
-from nuscenes.eval.common.utils import quaternion_yaw, Quaternion
-from mmdet3d.core.bbox.iou_calculators import BboxOverlaps3D
-from IPython import embed
-import json
-from typing import Any
-
-import numpy as np
-from matplotlib import pyplot as plt
-
-from nuscenes import NuScenes
-from nuscenes.eval.common.data_classes import EvalBoxes
-from nuscenes.eval.common.render import setup_axis
-from nuscenes.eval.common.utils import boxes_to_sensor
-from nuscenes.eval.detection.constants import TP_METRICS, DETECTION_NAMES, DETECTION_COLORS, TP_METRICS_UNITS, \
-    PRETTY_DETECTION_NAMES, PRETTY_TP_METRICS
-from nuscenes.eval.detection.data_classes import DetectionMetrics, DetectionMetricData, DetectionMetricDataList
-from nuscenes.utils.data_classes import LidarPointCloud
-from nuscenes.utils.geometry_utils import view_points
-
-
 
 Axis = Any
+
 
 def class_tp_curve(md_list: DetectionMetricDataList,
                    metrics: DetectionMetrics,
@@ -124,7 +92,7 @@ def class_tp_curve(md_list: DetectionMetricDataList,
             label = '{}: {:.2f} ({})'.format(PRETTY_TP_METRICS[metric], tp, TP_METRICS_UNITS[metric])
         if metric == 'trans_err':
             label += f' ({md.max_recall_ind})'  # add recall
-            print(f'Recall: {detection_name}: {md.max_recall_ind/100}')
+            print(f'Recall: {detection_name}: {md.max_recall_ind / 100}')
         ax.plot(recall, error, label=label)
     ax.axvline(x=md.max_recall, linestyle='-.', color=(0, 0, 0, 0.3))
     ax.legend(loc='best')
@@ -211,7 +179,7 @@ def center_in_image(box, intrinsic: np.ndarray, imsize: Tuple[int, int], vis_lev
     elif vis_level == BoxVisibility.NONE:
         return True
     else:
-        raise ValueError("vis_level: {} not valid".format(vis_level))
+        raise ValueError('vis_level: {} not valid'.format(vis_level))
 
 
 def exist_corners_in_image_but_not_all(box, intrinsic: np.ndarray, imsize: Tuple[int, int],
@@ -259,7 +227,7 @@ def load_gt(nusc: NuScenes, eval_split: str, box_cls, verbose: bool = False):
         print('Loading annotations for {} split from nuScenes version: {}'.format(eval_split, nusc.version))
     # Read out all sample_tokens in DB.
     sample_tokens_all = [s['token'] for s in nusc.sample]
-    assert len(sample_tokens_all) > 0, "Error: Database has no samples!"
+    assert len(sample_tokens_all) > 0, 'Error: Database has no samples!'
 
     # Only keep samples from this split.
     splits = create_splits_scenes()
@@ -354,7 +322,7 @@ def load_gt(nusc: NuScenes, eval_split: str, box_cls, verbose: bool = False):
         all_annotations.add_boxes(sample_token, sample_boxes)
 
     if verbose:
-        print("Loaded ground truth annotations for {} samples.".format(len(all_annotations.sample_tokens)))
+        print('Loaded ground truth annotations for {} samples.'.format(len(all_annotations.sample_tokens)))
 
     return all_annotations
 
@@ -385,8 +353,8 @@ def filter_eval_boxes_by_id(nusc: NuScenes,
         eval_boxes.boxes[sample_token] = filtered_boxes
 
     if verbose:
-        print("=> Original number of boxes: %d" % total)
-        print("=> After anns based filtering: %d" % anns_filter)
+        print('=> Original number of boxes: %d' % total)
+        print('=> After anns based filtering: %d' % anns_filter)
 
     return eval_boxes
 
@@ -417,13 +385,13 @@ def filter_eval_boxes_by_visibility(
         eval_boxes.boxes[sample_token] = filtered_boxes
 
     if verbose:
-        print("=> Original number of boxes: %d" % total)
-        print("=> After visibility based filtering: %d" % anns_filter)
+        print('=> Original number of boxes: %d' % total)
+        print('=> After visibility based filtering: %d' % anns_filter)
 
     return eval_boxes
 
 
-def filter_by_sample_token(ori_eval_boxes, valid_sample_tokens=[],  verbose=False):
+def filter_by_sample_token(ori_eval_boxes, valid_sample_tokens=[], verbose=False):
     eval_boxes = copy.deepcopy(ori_eval_boxes)
     for sample_token in eval_boxes.sample_tokens:
         if sample_token not in valid_sample_tokens:
@@ -498,8 +466,8 @@ def filter_eval_boxes_by_overlap(nusc: NuScenes,
     verbose = True
 
     if verbose:
-        print("=> Original number of boxes: %d" % total)
-        print("=> After anns based filtering: %d" % anns_filter)
+        print('=> Original number of boxes: %d' % total)
+        print('=> After anns based filtering: %d' % anns_filter)
 
     return eval_boxes
 
@@ -620,7 +588,6 @@ class NuScenesEval_custom(NuScenesEval):
             self.pred_boxes = filter_by_sample_token(self.all_preds, valid_tokens)
         self.sample_tokens = self.gt_boxes.sample_tokens
 
-
     def evaluate(self) -> Tuple[DetectionMetrics, DetectionMetricDataList]:
         """
         Performs the actual evaluation.
@@ -698,7 +665,7 @@ class NuScenesEval_custom(NuScenesEval):
                           savepath=savepath('dist_pr_' + str(dist_th)))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     # Settings.
     parser = argparse.ArgumentParser(description='Evaluate nuScenes detection results.',
@@ -746,6 +713,6 @@ if __name__ == "__main__":
         nusc_eval.update_gt(type_='vis', visibility=vis)
         print(f'================ {vis} ===============')
         nusc_eval.main(plot_examples=plot_examples_, render_curves=render_curves_)
-    #for index in range(1, 41):
+    # for index in range(1, 41):
     #    nusc_eval.update_gt(type_='ord', index=index)
     #

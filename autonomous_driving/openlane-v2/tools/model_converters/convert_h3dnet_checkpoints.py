@@ -5,7 +5,6 @@ import tempfile
 import torch
 from mmcv import Config
 from mmcv.runner import load_state_dict
-
 from mmdet3d.models import build_detector
 
 
@@ -129,13 +128,13 @@ def main():
 
     EXTRACT_KEYS = {
         'rpn_head.conv_pred.conv_cls.weight':
-        ('rpn_head.conv_pred.conv_out.weight', [(0, 2), (-NUM_CLASSES, -1)]),
+            ('rpn_head.conv_pred.conv_out.weight', [(0, 2), (-NUM_CLASSES, -1)]),
         'rpn_head.conv_pred.conv_cls.bias':
-        ('rpn_head.conv_pred.conv_out.bias', [(0, 2), (-NUM_CLASSES, -1)]),
+            ('rpn_head.conv_pred.conv_out.bias', [(0, 2), (-NUM_CLASSES, -1)]),
         'rpn_head.conv_pred.conv_reg.weight':
-        ('rpn_head.conv_pred.conv_out.weight', [(2, -NUM_CLASSES)]),
+            ('rpn_head.conv_pred.conv_out.weight', [(2, -NUM_CLASSES)]),
         'rpn_head.conv_pred.conv_reg.bias':
-        ('rpn_head.conv_pred.conv_out.bias', [(2, -NUM_CLASSES)])
+            ('rpn_head.conv_pred.conv_out.bias', [(2, -NUM_CLASSES)])
     }
 
     # Delete some useless keys

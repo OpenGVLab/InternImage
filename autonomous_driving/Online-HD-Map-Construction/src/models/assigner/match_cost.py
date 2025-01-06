@@ -1,8 +1,7 @@
 import torch
-from mmdet.core.bbox.match_costs.builder import MATCH_COST
-from mmdet.core.bbox.match_costs import build_match_cost
-
 from mmdet.core.bbox.iou_calculators import bbox_overlaps
+from mmdet.core.bbox.match_costs import build_match_cost
+from mmdet.core.bbox.match_costs.builder import MATCH_COST
 from mmdet.core.bbox.transforms import bbox_cxcywh_to_xyxy
 
 
@@ -83,7 +82,7 @@ class LinesFixNumChamferCost(object):
         num_gts, num_bboxes = gt_lines.size(0), lines_pred.size(0)
 
         dist_mat = lines_pred.new_full((num_bboxes, num_gts),
-                                       1.0,)
+                                       1.0, )
 
         for i in range(num_bboxes):
             for j in range(num_gts):
@@ -212,6 +211,7 @@ class IoUCostC:
         iou_cost = -overlaps
         return iou_cost * self.weight
 
+
 @MATCH_COST.register_module()
 class DynamicLinesCost(object):
     """LinesL1Cost.
@@ -273,7 +273,7 @@ class DynamicLinesCost(object):
         m1 = m1.unsqueeze(1).sigmoid() > 0.5
         m2 = m2.unsqueeze(0)
 
-        valid_points_mask = (m1 + m2)/2.
+        valid_points_mask = (m1 + m2) / 2.
 
         average_factor_mask = valid_points_mask.sum(-1) > 0
         average_factor = average_factor_mask.masked_fill(
@@ -360,8 +360,7 @@ class MapQueriesCost(object):
 
         # Iou
         if self.iou_cost is not None:
-            iou_cost = self.iou_cost(preds['lines'],gts['lines'])
+            iou_cost = self.iou_cost(preds['lines'], gts['lines'])
             cost += iou_cost
-
 
         return cost

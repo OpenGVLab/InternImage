@@ -1,8 +1,9 @@
+from contextlib import contextmanager
+
+import deepspeed
 import torch
 import torch.nn as nn
-import deepspeed
 from deepspeed.runtime.zero import GatheredParameters
-from contextlib import contextmanager
 
 
 class EMADeepspeed(nn.Module):
@@ -49,7 +50,7 @@ class EMADeepspeed(nn.Module):
                             shadow_params[sname] = shadow_params[sname].type_as(m_param[key])
                             shadow_params[sname].sub_(one_minus_decay * (shadow_params[sname] - m_param[key]))
                         else:
-                            assert not key in self.m_name2s_name
+                            assert key not in self.m_name2s_name
 
     def copy_to(self, model):
         shadow_params = dict(self.named_buffers())
@@ -60,7 +61,7 @@ class EMADeepspeed(nn.Module):
                     if m_param[key].requires_grad:
                         m_param[key].data.copy_(shadow_params[self.m_name2s_name[key]].data)
                     else:
-                        assert not key in self.m_name2s_name
+                        assert key not in self.m_name2s_name
 
     def store(self, model):
         """

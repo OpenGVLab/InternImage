@@ -1,7 +1,7 @@
 import numpy as np
-
 from mmdet.datasets.builder import PIPELINES
 from shapely.geometry import LineString
+
 
 @PIPELINES.register_module(force=True)
 class PolygonizeLocalMapBbox(object):
@@ -18,7 +18,7 @@ class PolygonizeLocalMapBbox(object):
                  canvas_size=(200, 100),
                  coord_dim=2,
                  num_class=3,
-                 threshold=6/200,
+                 threshold=6 / 200,
                  ):
 
         self.canvas_size = np.array(canvas_size)
@@ -47,7 +47,7 @@ class PolygonizeLocalMapBbox(object):
                     polyline_weight = np.ones_like(polyline).reshape(-1)
                     polyline_weight = np.pad(
                         polyline_weight, ((0, 1),), constant_values=1.)
-                    polyline_weight = polyline_weight/polyline_weight.sum()
+                    polyline_weight = polyline_weight / polyline_weight.sum()
 
                 # flatten and quantilized
                 fpolyline = quantize_verts(
@@ -58,7 +58,7 @@ class PolygonizeLocalMapBbox(object):
                 # reindex starting from 1, and add a zero stopping token(EOS),
                 fpolyline = \
                     np.pad(fpolyline + self.coord_dim_start_idx, ((0, 1),),
-                            constant_values=0)
+                           constant_values=0)
                 fpolyline_msk = np.ones(fpolyline.shape, dtype=np.bool)
 
                 polyline_masks.append(fpolyline_msk)
@@ -98,11 +98,11 @@ class PolygonizeLocalMapBbox(object):
         qkp_msks = np.stack(qkp_masks)
 
         # format det
-        kps = np.stack(kps, axis=0).astype(np.float32)*self.canvas_size
+        kps = np.stack(kps, axis=0).astype(np.float32) * self.canvas_size
         kp_labels = np.array(kp_labels)
         # restrict the boundary
-        kps[..., 0] = np.clip(kps[..., 0], 0.1, self.canvas_size[0]-0.1)
-        kps[..., 1] = np.clip(kps[..., 1], 0.1, self.canvas_size[1]-0.1)
+        kps[..., 0] = np.clip(kps[..., 0], 0.1, self.canvas_size[0] - 0.1)
+        kps[..., 1] = np.clip(kps[..., 1], 0.1, self.canvas_size[1] - 0.1)
 
         # nbox, boxsize(4)*coord_dim(2)
         kps = kps.reshape(kps.shape[0], -1)
@@ -114,7 +114,7 @@ class PolygonizeLocalMapBbox(object):
         '''
             Process vertices.
         '''
-        
+
         vectors = input_dict['vectors']
 
         n_lines = 0
@@ -157,10 +157,9 @@ class PolygonizeLocalMapBbox(object):
 
 
 def evaluate_line(polyline):
-
     edge = np.linalg.norm(polyline[1:] - polyline[:-1], axis=-1)
 
-    start_end_weight = edge[(0, -1), ].copy()
+    start_end_weight = edge[(0, -1),].copy()
     mid_weight = (edge[:-1] + edge[1:]) * .5
 
     pts_weight = np.concatenate(
@@ -172,16 +171,16 @@ def evaluate_line(polyline):
     pts_weight /= denominator
 
     # add weights for stop index
-    pts_weight = np.repeat(pts_weight, 2)/2
+    pts_weight = np.repeat(pts_weight, 2) / 2
     pts_weight = np.pad(pts_weight, ((0, 1)),
-                        constant_values=1/(len(polyline)*2))
+                        constant_values=1 / (len(polyline) * 2))
 
     return pts_weight
 
 
 def quantize_verts(verts, canvas_size, coord_dim):
     """Convert vertices from its original range ([-1,1]) to discrete values in [0, n_bits**2 - 1].
-    
+
     Args:
         verts (array): vertices coordinates, shape (seqlen, coords_dim)
         canvas_size (tuple): bev feature size
@@ -196,7 +195,7 @@ def quantize_verts(verts, canvas_size, coord_dim):
     range_quantize = np.array(canvas_size) - 1  # (0-199) = 200
 
     verts_ratio = (verts[:, :coord_dim] - min_range) / (
-        max_range - min_range)
+            max_range - min_range)
     verts_quantize = verts_ratio * range_quantize[:coord_dim]
 
     return verts_quantize.astype('int32')
@@ -204,11 +203,11 @@ def quantize_verts(verts, canvas_size, coord_dim):
 
 def get_bbox(polyline, threshold):
     """Convert vertices from its original range ([-1,1]) to discrete values in [0, n_bits**2 - 1].
-    
+
     Args:
         polyline (array): point coordinates, shape (seqlen, 2)
         threshold (float): threshold for minimum bbox size
-    
+
     Returns:
         bbox (array): bounding box in xyxy format, shape (2, 2)
     """
@@ -216,10 +215,10 @@ def get_bbox(polyline, threshold):
     polyline = LineString(polyline)
     bbox = polyline.bounds
     minx, miny, maxx, maxy = bbox
-    W, H = maxx-minx, maxy-miny
+    W, H = maxx - minx, maxy - miny
 
     if W < threshold or H < threshold:
-        remain = max((threshold - min(W, H))/2, eps)
+        remain = max((threshold - min(W, H)) / 2, eps)
         bbox = polyline.buffer(remain).envelope.bounds
         minx, miny, maxx, maxy = bbox
 

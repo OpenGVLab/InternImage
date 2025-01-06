@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # topology_head.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -23,7 +23,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 from mmcv.runner import BaseModule
 from mmdet.models import HEADS, build_loss
 
@@ -41,13 +40,14 @@ class MLP(nn.Module):
             x = F.relu(layer(x)) if i < self.num_layers - 1 else layer(x)
         return x
 
+
 @HEADS.register_module()
 class TopologyHead(BaseModule):
 
-    def __init__(self, 
-                 in_channels, 
-                 hidden_channels, 
-                 out_channels, 
+    def __init__(self,
+                 in_channels,
+                 hidden_channels,
+                 out_channels,
                  num_layers,
                  loss_cls):
 
@@ -94,10 +94,11 @@ class TopologyHead(BaseModule):
             target = pred_adj.new_zeros(pred_adj[b].shape[:-1])
             rs = row_assign_result['pos_inds'][b].unsqueeze(-1).repeat(1, column_assign_result['pos_inds'][b].shape[0])
             cs = column_assign_result['pos_inds'][b].unsqueeze(0).repeat(row_assign_result['pos_inds'][b].shape[0], 1)
-            target[rs, cs] = gt_adj[b][row_assign_result['pos_assigned_gt_inds'][b]][:, column_assign_result['pos_assigned_gt_inds'][b]].float()
+            target[rs, cs] = gt_adj[b][row_assign_result['pos_assigned_gt_inds'][b]][:,
+                             column_assign_result['pos_assigned_gt_inds'][b]].float()
             targets.append(target)
 
-        targets = 1 - torch.stack(targets, dim=0) # 0 as positive
+        targets = 1 - torch.stack(targets, dim=0)  # 0 as positive
 
         loss_dict = dict()
         pred_adj = pred_adj.reshape(-1, self.out_channels)

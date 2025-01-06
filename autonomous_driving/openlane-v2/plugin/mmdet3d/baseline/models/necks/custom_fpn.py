@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # custom_fpn.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -22,7 +22,6 @@
 
 import torch.nn as nn
 import torch.nn.functional as F
-
 from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule
 from mmdet3d.models import NECKS
@@ -34,7 +33,7 @@ class CustomFPN(BaseModule):
     Notes
     -----
     Adapted from https://github.com/HuangJunJie2017/BEVDet/blob/dev2.0/mmdet3d/models/necks/fpn.py#L11.
-    
+
     Feature Pyramid Network.
     This is an implementation of paper `Feature Pyramid Networks for Object
     Detection <https://arxiv.org/abs/1612.03144>`_.

@@ -13,12 +13,12 @@ except ImportError:
 
 
 def mmdet3d2torchserve(
-    config_file: str,
-    checkpoint_file: str,
-    output_folder: str,
-    model_name: str,
-    model_version: str = '1.0',
-    force: bool = False,
+        config_file: str,
+        checkpoint_file: str,
+        output_folder: str,
+        model_name: str,
+        model_version: str = '1.0',
+        force: bool = False,
 ):
     """Converts MMDetection3D model (config + checkpoint) to TorchServe `.mar`.
 
@@ -83,8 +83,8 @@ def parse_args():
         type=str,
         default=None,
         help='If not None, used for naming the `{model_name}.mar`'
-        'file that will be created under `output_folder`.'
-        'If None, `{Path(checkpoint_file).stem}` will be used.')
+             'file that will be created under `output_folder`.'
+             'If None, `{Path(checkpoint_file).stem}` will be used.')
     parser.add_argument(
         '--model-version',
         type=str,

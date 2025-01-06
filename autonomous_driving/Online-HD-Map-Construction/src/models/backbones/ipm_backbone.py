@@ -1,12 +1,13 @@
 import copy
 import math
+
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 from mmdet3d.models.builder import BACKBONES
 from mmdet.models import build_backbone, build_neck
+
 
 class UpsampleBlock(nn.Module):
     def __init__(self, ins, outs):
@@ -17,7 +18,6 @@ class UpsampleBlock(nn.Module):
         self.relu = nn.ReLU(inplace=True)
 
     def forward(self, x):
-
         x = self.conv(x)
         x = self.relu(self.gn(x))
         x = self.upsample2x(x)
@@ -26,7 +26,7 @@ class UpsampleBlock(nn.Module):
 
     def upsample2x(self, x):
         _, _, h, w = x.shape
-        x = F.interpolate(x, size=(h*2, w*2),
+        x = F.interpolate(x, size=(h * 2, w * 2),
                           mode='bilinear', align_corners=True)
         return x
 
@@ -54,7 +54,7 @@ class Upsample(nn.Module):
                 continue
 
             tmp = [copy.deepcopy(input_conv), ]
-            tmp += [copy.deepcopy(inter_conv) for i in range(layer_num-1)]
+            tmp += [copy.deepcopy(inter_conv) for i in range(layer_num - 1)]
             fscale.append(nn.Sequential(*tmp))
 
         self.fscale = nn.ModuleList(fscale)
@@ -117,21 +117,21 @@ class IPMEncoder(nn.Module):
         if self.use_lidar:
             self.pp = PointPillarEncoder(lidar_dim, xbound, ybound, zbound)
 
-            self.outconvs =\
-                nn.Conv2d((self.upsample.out_channels+3)*len(heights), out_channels//2, 
-                            kernel_size=3, stride=1, padding=1)  # same
+            self.outconvs = \
+                nn.Conv2d((self.upsample.out_channels + 3) * len(heights), out_channels // 2,
+                          kernel_size=3, stride=1, padding=1)  # same
             if self.use_image:
-                _out_channels = out_channels//2
+                _out_channels = out_channels // 2
             else:
                 _out_channels = out_channels
 
-            self.outconvs_lidar =\
-                nn.Conv2d(lidar_dim, _out_channels, 
-                            kernel_size=3, stride=1, padding=1)  # same
+            self.outconvs_lidar = \
+                nn.Conv2d(lidar_dim, _out_channels,
+                          kernel_size=3, stride=1, padding=1)  # same
         else:
-            self.outconvs =\
-                nn.Conv2d((self.upsample.out_channels+3)*len(heights), out_channels, 
-                            kernel_size=3, stride=1, padding=1)  # same
+            self.outconvs = \
+                nn.Conv2d((self.upsample.out_channels + 3) * len(heights), out_channels,
+                          kernel_size=3, stride=1, padding=1)  # same
 
         self.init_weights(pretrained=pretrained)
 
@@ -139,10 +139,9 @@ class IPMEncoder(nn.Module):
         bev_planes = [construct_plane_grid(
             xbound, ybound, h) for h in self.heights]
         self.register_buffer('bev_planes', torch.stack(
-            bev_planes),)  # nlvl,bH,bW,2
+            bev_planes), )  # nlvl,bH,bW,2
 
         self.masked_embeds = nn.Embedding(len(heights), out_channels)
-
 
     def init_weights(self, pretrained=None):
         """Initialize model weights."""
@@ -154,12 +153,12 @@ class IPMEncoder(nn.Module):
         for p in self.outconvs.parameters():
             if p.dim() > 1:
                 nn.init.xavier_uniform_(p)
-        
+
         if self.use_lidar:
             for p in self.outconvs_lidar.parameters():
                 if p.dim() > 1:
                     nn.init.xavier_uniform_(p)
-            
+
             for p in self.pp.parameters():
                 if p.dim() > 1:
                     nn.init.xavier_uniform_(p)
@@ -169,7 +168,7 @@ class IPMEncoder(nn.Module):
             Extract image feaftures and sum up into one pic
             Args:
                 imgs: B, n_cam, C, iH, iW
-            Returns: 
+            Returns:
                 img_feat: B * n_cam, C, H, W
         '''
 
@@ -188,12 +187,12 @@ class IPMEncoder(nn.Module):
 
     def forward(self, imgs, img_metas, *args, points=None, **kwargs):
         '''
-            Args: 
+            Args:
                 imgs: torch.Tensor of shape [B, N, 3, H, W]
                     N: number of cams
-                img_metas: 
+                img_metas:
                     # N=6, ['CAM_FRONT', 'CAM_FRONT_RIGHT', 'CAM_FRONT_LEFT', 'CAM_BACK', 'CAM_BACK_LEFT', 'CAM_BACK_RIGHT']
-                    ego2cam: [B, N, 4, 4] 
+                    ego2cam: [B, N, 4, 4]
                     cam_intrinsics: [B, N, 3, 3]
                     cam2ego_rotations: [B, N, 3, 3]
                     cam2ego_translations: [B, N, 3]
@@ -225,7 +224,7 @@ class IPMEncoder(nn.Module):
         if self.use_lidar:
             lidar_feat = self.get_lidar_feature(points)
             if self.use_image:
-                bev_feat = torch.cat([bev_feat,lidar_feat],dim=1)
+                bev_feat = torch.cat([bev_feat, lidar_feat], dim=1)
             else:
                 bev_feat = lidar_feat
 
@@ -233,7 +232,7 @@ class IPMEncoder(nn.Module):
 
     def ipm(self, cam_feat, ego2cam, img_shape):
         '''
-            inverse project 
+            inverse project
             Args:
                 cam_feat: B*ncam, C, cH, cW
                 img_shape: tuple(H, W)
@@ -250,7 +249,7 @@ class IPMEncoder(nn.Module):
         # bev_grid_pos: B*ncam, nlvl*bH*bW, 2
         bev_grid_pos, bev_cam_mask = get_campos(bev_grid, ego2cam, img_shape)
         # B*cam, nlvl*bH, bW, 2
-        bev_grid_pos = bev_grid_pos.unflatten(-2, (nlvl*bH, bW))
+        bev_grid_pos = bev_grid_pos.unflatten(-2, (nlvl * bH, bW))
 
         # project feat from 2D to bev plane
         projected_feature = F.grid_sample(
@@ -262,11 +261,11 @@ class IPMEncoder(nn.Module):
         # eliminate the ncam
         # The bev feature is the sum of the 6 cameras
         bev_feat_mask = bev_feat_mask.unsqueeze(2)
-        projected_feature = (projected_feature*bev_feat_mask).sum(1)
+        projected_feature = (projected_feature * bev_feat_mask).sum(1)
         num_feat = bev_feat_mask.sum(1)
 
         projected_feature = projected_feature / \
-            num_feat.masked_fill(num_feat == 0, 1)
+                            num_feat.masked_fill(num_feat == 0, 1)
 
         # concatenate a position information
         # projected_feature: B, bH, bW, nlvl, C+3
@@ -287,7 +286,7 @@ class IPMEncoder(nn.Module):
         # bev_grid = bev_grid.permute(0, 3, 1, 2)
         # lidar_feature = torch.cat(
         #     (lidar_feature, bev_grid), dim=1)
-        
+
         lidar_feature = self.outconvs_lidar(lidar_feature)
 
         return lidar_feature
@@ -321,7 +320,7 @@ def construct_plane_grid(xbound, ybound, height: float, dtype=torch.float32):
 def get_campos(reference_points, ego2cam, img_shape):
     '''
         Find the each refence point's corresponding pixel in each camera
-        Args: 
+        Args:
             reference_points: [B, num_query, 3]
             ego2cam: (B, num_cam, 4, 4)
         Outs:
@@ -351,7 +350,7 @@ def get_campos(reference_points, ego2cam, img_shape):
     eps = 1e-9
     mask = (reference_points_cam[..., 2:3] > eps)
 
-    reference_points_cam =\
+    reference_points_cam = \
         reference_points_cam[..., 0:2] / \
         reference_points_cam[..., 2:3] + eps
 
@@ -362,13 +361,13 @@ def get_campos(reference_points, ego2cam, img_shape):
     reference_points_cam = (reference_points_cam - 0.5) * 2
 
     mask = (mask & (reference_points_cam[..., 0:1] > -1.0)
-                 & (reference_points_cam[..., 0:1] < 1.0)
-                 & (reference_points_cam[..., 1:2] > -1.0)
-                 & (reference_points_cam[..., 1:2] < 1.0))
+            & (reference_points_cam[..., 0:1] < 1.0)
+            & (reference_points_cam[..., 1:2] > -1.0)
+            & (reference_points_cam[..., 1:2] < 1.0))
 
     # (B, num_cam, num_query)
     mask = mask.view(B, num_cam, num_query)
-    reference_points_cam = reference_points_cam.view(B*num_cam, num_query, 2)
+    reference_points_cam = reference_points_cam.view(B * num_cam, num_query, 2)
 
     return reference_points_cam, mask
 

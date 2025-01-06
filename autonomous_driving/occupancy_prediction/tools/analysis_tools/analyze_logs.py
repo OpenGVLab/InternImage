@@ -1,9 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import json
+from collections import defaultdict
+
 import numpy as np
 import seaborn as sns
-from collections import defaultdict
 from matplotlib import pyplot as plt
 
 
@@ -65,7 +66,7 @@ def plot_curve(log_dicts, args):
                     else:
                         # find the first epoch that do eval
                         x0 = min(epochs) + args.interval - \
-                            min(epochs) % args.interval
+                             min(epochs) % args.interval
                 xs = np.arange(x0, max(epochs) + 1, args.interval)
                 ys = []
                 for epoch in epochs[args.interval - 1::args.interval]:
@@ -85,7 +86,7 @@ def plot_curve(log_dicts, args):
                 xs = []
                 ys = []
                 num_iters_per_epoch = \
-                    log_dict[epochs[args.interval-1]]['iter'][-1]
+                    log_dict[epochs[args.interval - 1]]['iter'][-1]
                 for epoch in epochs[args.interval - 1::args.interval]:
                     iters = log_dict[epoch]['iter']
                     if log_dict[epoch]['mode'][-1] == 'val':
@@ -152,7 +153,7 @@ def add_time_parser(subparsers):
         '--include-outliers',
         action='store_true',
         help='include the first value of every epoch when computing '
-        'the average time')
+             'the average time')
 
 
 def parse_args():

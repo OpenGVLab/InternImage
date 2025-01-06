@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # baseline.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -21,8 +21,7 @@
 # ==============================================================================
 
 import torch
-
-from mmdet3d.models import DETECTORS, build_neck, build_head
+from mmdet3d.models import DETECTORS, build_head, build_neck
 from mmdet3d.models.detectors import MVXTwoStageDetector
 
 
@@ -59,13 +58,14 @@ class Baseline(MVXTwoStageDetector):
             if type(x) in [list, tuple]:
                 x = x[0]
 
-        # view transformation 
+        # view transformation
 
         bev_feat = self.img_view_transformer(
             x,
             torch.cat([
-                torch.cat([torch.tensor(l, device=x.device, dtype=torch.float32).unsqueeze(0) for l in img_metas[b]['lidar2img']], dim=0).unsqueeze(0)
-            for b in range(B)], dim=0),
+                torch.cat([torch.tensor(l, device=x.device, dtype=torch.float32).unsqueeze(0) for l in
+                           img_metas[b]['lidar2img']], dim=0).unsqueeze(0)
+                for b in range(B)], dim=0),
             (img_metas[0]['img_shape'][0][0], img_metas[0]['img_shape'][0][1]),
         )
         _, output_dim, ouput_H, output_W = x.shape
@@ -76,10 +76,10 @@ class Baseline(MVXTwoStageDetector):
         lc_img_metas = [{
             'batch_input_shape': (bev_feat.shape[-2], bev_feat.shape[-1]),
             'img_shape': (bev_feat.shape[-2], bev_feat.shape[-1], None),
-            'scale_factor': None, # dummy
+            'scale_factor': None,  # dummy
         } for _ in range(B)]
         all_lc_cls_scores_list, all_lc_preds_list, lc_outs_dec_list = self.lc_head(
-            [bev_feat], 
+            [bev_feat],
             lc_img_metas,
         )
 
@@ -91,7 +91,7 @@ class Baseline(MVXTwoStageDetector):
             'scale_factor': img_metas[b]['scale_factor'],
         } for b in range(B)]
         all_te_cls_scores_list, all_te_preds_list, te_outs_dec_list = self.te_head(
-            [pv_feat], 
+            [pv_feat],
             te_img_metas,
         )
 
@@ -149,7 +149,7 @@ class Baseline(MVXTwoStageDetector):
         })
 
         # te
-        
+
         te_loss_dict, te_assign_results = self.te_head.loss(
             outs['all_te_cls_scores_list'],
             outs['all_te_preds_list'],
@@ -186,20 +186,20 @@ class Baseline(MVXTwoStageDetector):
         })
 
         return losses
-    
+
     def forward_test(self, img, img_metas, **kwargs):
 
         outs = self.simple_forward(img, img_metas)
 
         pred_lc = self.lc_head.get_bboxes(
-            outs['all_lc_cls_scores_list'], 
-            outs['all_lc_preds_list'], 
+            outs['all_lc_cls_scores_list'],
+            outs['all_lc_preds_list'],
             outs['lc_img_metas'],
         )
         pred_te = self.te_head.get_bboxes(
-            outs['all_te_cls_scores_list'], 
-            outs['all_te_preds_list'], 
-            outs['te_img_metas'], 
+            outs['all_te_cls_scores_list'],
+            outs['all_te_preds_list'],
+            outs['te_img_metas'],
             rescale=True,
         )
 

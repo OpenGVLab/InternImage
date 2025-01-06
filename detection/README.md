@@ -1,9 +1,8 @@
 # InternImage for Object Detection
 
-This folder contains the implementation of the InternImage for object detection. 
+This folder contains the implementation of the InternImage for object detection.
 
 Our detection code is developed on top of [MMDetection v2.28.1](https://github.com/open-mmlab/mmdetection/tree/v2.28.1).
-
 
 ## Usage
 
@@ -28,6 +27,7 @@ conda activate internimage
 - Install `PyTorch>=1.10.0` and `torchvision>=0.9.0` with `CUDA>=10.2`:
 
 For examples, to install torch==1.11 with CUDA==11.3:
+
 ```bash
 pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
 ```
@@ -47,12 +47,14 @@ pip install opencv-python termcolor yacs pyyaml scipy
 ```
 
 - Compile CUDA operators
+
 ```bash
 cd ./ops_dcnv3
 sh ./make.sh
 # unit test (should see all checking is True)
 python test.py
 ```
+
 - You can also install the operator using .whl files
 
 [DCNv3-1.0-whl](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
@@ -60,7 +62,6 @@ python test.py
 ### Data Preparation
 
 Prepare COCO according to the guidelines in [MMDetection v2.28.1](https://github.com/open-mmlab/mmdetection/blob/master/docs/en/1_exist_data_model.md).
-
 
 ### Evaluation
 
@@ -107,6 +108,7 @@ GPUS=32 sh slurm_train.sh <partition> <job-name> configs/coco/cascade_internimag
 ### Export
 
 To export a detection model from PyTorch to TensorRT, run:
+
 ```shell
 MODEL="model_name"
 CKPT_PATH="/path/to/model/ckpt.pth"
@@ -122,6 +124,7 @@ python deploy.py \
 ```
 
 For example, to export `mask_rcnn_internimage_t_fpn_1x_coco` from PyTorch to TensorRT, run:
+
 ```shell
 MODEL="mask_rcnn_internimage_t_fpn_1x_coco"
 CKPT_PATH="/path/to/model/ckpt/mask_rcnn_internimage_t_fpn_1x_coco.pth"

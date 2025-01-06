@@ -1,24 +1,23 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import os
+import os.path as osp
 from argparse import ArgumentParser
 
-import mmcv
-
-import mmcv_custom   # noqa: F401,F403
-import mmseg_custom   # noqa: F401,F403
-from mmseg.apis import inference_segmentor, init_segmentor, show_result_pyplot
-from mmseg.core.evaluation import get_palette
-from mmcv.runner import load_checkpoint
-from mmseg.core import get_classes
 import cv2
-import os.path as osp
-import os
+import mmcv
+import mmcv_custom  # noqa: F401,F403
+import mmseg_custom  # noqa: F401,F403
+from mmcv.runner import load_checkpoint
+from mmseg.apis import inference_segmentor, init_segmentor, show_result_pyplot
+from mmseg.core import get_classes
+from mmseg.core.evaluation import get_palette
 
 
 def test_single_image(model, img_name, out_dir, color_palette, opacity):
     # check img_name is an image file or not
     assumed_imgformat = ('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')
     if (not img_name.lower().endswith(assumed_imgformat)):
-        print(f"Skip {img_name} because it is not an image file.")
+        print(f'Skip {img_name} because it is not an image file.')
         return
 
     result = inference_segmentor(model, img_name)
@@ -34,7 +33,7 @@ def test_single_image(model, img_name, out_dir, color_palette, opacity):
     mmcv.mkdir_or_exist(out_dir)
     out_path = osp.join(out_dir, osp.basename(img_name))
     cv2.imwrite(out_path, img)
-    print(f"Result is save at {out_path}")
+    print(f'Result is save at {out_path}')
 
 
 def main():
@@ -43,7 +42,7 @@ def main():
         'img', help='Image file or a directory contains images')
     parser.add_argument('config', help='Config file')
     parser.add_argument('checkpoint', help='Checkpoint file')
-    parser.add_argument('--out', type=str, default="demo", help='out dir')
+    parser.add_argument('--out', type=str, default='demo', help='out dir')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference')
     parser.add_argument(

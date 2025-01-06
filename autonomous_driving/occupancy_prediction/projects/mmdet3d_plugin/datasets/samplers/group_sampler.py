@@ -1,4 +1,3 @@
-
 # Copyright (c) OpenMMLab. All rights reserved.
 import math
 
@@ -6,9 +5,8 @@ import numpy as np
 import torch
 from mmcv.runner import get_dist_info
 from torch.utils.data import Sampler
+
 from .sampler import SAMPLER
-import random
-from IPython import embed
 
 
 @SAMPLER.register_module()
@@ -107,4 +105,3 @@ class DistributedGroupSampler(Sampler):
 
     def set_epoch(self, epoch):
         self.epoch = epoch
-

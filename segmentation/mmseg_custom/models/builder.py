@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import warnings   # noqa: F401,F403
+import warnings  # noqa: F401,F403
 
 from mmcv.utils import Registry
 

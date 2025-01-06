@@ -1,17 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 
+import mmcv_custom  # noqa: F401,F403
+import mmdet_custom  # noqa: F401,F403
 import numpy as np
 import torch
 from mmcv import Config, DictAction
-
 from mmdet.models import build_detector
-import mmcv_custom  # noqa: F401,F403
-import mmdet_custom  # noqa: F401,F403
 
 try:
-    from mmcv.cnn.utils.flops_counter import flops_to_string, params_to_string
     from mmcv.cnn import get_model_complexity_info
+    from mmcv.cnn.utils.flops_counter import flops_to_string, params_to_string
 except ImportError:
     raise ImportError('Please upgrade mmcv to >0.6.2')
 
@@ -51,11 +50,11 @@ def dcnv3_flops(n, k, c):
 
 def get_flops(model, input_shape):
     flops, params = get_model_complexity_info(model, input_shape, as_strings=False)
-    
+
     backbone = model.backbone
     backbone_name = type(backbone).__name__
     _, H, W = input_shape
-    
+
     temp = 0
     if 'InternImage' in backbone_name:
         depths = backbone.depths  # [4, 4, 18, 4]
@@ -64,15 +63,15 @@ def get_flops(model, input_shape):
             h = H / (4 * (2 ** idx))
             w = W / (4 * (2 ** idx))
             temp += depth * dcnv3_flops(n=h * w, k=3 * 3, c=channels)
-    
+
     flops = flops + temp
     return flops_to_string(flops), params_to_string(params)
 
 
 if __name__ == '__main__':
-    
+
     args = parse_args()
-    
+
     if len(args.shape) == 1:
         h = w = args.shape[0]
     elif len(args.shape) == 2:
@@ -84,18 +83,18 @@ if __name__ == '__main__':
     if divisor > 0:
         h = int(np.ceil(h / divisor)) * divisor
         w = int(np.ceil(w / divisor)) * divisor
-    
+
     input_shape = (3, h, w)
-    
+
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
-    
+
     model = build_detector(
         cfg.model,
         train_cfg=cfg.get('train_cfg'),
         test_cfg=cfg.get('test_cfg'))
-    
+
     if torch.cuda.is_available():
         model.cuda()
     model.eval()
@@ -103,12 +102,11 @@ if __name__ == '__main__':
         model.forward = model.forward_dummy
     else:
         raise NotImplementedError(
-            'FLOPs counter is currently not currently supported with {}'.
-                format(model.__class__.__name__))
-    
+            'FLOPs counter is currently not currently supported with {}'.format(model.__class__.__name__))
+
     flops, params = get_flops(model, input_shape)
     split_line = '=' * 30
-    
+
     if divisor > 0 and \
             input_shape != orig_shape:
         print(f'{split_line}\nUse size divisor set input shape '

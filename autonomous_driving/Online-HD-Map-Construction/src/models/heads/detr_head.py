@@ -1,18 +1,15 @@
+import copy
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import copy
-from mmdet.models import HEADS
-from mmcv.cnn import Conv2d
-from mmcv.cnn import Linear, build_activation_layer, bias_init_with_prob
+from mmcv.cnn import (Conv2d, Linear, bias_init_with_prob,
+                      build_activation_layer)
 from mmcv.cnn.bricks.transformer import build_positional_encoding
-from mmdet.models.utils import build_transformer
 from mmcv.runner import force_fp32
-
-from mmdet.core import (multi_apply, build_assigner, build_sampler,
-                        reduce_mean)
-from mmdet.models.utils.transformer import inverse_sigmoid
-from mmdet.models import build_loss
+from mmdet.core import build_assigner, build_sampler, multi_apply, reduce_mean
+from mmdet.models import HEADS, build_loss
+from mmdet.models.utils import build_transformer
 
 from .base_map_head import BaseMapHead
 
@@ -60,14 +57,14 @@ class DETRMapFixedNumHead(BaseMapHead):
         if loss_cls['use_sigmoid']:
             self.cls_out_channels = num_classes
         else:
-            self.cls_out_channels = num_classes+1
+            self.cls_out_channels = num_classes + 1
 
         self.iterative = iterative
         self.num_reg_fcs = num_reg_fcs
 
         if patch_size is not None:
             self.register_buffer('patch_size', torch.tensor(
-                (patch_size[1], patch_size[0])),)
+                (patch_size[1], patch_size[0])), )
 
         self._build_transformer(transformer, positional_encoding)
 
@@ -104,7 +101,7 @@ class DETRMapFixedNumHead(BaseMapHead):
         self.transformer = build_transformer(transformer)
         self.embed_dims = self.transformer.embed_dims
 
-    def _init_branch(self,):
+    def _init_branch(self, ):
         """Initialize classification branch and regression branch of head."""
 
         fc_cls = Linear(self.embed_dims, self.cls_out_channels)
@@ -114,8 +111,9 @@ class DETRMapFixedNumHead(BaseMapHead):
             reg_branch.append(Linear(self.embed_dims, self.embed_dims))
             reg_branch.append(nn.LayerNorm(self.embed_dims))
             reg_branch.append(nn.ReLU())
-        reg_branch.append(Linear(self.embed_dims, self.num_points*2))
+        reg_branch.append(Linear(self.embed_dims, self.num_points * 2))
         reg_branch = nn.Sequential(*reg_branch)
+
         # add sigmoid or not
 
         def _get_clones(module, N):
@@ -185,7 +183,6 @@ class DETRMapFixedNumHead(BaseMapHead):
         outputs = []
 
         for i, query_feat in enumerate(outs_dec):
-
             ocls = self.pre_branches['cls'](query_feat)
             oreg = self.pre_branches['reg'](query_feat)
             oreg = oreg.unflatten(dim=2, sizes=(self.num_points, 2))
@@ -235,7 +232,7 @@ class DETRMapFixedNumHead(BaseMapHead):
 
         num_pred_lines = lines_pred.size(0)
         # assigner and sampler
-        assign_result = self.assigner.assign(preds=dict(lines=lines_pred, scores=score_pred,),
+        assign_result = self.assigner.assign(preds=dict(lines=lines_pred, scores=score_pred, ),
                                              gts=dict(lines=gt_lines,
                                                       labels=gt_labels, ),
                                              gt_bboxes_ignore=gt_bboxes_ignore)
@@ -245,7 +242,7 @@ class DETRMapFixedNumHead(BaseMapHead):
         neg_inds = sampling_result.neg_inds
 
         # label targets
-        labels = gt_lines.new_full((num_pred_lines, ),
+        labels = gt_lines.new_full((num_pred_lines,),
                                    self.num_classes,
                                    dtype=torch.long)
         labels[pos_inds] = gt_labels[sampling_result.pos_assigned_gt_inds]
@@ -297,10 +294,10 @@ class DETRMapFixedNumHead(BaseMapHead):
         (labels_list, label_weights_list,
          lines_targets_list, lines_weights_list,
          pos_inds_list, neg_inds_list) = multi_apply(
-             self._get_target_single,
-             preds['scores'], preds['lines'],
-             gts['lines'], gts['labels'],
-             gt_bboxes_ignore=gt_bboxes_ignore_list)
+            self._get_target_single,
+            preds['scores'], preds['lines'],
+            gts['lines'], gts['labels'],
+            gt_bboxes_ignore=gt_bboxes_ignore_list)
 
         num_total_pos = sum((inds.numel() for inds in pos_inds_list))
         num_total_neg = sum((inds.numel() for inds in neg_inds_list))
@@ -319,7 +316,7 @@ class DETRMapFixedNumHead(BaseMapHead):
                     gts: dict,
                     gt_bboxes_ignore_list=None,
                     reduction='none'):
-        """ 
+        """
             Loss function for outputs from a single decoder layer of a single
             feature level.
             Args:
@@ -327,7 +324,7 @@ class DETRMapFixedNumHead(BaseMapHead):
                     for all images. Shape [bs, num_query, cls_out_channels].
                 lines_preds (Tensor):
                     shape [bs, num_query, num_points, 2].
-                gt_lines_list (list[Tensor]): 
+                gt_lines_list (list[Tensor]):
                     with shape (num_gts, num_points, 2)
                 gt_labels_list (list[Tensor]): Ground truth class indices for each
                     image with shape (num_gts, ).
@@ -339,7 +336,7 @@ class DETRMapFixedNumHead(BaseMapHead):
         """
 
         # get target for each sample
-        new_gts, num_total_pos, num_total_neg, pos_inds_list =\
+        new_gts, num_total_pos, num_total_neg, pos_inds_list = \
             self.get_targets(preds, gts, gt_bboxes_ignore_list)
 
         # batched all data
@@ -348,7 +345,7 @@ class DETRMapFixedNumHead(BaseMapHead):
 
         # construct weighted avg_factor to match with the official DETR repo
         cls_avg_factor = num_total_pos * 1.0 + \
-            num_total_neg * self.bg_cls_weight
+                         num_total_neg * self.bg_cls_weight
         if self.sync_cls_avg_factor:
             cls_avg_factor = reduce_mean(
                 preds['scores'].new_tensor([cls_avg_factor]))
@@ -368,7 +365,8 @@ class DETRMapFixedNumHead(BaseMapHead):
         lines_preds = preds['lines'].reshape(-1, self.num_points, 2)
         if reduction == 'none':  # For performance analysis
             loss_reg = self.reg_loss(
-                lines_preds, new_gts['lines_targets'], new_gts['lines_weights'], reduction_override=reduction, avg_factor=num_total_pos)
+                lines_preds, new_gts['lines_targets'], new_gts['lines_weights'], reduction_override=reduction,
+                avg_factor=num_total_pos)
         else:
             loss_reg = self.reg_loss(
                 lines_preds, new_gts['lines_targets'], new_gts['lines_weights'], avg_factor=num_total_pos)

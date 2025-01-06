@@ -1,6 +1,6 @@
 # InternImage for Semantic Segmentation
 
-This folder contains the implementation of the InternImage for semantic segmentation. 
+This folder contains the implementation of the InternImage for semantic segmentation.
 
 Our segmentation code is developed on top of [MMSegmentation v0.27.0](https://github.com/open-mmlab/mmsegmentation/tree/v0.27.0).
 
@@ -27,6 +27,7 @@ conda activate internimage
 - Install `PyTorch>=1.10.0` and `torchvision>=0.9.0` with `CUDA>=10.2`:
 
 For examples, to install torch==1.11 with CUDA==11.3 and nvcc:
+
 ```bash
 conda install pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3 -c pytorch -y
 conda install -c conda-forge cudatoolkit-dev=11.3 -y # to install nvcc
@@ -34,14 +35,14 @@ conda install -c conda-forge cudatoolkit-dev=11.3 -y # to install nvcc
 
 - Install other requirements:
 
-  note: conda opencv will break torchvision as not to support GPU, so we need to install opencv using pip. 	  
+  note: conda opencv will break torchvision as not to support GPU, so we need to install opencv using pip.
 
 ```bash
 conda install -c conda-forge termcolor yacs pyyaml scipy pip -y
 pip install opencv-python
 ```
 
-- Install `timm` and `mmcv-full` and `mmsegmentation':
+- Install `timm` and `mmcv-full` and \`mmsegmentation':
 
 ```bash
 pip install -U openmim
@@ -51,19 +52,20 @@ pip install timm==0.6.11 mmdet==2.28.1
 ```
 
 - Compile CUDA operators
+
 ```bash
 cd ./ops_dcnv3
 sh ./make.sh
 # unit test (should see all checking is True)
 python test.py
 ```
+
 - You can also install the operator using .whl files
-[DCNv3-1.0-whl](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
+  [DCNv3-1.0-whl](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
 
 ### Data Preparation
 
 Prepare datasets according to the [guidelines](https://github.com/open-mmlab/mmsegmentation/blob/master/docs/en/dataset_prepare.md#prepare-datasets) in MMSegmentation.
-
 
 ### Evaluation
 
@@ -72,6 +74,7 @@ To evaluate our `InternImage` on ADE20K val, run:
 ```bash
 sh dist_test.sh <config-file> <checkpoint> <gpu-num> --eval mIoU
 ```
+
 You can download checkpoint files from [here](https://huggingface.co/OpenGVLab/InternImage/tree/fc1e4e7e01c3e7a39a3875bdebb6577a7256ff91). Then place it to segmentation/checkpoint_dir/seg.
 
 For example, to evaluate the `InternImage-T` with a single GPU:
@@ -109,19 +112,22 @@ GPUS=8 sh slurm_train.sh <partition> <job-name> configs/ade20k/upernet_internima
 ```
 
 ### Image Demo
+
 To inference a single/multiple image like this.
 If you specify image containing directory instead of a single image, it will process all the images in the directory.:
+
 ```
 CUDA_VISIBLE_DEVICES=0 python image_demo.py \
   data/ade/ADEChallengeData2016/images/validation/ADE_val_00000591.jpg \
   configs/ade20k/upernet_internimage_t_512_160k_ade20k.py  \
   checkpoint_dir/seg/upernet_internimage_t_512_160k_ade20k.pth  \
-  --palette ade20k 
+  --palette ade20k
 ```
 
 ### Export
 
 To export a segmentation model from PyTorch to TensorRT, run:
+
 ```shell
 MODEL="model_name"
 CKPT_PATH="/path/to/model/ckpt.pth"
@@ -137,6 +143,7 @@ python deploy.py \
 ```
 
 For example, to export `upernet_internimage_t_512_160k_ade20k` from PyTorch to TensorRT, run:
+
 ```shell
 MODEL="upernet_internimage_t_512_160k_ade20k"
 CKPT_PATH="/path/to/model/ckpt/upernet_internimage_t_512_160k_ade20k.pth"

@@ -3,14 +3,16 @@
 This folder contains the implementation of the InternImage for image classification.
 
 <!-- TOC -->
-* [Install](#install)
-* [Data Preparation](#data-preparation)
-* [Evaluation](#evaluation)
-* [Training from Scratch on ImageNet-1K](#training-from-scratch-on-imagenet-1k)
-* [Manage Jobs with Slurm](#manage-jobs-with-slurm)
-* [Training with Deepspeed](#training-with-deepspeed)
-* [Extracting Intermediate Features](#extracting-intermediate-features)
-* [Export](#export)
+
+- [Install](#install)
+- [Data Preparation](#data-preparation)
+- [Evaluation](#evaluation)
+- [Training from Scratch on ImageNet-1K](#training-from-scratch-on-imagenet-1k)
+- [Manage Jobs with Slurm](#manage-jobs-with-slurm)
+- [Training with Deepspeed](#training-with-deepspeed)
+- [Extracting Intermediate Features](#extracting-intermediate-features)
+- [Export](#export)
+
 <!-- TOC -->
 
 ## Usage
@@ -36,6 +38,7 @@ conda activate internimage
 - Install `PyTorch>=1.10.0` and `torchvision>=0.9.0` with `CUDA>=10.2`:
 
 For examples, to install torch==1.11 with CUDA==11.3:
+
 ```bash
 pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
 ```
@@ -55,20 +58,24 @@ pip install opencv-python termcolor yacs pyyaml scipy
 ```
 
 - Compiling CUDA operators
+
 ```bash
 cd ./ops_dcnv3
 sh ./make.sh
 # unit test (should see all checking is True)
 python test.py
 ```
+
 - You can also install the operator using .whl files
-[DCNv3-1.0-whl](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
+  [DCNv3-1.0-whl](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
+
 ### Data Preparation
 
 We use standard ImageNet dataset, you can download it from http://image-net.org/. We provide the following two ways to
 load data:
 
 - For standard folder dataset, move validation images to labeled sub-folders. The file structure should look like:
+
   ```bash
   $ tree data
   imagenet
@@ -90,13 +97,15 @@ load data:
       │   ├── img6.jpeg
       │   └── ...
       └── ...
- 
+
   ```
+
 - To boost the slow speed when reading images from massive small files, we also support zipped ImageNet, which includes
   four files:
-    - `train.zip`, `val.zip`: which store the zipped folder for train and validate splits.
-    - `train.txt`, `val.txt`: which store the relative path in the corresponding zip file and ground truth
-      label. Make sure the data folder looks like this:
+
+  - `train.zip`, `val.zip`: which store the zipped folder for train and validate splits.
+  - `train.txt`, `val.txt`: which store the relative path in the corresponding zip file and ground truth
+    label. Make sure the data folder looks like this:
 
   ```bash
   $ tree data
@@ -106,14 +115,14 @@ load data:
       ├── train.zip
       ├── val_map.txt
       └── val.zip
-  
+
   $ head -n 5 meta_data/val.txt
   ILSVRC2012_val_00000001.JPEG	65
   ILSVRC2012_val_00000002.JPEG	970
   ILSVRC2012_val_00000003.JPEG	230
   ILSVRC2012_val_00000004.JPEG	809
   ILSVRC2012_val_00000005.JPEG	516
-  
+
   $ head -n 5 meta_data/train.txt
   n01440764/n01440764_10026.JPEG	0
   n01440764/n01440764_10027.JPEG	0
@@ -121,6 +130,7 @@ load data:
   n01440764/n01440764_10040.JPEG	0
   n01440764/n01440764_10042.JPEG	0
   ```
+
 - For ImageNet-22K dataset, make a folder named `fall11_whole` and move all images to labeled sub-folders in this
   folder. Then download the train-val split
   file ([ILSVRC2011fall_whole_map_train.txt](https://github.com/SwinTransformer/storage/releases/download/v2.0.1/ILSVRC2011fall_whole_map_train.txt)
@@ -144,7 +154,7 @@ To evaluate a pretrained `InternImage` on ImageNet val, run:
 
 ```bash
 python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --master_port 12345 main.py --eval \
---cfg <config-file> --resume <checkpoint> --data-path <imagenet-path> 
+--cfg <config-file> --resume <checkpoint> --data-path <imagenet-path>
 ```
 
 For example, to evaluate the `InternImage-B` with a single GPU:
@@ -161,7 +171,7 @@ python -m torch.distributed.launch --nproc_per_node 1 --master_port 12345 main.p
 To train an `InternImage` on ImageNet from scratch, run:
 
 ```bash
-python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --master_port 12345  main.py \ 
+python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --master_port 12345  main.py \
 --cfg <config-file> --data-path <imagenet-path> [--batch-size <batch-size-per-gpu> --output <output-directory> --tag <job-tag>]
 ```
 
@@ -187,13 +197,13 @@ GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_s_1k_224.yaml
 GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_xl_22kto1k_384.pth --resume internimage_xl_22kto1k_384.pth --eval
 ```
 
-<!-- 
+<!--
 ### Test pretrained model on ImageNet-22K
 
 For example, to evaluate the `InternImage-L-22k`:
 
 ```bash
-python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --master_port 12345  main.py \ 
+python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --master_port 12345  main.py \
 --cfg configs/internimage_xl_22k_192to384.yaml --data-path <imagenet-path> [--batch-size <batch-size-per-gpu> --output <output-directory>] \
 --resume internimage_xl_22k_192to384.pth --eval
 ``` -->
@@ -220,14 +230,14 @@ pip install deepspeed==0.8.3
 
 Then you could launch the training in a slurm system with 8 GPUs as follows (tiny and huge as examples).
 The default zero stage is 1 and it could config via command line args `--zero-stage`.
+
 ```
-GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4
 GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 --eval --resume ckpt.pth
 GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 --eval --resume deepspeed_ckpt_dir
 GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_h_22kto1k_640.yaml --batch-size 16 --accumulation-steps 4 --pretrained ckpt/internimage_h_jointto22k_384.pth
 GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh vc_research_4 train configs/internimage_h_22kto1k_640.yaml --batch-size 16 --accumulation-steps 4 --pretrained ckpt/internimage_h_jointto22k_384.pth --zero-stage 3
 ```
-
 
 🤗 **Huggingface Accelerate Integration of Deepspeed**
 
@@ -250,12 +260,12 @@ Here is the reference GPU memory cost for InternImage-H with 8 GPUs.
 - total batch size = 512, 16 batch size for each GPU, gradient accumulation steps = 4.
 
 | Resolution | Deepspeed | Cpu offloading | Memory |
-| --- | --- | --- | --- |
-| 640 | zero1 | False | 22572 |
-| 640 | zero3 | False | 20000 |
-| 640 | zero3 | True | 19144 |
-| 384 | zero1 | False | 16000 |
-| 384 | zero3 | True | 11928 |
+| ---------- | --------- | -------------- | ------ |
+| 640        | zero1     | False          | 22572  |
+| 640        | zero3     | False          | 20000  |
+| 640        | zero3     | True           | 19144  |
+| 384        | zero1     | False          | 16000  |
+| 384        | zero3     | True           | 11928  |
 
 **Convert Checkpoints**
 
@@ -272,7 +282,7 @@ Then, you could use `best.pth` as usual, e.g., `model.load_state_dict(torch.load
 
 ### Extracting Intermediate Features
 
-To extract the features of an intermediate layer, you could use `extract_feature.py`. 
+To extract the features of an intermediate layer, you could use `extract_feature.py`.
 
 For example, extract features of `b.png` from layers `patch_embed` and `levels.0.downsample` and save them to 'b.pth'.
 
@@ -280,16 +290,16 @@ For example, extract features of `b.png` from layers `patch_embed` and `levels.0
 python extract_feature.py --cfg configs/internimage_t_1k_224.yaml --img b.png --keys patch_embed levels.0.downsample --save --resume internimage_t_1k_224.pth
 ```
 
-
-
 ### Export
 
 To export `InternImage-T` from PyTorch to ONNX, run:
+
 ```shell
 python export.py --model_name internimage_t_1k_224 --ckpt_dir /path/to/ckpt/dir --onnx
 ```
 
 To export `InternImage-T` from PyTorch to TensorRT, run:
+
 ```shell
 python export.py --model_name internimage_t_1k_224 --ckpt_dir /path/to/ckpt/dir --trt
 ```

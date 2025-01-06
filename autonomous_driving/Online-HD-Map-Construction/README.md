@@ -1,12 +1,14 @@
 <div id="top" align="center">
 
 # InternImage-based Baseline for Online HD Map Construction Challenge For Autonomous Driving
- </div>
 
+</div>
 
+If you need detaild information about the challenge, please refer
+to https://github.com/Tsinghua-MARS-Lab/Online-HD-Map-Construction-CVPR2023/tree/master
 
-If you need detaild information about the challenge, please refer to https://github.com/Tsinghua-MARS-Lab/Online-HD-Map-Construction-CVPR2023/tree/master
 #### 1. Requirements
+
 ```bash
 python>=3.8
 torch==1.11 # recommend
@@ -18,8 +20,8 @@ numpy==1.23.5
 mmdet3d==1.0.0rc6 # recommend
 ```
 
-
 ### 2. Install DCNv3 for InternImage
+
 ```bash
 cd projects/ops_dcnv3
 bash make.sh # requires torch>=1.10
@@ -33,21 +35,17 @@ bash tools/dist_train.sh src/configs/vectormapnet_intern.py ${NUM_GPUS}
 
 Notes: InatenImage provides abundant pre-trained model weights that can be used!!!
 
-
 ### 4. Performance compared to baseline
 
-model name|weight|$\mathrm{mAP}$ | $\mathrm{AP}_{pc}$ | $\mathrm{AP}_{div}$ | $\mathrm{AP}_{bound}$ | 
-----|:----------:| :--: | :--: | :--: | :--: | 
-vectormapnet_intern|[Checkpoint](https://github.com/OpenGVLab/InternImage/releases/download/track_model/vectormapnet_internimage.pth) | 49.35 | 45.05 | 56.78 | 46.22 | 
-vectormapnet_base|[Google Drive](https://drive.google.com/file/d/16D1CMinwA8PG1sd9PV9_WtHzcBohvO-D/view) | 42.79 | 37.22 | 50.47	 | 40.68 | 
-
-
-
-
+| model name          |                                                      weight                                                       | $\\mathrm{mAP}$ | $\\mathrm{AP}\_{pc}$ | $\\mathrm{AP}\_{div}$ | $\\mathrm{AP}\_{bound}$ |
+| ------------------- | :---------------------------------------------------------------------------------------------------------------: | :-------------: | :------------------: | :-------------------: | :---------------------: |
+| vectormapnet_intern | [Checkpoint](https://github.com/OpenGVLab/InternImage/releases/download/track_model/vectormapnet_internimage.pth) |      49.35      |        45.05         |         56.78         |          46.22          |
+| vectormapnet_base   |              [Google Drive](https://drive.google.com/file/d/16D1CMinwA8PG1sd9PV9_WtHzcBohvO-D/view)               |      42.79      |        37.22         |         50.47         |          40.68          |
 
 ## Citation
 
-The evaluation metrics of this challenge follows [HDMapNet](https://arxiv.org/abs/2107.06307). We provide [VectorMapNet](https://arxiv.org/abs/2206.08920) as the baseline. Please cite:
+The evaluation metrics of this challenge follows [HDMapNet](https://arxiv.org/abs/2107.06307). We
+provide [VectorMapNet](https://arxiv.org/abs/2206.08920) as the baseline. Please cite:
 
 ```
 @article{li2021hdmapnet,
@@ -69,8 +67,8 @@ Our dataset is built on top of the [Argoverse 2](https://www.argoverse.org/av2.h
 }
 ```
 
-
 ## License
 
-Before participating in our challenge, you should register on the website and agree to the terms of use of the [Argoverse 2](https://www.argoverse.org/av2.html) dataset.
-All code in this project is released under [GNU General Public License v3.0](./LICENSE).
+Before participating in our challenge, you should register on the website and agree to the terms of use of
+the [Argoverse 2](https://www.argoverse.org/av2.html) dataset. All code in this project is released
+under [GNU General Public License v3.0](./LICENSE).

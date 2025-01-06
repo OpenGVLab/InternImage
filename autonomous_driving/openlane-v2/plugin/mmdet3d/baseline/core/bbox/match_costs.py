@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # match_costs.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -21,7 +21,6 @@
 # ==============================================================================
 
 import torch
-
 from mmdet.core.bbox.match_costs.builder import MATCH_COST
 
 
@@ -33,6 +32,7 @@ class LaneL1Cost:
     Adapted from https://github.com/open-mmlab/mmdetection/blob/master/mmdet/core/bbox/match_costs/match_cost.py#L11.
 
     """
+
     def __init__(self, weight=1.):
         self.weight = weight
 

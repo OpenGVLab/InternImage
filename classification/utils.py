@@ -4,13 +4,15 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
-import os
 import math
-import torch
-import numpy as np
-import torch.distributed as dist
+import os
 from collections import OrderedDict
+
+import numpy as np
+import torch
+import torch.distributed as dist
 from timm.utils import get_state_dict
+
 try:
     # noinspection PyUnresolvedReferences
     from apex import amp

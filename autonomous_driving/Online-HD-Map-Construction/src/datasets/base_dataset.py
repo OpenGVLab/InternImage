@@ -1,15 +1,17 @@
-import numpy as np
 import os
 import os.path as osp
-import mmcv
-from .evaluation.vector_eval import VectorEvaluate
+import warnings
 
+import mmcv
+import numpy as np
 from mmdet3d.datasets.pipelines import Compose
 from mmdet.datasets import DATASETS
 from torch.utils.data import Dataset
-import warnings
 
-warnings.filterwarnings("ignore")
+from .evaluation.vector_eval import VectorEvaluate
+
+warnings.filterwarnings('ignore')
+
 
 @DATASETS.register_module()
 class BaseMapDataset(Dataset):
@@ -26,7 +28,8 @@ class BaseMapDataset(Dataset):
         work_dir (str): path to work dir
         test_mode (bool): whether in test mode
     """
-    def __init__(self, 
+
+    def __init__(self,
                  ann_file,
                  root_path,
                  cat2id,
@@ -36,12 +39,12 @@ class BaseMapDataset(Dataset):
                  interval=1,
                  work_dir=None,
                  test_mode=False,
-        ):
+                 ):
         super().__init__()
         self.ann_file = ann_file
         self.meta = meta
         self.root_path = root_path
-        
+
         self.classes = list(cat2id.keys())
         self.num_classes = len(self.classes)
         self.cat2id = cat2id
@@ -60,12 +63,12 @@ class BaseMapDataset(Dataset):
             self.pipeline = Compose(pipeline)
         else:
             self.pipeline = None
-        
+
         # dummy flags to fit with mmdet dataset
         self.flag = np.zeros(len(self), dtype=np.uint8)
 
         self.roi_size = roi_size
-        
+
         self.work_dir = work_dir
         self.test_mode = test_mode
 
@@ -77,7 +80,7 @@ class BaseMapDataset(Dataset):
 
     def format_results(self, results, denormalize=True, prefix=None):
         '''Format prediction result to submission format.
-        
+
         Args:
             results (list[Tensor]): List of prediction results.
             denormalize (bool): whether to denormalize prediction from (0, 1) \
@@ -99,18 +102,18 @@ class BaseMapDataset(Dataset):
             For each case, the result should be formatted as Dict{'vectors': [], 'scores': [], 'labels': []}
             'vectors': List of vector, each vector is a array([[x1, y1], [x2, y2] ...]),
                 contain all vectors predicted in this sample.
-            'scores: List of score(float), 
+            'scores: List of score(float),
                 contain scores of all instances in this sample.
-            'labels': List of label(int), 
+            'labels': List of label(int),
                 contain labels of all instances in this sample.
             '''
-            if pred is None: # empty prediction
+            if pred is None:  # empty prediction
                 continue
-            
+
             single_case = {'vectors': [], 'scores': [], 'labels': []}
             token = pred['token']
             roi_size = np.array(self.roi_size)
-            origin = -np.array([self.roi_size[0]/2, self.roi_size[1]/2])
+            origin = -np.array([self.roi_size[0] / 2, self.roi_size[1] / 2])
 
             for i in range(len(pred['scores'])):
                 score = pred['scores'][i]
@@ -120,7 +123,7 @@ class BaseMapDataset(Dataset):
                 # A line should have >=2 points
                 if len(vector) < 2:
                     continue
-                
+
                 if denormalize:
                     eps = 2
                     vector = vector * (roi_size + eps) + origin
@@ -128,9 +131,9 @@ class BaseMapDataset(Dataset):
                 single_case['vectors'].append(vector)
                 single_case['scores'].append(score)
                 single_case['labels'].append(label)
-            
+
             submissions['results'][token] = single_case
-        
+
         out_path = osp.join(prefix, 'submission_vector.json')
         print(f'\nsaving submissions results to {out_path}')
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
@@ -152,7 +155,7 @@ class BaseMapDataset(Dataset):
         self.evaluator = VectorEvaluate(self.ann_file)
 
         print('len of the results', len(results))
-        
+
         result_path = self.format_results(results, denormalize=True, prefix=self.work_dir)
 
         result_dict = self.evaluator.evaluate(result_path, logger=logger)
@@ -165,7 +168,7 @@ class BaseMapDataset(Dataset):
             int: Length of data infos.
         """
         return len(self.samples)
-        
+
     def _rand_another(self, idx):
         """Randomly get another item.
 
@@ -183,4 +186,3 @@ class BaseMapDataset(Dataset):
         input_dict = self.get_sample(idx)
         data = self.pipeline(input_dict)
         return data
-

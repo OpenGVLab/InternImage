@@ -1,15 +1,15 @@
-import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from mmcv.runner import force_fp32
+from mmdet.models import HEADS
 from torch.distributions.categorical import Categorical
 
-from mmdet.models import HEADS
 from .detgen_utils.causal_trans import (CausalTransformerDecoder,
-                           CausalTransformerDecoderLayer)
-from .detgen_utils.utils import (dequantize_verts, generate_square_subsequent_mask,
-                    quantize_verts, top_k_logits, top_p_logits)
-from mmcv.runner import force_fp32, auto_fp16
+                                        CausalTransformerDecoderLayer)
+from .detgen_utils.utils import (generate_square_subsequent_mask, top_k_logits,
+                                 top_p_logits)
+
 
 @HEADS.register_module(force=True)
 class PolylineGenerator(nn.Module):
@@ -63,7 +63,7 @@ class PolylineGenerator(nn.Module):
         self.fp16_enabled = False
 
         self.coord_dim = coord_dim  # if we use xyz else 2 when we use xy
-        self.kp_coord_dim = coord_dim if coord_dim==2 else 2 # XXX
+        self.kp_coord_dim = coord_dim if coord_dim == 2 else 2  # XXX
         self.register_buffer('canvas_size', torch.tensor(canvas_size))
 
         # initialize the model
@@ -126,7 +126,7 @@ class PolylineGenerator(nn.Module):
         # Discrete vertex value embeddings
         vert_embeddings = self.vertex_embed(bbox)
 
-        return vert_embeddings + (bbox_embedding+coord_embeddings)[None]
+        return vert_embeddings + (bbox_embedding + coord_embeddings)[None]
 
     def _prepare_context(self, batch, context):
         """Prepare class label and vertex context."""
@@ -169,7 +169,7 @@ class PolylineGenerator(nn.Module):
     def _embed_inputs(self, seqs, condition_embedding=None):
         """Embeds face sequences and adds within and between face positions.
           Args:
-            seq: B, seqlen=vlen*3, 
+            seq: B, seqlen=vlen*3,
             condition_embedding: B, [c,xs,ys,xe,ye](5), h
           Returns:
             embeddings: B, seqlen, h
@@ -189,7 +189,7 @@ class PolylineGenerator(nn.Module):
 
         # Aggregate embeddings
         embeddings = vert_embeddings + \
-            (coord_embeddings+pos_embeddings)[None]
+                     (coord_embeddings + pos_embeddings)[None]
         embeddings = torch.cat([condition_embedding, embeddings], dim=1)
 
         return embeddings
@@ -210,7 +210,7 @@ class PolylineGenerator(nn.Module):
             return self.forward_train(batch, **kwargs)
         else:
             return self.inference(batch, **kwargs)
-        
+
     def sperate_forward(self, batch, context, **kwargs):
 
         polyline_length = batch['polyline_masks'].sum(-1)
@@ -218,24 +218,22 @@ class PolylineGenerator(nn.Module):
 
         sizes = [size, polyline_length.max()]
         polyline_logits = []
-        for c_idx, size in zip([c1,c2], sizes):
-
-            new_batch = assign_batch(batch,c_idx, size)
-            _poly_logits = self._forward_train(new_batch,context,**kwargs)
+        for c_idx, size in zip([c1, c2], sizes):
+            new_batch = assign_batch(batch, c_idx, size)
+            _poly_logits = self._forward_train(new_batch, context, **kwargs)
             polyline_logits.append(_poly_logits)
-        
-        # maybe imporve the speed 
-        for i, (_poly_logits, size) in enumerate(zip(polyline_logits, sizes)):    
+
+        # maybe imporve the speed
+        for i, (_poly_logits, size) in enumerate(zip(polyline_logits, sizes)):
             if size < sizes[1]:
-                _poly_logits = F.pad(_poly_logits, (0,0,0,sizes[1]-size), "constant", 0)
+                _poly_logits = F.pad(_poly_logits, (0, 0, 0, sizes[1] - size), 'constant', 0)
                 polyline_logits[i] = _poly_logits
-        
-        polyline_logits = torch.cat(polyline_logits,0)
+
+        polyline_logits = torch.cat(polyline_logits, 0)
         polyline_logits = polyline_logits[revert_idx]
         cat_dist = Categorical(logits=polyline_logits)
 
-        return {'polylines':cat_dist}    
-            
+        return {'polylines': cat_dist}
 
     def forward_train(self, batch: dict, context: dict, **kwargs):
         """
@@ -247,7 +245,7 @@ class PolylineGenerator(nn.Module):
         if False:
             polyline_logits = self._forward_train(batch, context, **kwargs)
             cat_dist = Categorical(logits=polyline_logits)
-            return {'polylines':cat_dist}
+            return {'polylines': cat_dist}
         else:
             return self.sperate_forward(batch, context, **kwargs)
 
@@ -260,7 +258,7 @@ class PolylineGenerator(nn.Module):
         # we use the gt vertices
         global_context, seq_context = self._prepare_context(
             batch, context)
-                
+
         logits = self.body(
             # Last element not used for preds
             batch['polylines'][:, :-1],
@@ -271,7 +269,7 @@ class PolylineGenerator(nn.Module):
 
         return logits
 
-    @force_fp32(apply_to=('global_context_embedding','sequential_context_embeddings','cache'))
+    @force_fp32(apply_to=('global_context_embedding', 'sequential_context_embeddings', 'cache'))
     def body(self,
              seqs,
              global_context_embedding=None,
@@ -303,7 +301,7 @@ class PolylineGenerator(nn.Module):
         if is_training:
             causal_msk = generate_square_subsequent_mask(
                 decoder_inputs.shape[0], condition_len=condition_len, device=decoder_inputs.device)
-        
+
         decoder_outputs, cache = self.decoder(
             tgt=decoder_inputs,
             cache=cache,
@@ -314,28 +312,27 @@ class PolylineGenerator(nn.Module):
         decoder_outputs = decoder_outputs.transpose(0, 1)
 
         # since we only need the predict seq
-        decoder_outputs = decoder_outputs[:, condition_len-1:]
+        decoder_outputs = decoder_outputs[:, condition_len - 1:]
 
         # Get logits and optionally process for sampling
         logits = self._project_to_logits(decoder_outputs)
 
         # y mask
         _vert_mask = torch.arange(logits.shape[-1], device=logits.device)
-        vertices_mask_y = (_vert_mask < self.canvas_size[1]+1)
-        vertices_mask_y[0] = False # y position doesn't have stop sign 
+        vertices_mask_y = (_vert_mask < self.canvas_size[1] + 1)
+        vertices_mask_y[0] = False  # y position doesn't have stop sign
         logits[:, 1::self.coord_dim] = logits[:, 1::self.coord_dim] * \
-            vertices_mask_y - ~vertices_mask_y*1e9
+                                       vertices_mask_y - ~vertices_mask_y * 1e9
 
         if self.coord_dim > 2:
             # z mask
             _vert_mask = torch.arange(logits.shape[-1], device=logits.device)
-            vertices_mask_z = (_vert_mask < self.canvas_size[2]+1)
-            vertices_mask_z[0] = False # y position doesn't have stop sign 
+            vertices_mask_z = (_vert_mask < self.canvas_size[2] + 1)
+            vertices_mask_z[0] = False  # y position doesn't have stop sign
             logits[:, 2::self.coord_dim] = logits[:, 2::self.coord_dim] * \
-                vertices_mask_z - ~vertices_mask_z*1e9
-        
+                                           vertices_mask_z - ~vertices_mask_z * 1e9
 
-        logits = logits/temperature
+        logits = logits / temperature
         logits = top_k_logits(logits, top_k)
         logits = top_p_logits(logits, top_p)
         if return_logits:
@@ -350,9 +347,9 @@ class PolylineGenerator(nn.Module):
 
         weight = gt['polyline_weights']
         mask = gt['polyline_masks']
-        
+
         loss = -torch.sum(
-            pred['polylines'].log_prob(gt['polylines']) * mask * weight)/weight.sum()
+            pred['polylines'].log_prob(gt['polylines']) * mask * weight) / weight.sum()
 
         return {'seq': loss}
 
@@ -395,15 +392,14 @@ class PolylineGenerator(nn.Module):
         samples = torch.empty(
             [batch_size, 0], dtype=torch.int32, device=device)
         max_sample_length = max_sample_length or self.max_seq_length
-        seq_len = max_sample_length*self.coord_dim+1
+        seq_len = max_sample_length * self.coord_dim + 1
         cache = None
 
         decoded_tokens = \
-            torch.zeros((batch_size,seq_len),
-                device=device,dtype=torch.long)
+            torch.zeros((batch_size, seq_len),
+                        device=device, dtype=torch.long)
         remain_idx = torch.arange(batch_size, device=device)
         for i in range(seq_len):
-
 
             # While-loop body for autoregression calculation.
             pred_dist, cache = self.body(
@@ -417,22 +413,22 @@ class PolylineGenerator(nn.Module):
                 is_training=False)
             samples = pred_dist.sample()
 
-            decoded_tokens[remain_idx,i] = samples[:,-1]
+            decoded_tokens[remain_idx, i] = samples[:, -1]
 
             # Stopping conditions for autoregressive calculation.
-            if not (decoded_tokens[:,:i+1] != 0).all(-1).any():
+            if not (decoded_tokens[:, :i + 1] != 0).all(-1).any():
                 break
-            
+
             # update state, check the new position is zero.
-            valid_idx = (samples[:,-1] != 0).nonzero(as_tuple=True)[0]
+            valid_idx = (samples[:, -1] != 0).nonzero(as_tuple=True)[0]
             remain_idx = remain_idx[valid_idx]
-            cache = cache[:,:,valid_idx]
+            cache = cache[:, :, valid_idx]
             global_context = global_context[valid_idx]
             seq_context = seq_context[valid_idx]
             samples = samples[valid_idx]
 
         # decoded_tokens = torch.cat(decoded_tokens,dim=1)
-        decoded_tokens = decoded_tokens[:,:i+1]
+        decoded_tokens = decoded_tokens[:, :i + 1]
 
         outputs = self.post_process(decoded_tokens, seq_len,
                                     device, only_return_complete)
@@ -455,7 +451,7 @@ class PolylineGenerator(nn.Module):
         _polyline_mask = torch.arange(sample_seq_length)[None].to(device)
 
         # Get largest stopping point for incomplete samples.
-        valid_polyline_len = torch.full_like(polyline[:,0], sample_seq_length)
+        valid_polyline_len = torch.full_like(polyline[:, 0], sample_seq_length)
         zero_inds = (polyline == 0).type(torch.int32).argmax(-1)
 
         # Real length
@@ -463,7 +459,7 @@ class PolylineGenerator(nn.Module):
         polyline_mask = _polyline_mask < valid_polyline_len[:, None]
 
         # Mask faces beyond stopping token with zeros
-        polyline = polyline*polyline_mask
+        polyline = polyline * polyline_mask
 
         # Pad to maximum size with zeros
         pad_size = max_seq_len - sample_seq_length
@@ -486,27 +482,27 @@ class PolylineGenerator(nn.Module):
         }
         return outputs
 
-def find_best_sperate_plan(idx,array):
 
+def find_best_sperate_plan(idx, array):
     h = array[-1] - array[idx]
     w = idx
 
-    cost  = h*w
+    cost = h * w
     return cost
+
 
 def get_chunk_idx(polyline_length):
     _polyline_length, polyline_length_idx = torch.sort(polyline_length)
 
     costs = []
     for i in range(len(_polyline_length)):
-
-        cost = find_best_sperate_plan(i,_polyline_length)
+        cost = find_best_sperate_plan(i, _polyline_length)
         costs.append(cost)
     seperate_point = torch.stack(costs).argmax()
-    chunk1 = polyline_length_idx[:seperate_point+1]
-    chunk2 = polyline_length_idx[seperate_point+1:]
+    chunk1 = polyline_length_idx[:seperate_point + 1]
+    chunk2 = polyline_length_idx[seperate_point + 1:]
 
-    revert_idx = torch.argsort(polyline_length_idx)    
+    revert_idx = torch.argsort(polyline_length_idx)
 
     return chunk1, chunk2, revert_idx, _polyline_length[seperate_point]
 
@@ -517,9 +513,9 @@ def assign_bev(feat, idx):
 
 def assign_batch(batch, idx, size):
     new_batch = {}
-    for k,v in batch.items():
+    for k, v in batch.items():
         new_batch[k] = v[idx]
         if new_batch[k].ndim > 1:
-            new_batch[k] = new_batch[k][:,:size]
-    
+            new_batch[k] = new_batch[k][:, :size]
+
     return new_batch

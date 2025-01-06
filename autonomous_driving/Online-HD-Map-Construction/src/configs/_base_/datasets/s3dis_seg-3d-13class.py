@@ -125,8 +125,7 @@ data = dict(
         classes=class_names,
         test_mode=True,
         ignore_index=len(class_names),
-        scene_idxs=data_root +
-        f'seg_info/Area_{test_area}_resampled_scene_idxs.npy'),
+        scene_idxs=data_root + f'seg_info/Area_{test_area}_resampled_scene_idxs.npy'),
     test=dict(
         type=dataset_type,
         data_root=data_root,

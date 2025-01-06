@@ -4,16 +4,14 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
+import DCNv3
 import torch
 import torch.nn.functional as F
 from torch.autograd import Function
 from torch.autograd.function import once_differentiable
 from torch.cuda.amp import custom_bwd, custom_fwd
-import DCNv3
 
 
 class DCNv3Function(Function):
@@ -87,6 +85,7 @@ class DCNv3Function(Function):
             offset_scale_f=float(offset_scale),
             im2col_step_i=int(im2col_step),
         )
+
 
 def _get_reference_points(spatial_shapes, device, kernel_h, kernel_w, dilation_h, dilation_w, pad_h=0, pad_w=0, stride_h=1, stride_w=1):
     _, H_, W_, _ = spatial_shapes

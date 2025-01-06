@@ -2,26 +2,25 @@ from __future__ import division
 
 import argparse
 import copy
-import mmcv
 import os
 import time
-import torch
 import warnings
-from mmcv import Config, DictAction
-from mmcv.runner import get_dist_info, init_dist
 from os import path as osp
 
+import mmcv
+import torch
+from mmcv import Config, DictAction
+from mmcv.runner import get_dist_info, init_dist
 from mmdet import __version__ as mmdet_version
 from mmdet3d import __version__ as mmdet3d_version
 from mmdet3d.apis import train_model
 from mmdet3d.datasets import build_dataset
-from mmdet3d.utils import collect_env, get_root_logger
-from mmseg import __version__ as mmseg_version
-
-# warper
-from mmdet_train import set_random_seed
 # from builder import build_model
 from mmdet3d.models import build_model
+from mmdet3d.utils import collect_env, get_root_logger
+# warper
+from mmdet_train import set_random_seed
+from mmseg import __version__ as mmseg_version
 
 
 def parse_args():
@@ -39,13 +38,13 @@ def parse_args():
         '--gpus',
         type=int,
         help='number of gpus to use '
-        '(only applicable to non-distributed training)')
+             '(only applicable to non-distributed training)')
     group_gpus.add_argument(
         '--gpu-ids',
         type=int,
         nargs='+',
         help='ids of gpus to use '
-        '(only applicable to non-distributed training)')
+             '(only applicable to non-distributed training)')
     parser.add_argument('--seed', type=int, default=0, help='random seed')
     parser.add_argument(
         '--deterministic',
@@ -56,18 +55,18 @@ def parse_args():
         nargs='+',
         action=DictAction,
         help='override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file (deprecate), '
-        'change to --cfg-options instead.')
+             'in xxx=yyy format will be merged into config file (deprecate), '
+             'change to --cfg-options instead.')
     parser.add_argument(
         '--cfg-options',
         nargs='+',
         action=DictAction,
         help='override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file. If the value to '
-        'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
-        'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
-        'Note that the quotation marks are necessary and that no white space '
-        'is allowed.')
+             'in xxx=yyy format will be merged into config file. If the value to '
+             'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
+             'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
+             'Note that the quotation marks are necessary and that no white space '
+             'is allowed.')
     parser.add_argument(
         '--launcher',
         choices=['none', 'pytorch', 'slurm', 'mpi'],
@@ -110,7 +109,7 @@ def main():
 
     # import modules, registry will be updated
     import sys
-    sys.path.append(os.path.abspath('.'))    
+    sys.path.append(os.path.abspath('.'))
     if hasattr(cfg, 'plugin'):
         if cfg.plugin:
             import importlib
@@ -126,11 +125,11 @@ def main():
                     plg_lib = importlib.import_module(_module_path)
 
                 plugin_dirs = cfg.plugin_dir
-                if not isinstance(plugin_dirs,list):
-                    plugin_dirs = [plugin_dirs,]
+                if not isinstance(plugin_dirs, list):
+                    plugin_dirs = [plugin_dirs, ]
                 for plugin_dir in plugin_dirs:
                     import_path(plugin_dir)
-                
+
             else:
                 # import dir is the dirpath for the config file
                 _module_dir = os.path.dirname(args.config)

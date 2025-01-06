@@ -1,13 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import asyncio
+import os.path as osp
 from argparse import ArgumentParser
 
-from mmdet.apis import (async_inference_detector, inference_detector,
-                        init_detector, show_result_pyplot)
 import mmcv
 import mmcv_custom  # noqa: F401,F403
 import mmdet_custom  # noqa: F401,F403
-import os.path as osp
+from mmdet.apis import (async_inference_detector, inference_detector,
+                        init_detector, show_result_pyplot)
 
 
 def parse_args():
@@ -15,7 +15,7 @@ def parse_args():
     parser.add_argument('img', help='Image file')
     parser.add_argument('config', help='Config file')
     parser.add_argument('checkpoint', help='Checkpoint file')
-    parser.add_argument('--out', type=str, default="demo", help='out dir')
+    parser.add_argument('--out', type=str, default='demo', help='out dir')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference')
     parser.add_argument(
@@ -38,7 +38,7 @@ def main(args):
     model = init_detector(args.config, args.checkpoint, device=args.device)
     # test a single image
     result = inference_detector(model, args.img)
-    
+
     mmcv.mkdir_or_exist(args.out)
     out_file = osp.join(args.out, osp.basename(args.img))
     # show the results
@@ -52,8 +52,7 @@ def main(args):
         mask_color=args.palette,
         out_file=out_file
     )
-    print(f"Result is save at {out_file}")
-
+    print(f'Result is save at {out_file}')
 
 
 if __name__ == '__main__':

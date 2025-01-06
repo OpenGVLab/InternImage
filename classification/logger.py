@@ -4,10 +4,11 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
+import functools
+import logging
 import os
 import sys
-import logging
-import functools
+
 from termcolor import colored
 
 

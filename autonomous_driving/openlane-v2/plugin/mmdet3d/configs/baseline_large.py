@@ -18,14 +18,13 @@ input_modality = dict(
     use_external=False)
 num_cams = 7
 
-
 Map_size = [(-50, 50), (-25, 25)]
-method_para = dict(n_control=5) # #point for each curve
+method_para = dict(n_control=5)  # #point for each curve
 code_size = 3 * method_para['n_control']
 
 _dim_ = 256
-_pos_dim_ = _dim_//2
-_ffn_dim_ = _dim_*2
+_pos_dim_ = _dim_ // 2
+_ffn_dim_ = _dim_ * 2
 _ffn_cfg_ = dict(
     type='FFN',
     embed_dims=_dim_,
@@ -71,7 +70,7 @@ model = dict(
         pc_range=point_cloud_range,
         bev_h=bev_h_,
         bev_w=bev_w_,
-        rotate_center=[bev_h_//2, bev_w_//2],
+        rotate_center=[bev_h_ // 2, bev_w_ // 2],
         encoder=dict(
             type='BEVFormerEncoder',
             num_layers=3,
@@ -99,7 +98,7 @@ model = dict(
                 ],
                 ffn_cfgs=_ffn_cfg_,
                 operation_order=('self_attn', 'norm', 'cross_attn', 'norm',
-                                    'ffn', 'norm'))),
+                                 'ffn', 'norm'))),
         positional_encoding=dict(
             type='LearnedPositionalEncoding',
             num_feats=_pos_dim_,
@@ -169,7 +168,7 @@ model = dict(
         with_box_refine=False,
         with_shared_param=False,
         code_size=code_size,
-        code_weights= [1.0 for i in range(code_size)],
+        code_weights=[1.0 for i in range(code_size)],
         pc_range=point_cloud_range,
         transformer=dict(
             type='PerceptionTransformer',
@@ -186,7 +185,7 @@ model = dict(
                             embed_dims=_dim_,
                             num_heads=8,
                             dropout=0.1),
-                         dict(
+                        dict(
                             type='CustomMSDeformableAttention',
                             embed_dims=_dim_,
                             num_levels=1),
@@ -240,9 +239,8 @@ model = dict(
             type='LaneHungarianAssigner',
             cls_cost=dict(type='FocalLossCost', weight=1.5),
             reg_cost=dict(type='LaneL1Cost', weight=0.0075),
-            iou_cost=dict(type='IoUCost', weight=0.0), # Fake cost. This is just to make it compatible with DETR head.
-            ))))
-
+            iou_cost=dict(type='IoUCost', weight=0.0),  # Fake cost. This is just to make it compatible with DETR head.
+        ))))
 
 train_pipeline = [
     dict(type='CustomLoadMultiViewImageFromFiles', to_float32=True),
@@ -261,7 +259,7 @@ train_pipeline = [
             'gt_topology_lclc', 'gt_topology_lcte',
         ],
         meta_keys=[
-            'scene_token', 'sample_idx', 'img_paths', 
+            'scene_token', 'sample_idx', 'img_paths',
             'img_shape', 'scale_factor', 'pad_shape',
             'lidar2img', 'can_bus',
         ],
@@ -279,7 +277,7 @@ test_pipeline = [
             'img',
         ],
         meta_keys=[
-            'scene_token', 'sample_idx', 'img_paths', 
+            'scene_token', 'sample_idx', 'img_paths',
             'img_shape', 'scale_factor', 'pad_shape',
             'lidar2img', 'can_bus',
         ],

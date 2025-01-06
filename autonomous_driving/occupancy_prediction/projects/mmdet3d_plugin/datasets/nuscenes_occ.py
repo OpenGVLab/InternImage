@@ -1,21 +1,18 @@
 import copy
 import os
-import numpy as np
-from tqdm import tqdm
-from mmdet.datasets import DATASETS
-from mmdet3d.datasets import NuScenesDataset
-import mmcv
-from os import path as osp
-from mmdet.datasets import DATASETS
-import torch
-import numpy as np
-from nuscenes.eval.common.utils import quaternion_yaw, Quaternion
-from .nuscnes_eval import NuScenesEval_custom
-from projects.mmdet3d_plugin.models.utils.visual import save_tensor
-from mmcv.parallel import DataContainer as DC
 import random
+
+import mmcv
+import numpy as np
+import torch
+from mmcv.parallel import DataContainer as DC
+from mmdet3d.datasets import NuScenesDataset
+from mmdet.datasets import DATASETS
+from nuscenes.eval.common.utils import Quaternion, quaternion_yaw
 from nuscenes.utils.geometry_utils import transform_matrix
-from .occ_metrics import Metric_mIoU, Metric_FScore
+from tqdm import tqdm
+
+from .occ_metrics import Metric_FScore, Metric_mIoU
 
 
 @DATASETS.register_module()
@@ -209,8 +206,8 @@ class NuSceneOcc(NuScenesDataset):
             if not os.path.exists(show_dir):
                 os.mkdir(show_dir)
             print('\nSaving output and gt in {} for visualization.'.format(show_dir))
-            begin=eval_kwargs.get('begin',None)
-            end=eval_kwargs.get('end',None)
+            begin = eval_kwargs.get('begin', None)
+            end = eval_kwargs.get('end', None)
         self.occ_eval_metrics = Metric_mIoU(
             num_classes=18,
             use_lidar_mask=False,
@@ -233,15 +230,14 @@ class NuSceneOcc(NuScenesDataset):
             occ_gt = np.load(os.path.join(self.data_root, info['occ_gt_path']))
             if show_dir is not None:
                 if begin is not None and end is not None:
-                    if index>= begin and index<end:
+                    if index >= begin and index < end:
                         sample_token = info['token']
-                        save_path = os.path.join(show_dir,str(index).zfill(4))
+                        save_path = os.path.join(show_dir, str(index).zfill(4))
                         np.savez_compressed(save_path, pred=occ_pred, gt=occ_gt, sample_token=sample_token)
                 else:
-                    sample_token=info['token']
-                    save_path=os.path.join(show_dir,str(index).zfill(4))
-                    np.savez_compressed(save_path,pred=occ_pred,gt=occ_gt,sample_token=sample_token)
-
+                    sample_token = info['token']
+                    save_path = os.path.join(show_dir, str(index).zfill(4))
+                    np.savez_compressed(save_path, pred=occ_pred, gt=occ_gt, sample_token=sample_token)
 
             gt_semantics = occ_gt['semantics']
             mask_lidar = occ_gt['mask_lidar'].astype(bool)
@@ -254,6 +250,3 @@ class NuSceneOcc(NuScenesDataset):
         self.occ_eval_metrics.count_miou()
         if self.eval_fscore:
             self.fscore_eval_metrics.count_fscore()
-
-
-

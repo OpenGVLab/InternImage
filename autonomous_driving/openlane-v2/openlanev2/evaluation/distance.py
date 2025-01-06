@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # distance.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -25,7 +25,8 @@ from scipy.spatial.distance import cdist, euclidean
 from similaritymeasures import frechet_dist
 
 
-def pairwise(xs: list, ys: list, distance_function: callable, mask: np.ndarray = None, relax: bool = False) -> np.ndarray:
+def pairwise(xs: list, ys: list, distance_function: callable, mask: np.ndarray = None,
+             relax: bool = False) -> np.ndarray:
     r"""
     Calculate pairwise distance.
 
@@ -57,6 +58,7 @@ def pairwise(xs: list, ys: list, distance_function: callable, mask: np.ndarray =
             if mask is None or mask[i][j]:
                 result[i][j] = distance_function(x, y) * relaxation_factor
     return result
+
 
 def chamfer_distance(gt: np.ndarray, pred: np.ndarray) -> float:
     r"""
@@ -118,6 +120,7 @@ def frechet_distance(gt: np.ndarray, pred: np.ndarray) -> float:
 
     return frechet_dist(pred, gt, p=2)
 
+
 def iou_distance(gt: np.ndarray, pred: np.ndarray) -> float:
     r"""
     Calculate IoU distance,
@@ -144,6 +147,7 @@ def iou_distance(gt: np.ndarray, pred: np.ndarray) -> float:
     bymax = min(pred[1][1], gt[1][1])
 
     inter = max((bxmax - bxmin), 0) * max((bymax - bymin), 0)
-    union = (pred[1][0] - pred[0][0]) * (pred[1][1] - pred[0][1]) + (gt[1][0] - gt[0][0]) * (gt[1][1] - gt[0][1]) - inter
+    union = (pred[1][0] - pred[0][0]) * (pred[1][1] - pred[0][1]) + (gt[1][0] - gt[0][0]) * (
+                gt[1][1] - gt[0][1]) - inter
 
     return 1 - inter / union

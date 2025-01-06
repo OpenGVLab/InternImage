@@ -1,5 +1,5 @@
 # ==============================================================================
-# Binaries and/or source for the following packages or projects 
+# Binaries and/or source for the following packages or projects
 # are presented under one or more of the following open source licenses:
 # transforms.py    The OpenLane-V2 Dataset Authors    Apache License, Version 2.0
 #
@@ -20,12 +20,12 @@
 # limitations under the License.
 # ==============================================================================
 
-import numpy as np
-from numpy import random
 from math import factorial
 
 import mmcv
+import numpy as np
 from mmdet.datasets import PIPELINES
+from numpy import random
 
 
 @PIPELINES.register_module()
@@ -38,7 +38,7 @@ class ResizeFrontView:
         assert 'ring_front_center' in results['img_paths'][0], \
             'the first image should be the front view'
 
-        #image
+        # image
         front_view = results['img'][0]
         h, w, _ = front_view.shape
         resiezed_front_view, w_scale, h_scale = mmcv.imresize(
@@ -73,7 +73,7 @@ class ResizeFrontView:
         cam_s[0, 0] *= w_scale
         cam_s[1, 1] *= h_scale
 
-        viewpad = cam_s @ viewpad 
+        viewpad = cam_s @ viewpad
         intrinsic = viewpad[:intrinsic.shape[0], :intrinsic.shape[1]]
         lidar2img_rt = (viewpad @ lidar2cam_rt.T)
 
@@ -82,6 +82,7 @@ class ResizeFrontView:
         results['cam2imgs'][0] = intrinsic
 
         return results
+
 
 @PIPELINES.register_module()
 class NormalizeMultiviewImage:
@@ -104,7 +105,6 @@ class NormalizeMultiviewImage:
         self.std = np.array(std, dtype=np.float32)
         self.to_rgb = to_rgb
 
-
     def __call__(self, results):
         """Call function to normalize images.
         Args:
@@ -124,13 +124,14 @@ class NormalizeMultiviewImage:
         repr_str += f'(mean={self.mean}, std={self.std}, to_rgb={self.to_rgb})'
         return repr_str
 
+
 @PIPELINES.register_module()
 class PhotoMetricDistortionMultiViewImage:
     r"""
     Notes
     -----
     Adapted from https://github.com/fundamentalvision/BEVFormer/blob/master/projects/mmdet3d_plugin/datasets/pipelines/transform_3d.py#L99.
-    
+
     Apply photometric distortion to image sequentially, every transformation
     is applied with a probability of 0.5. The position of random contrast is in
     second or second to last.
@@ -170,12 +171,12 @@ class PhotoMetricDistortionMultiViewImage:
         new_imgs = []
         for img in imgs:
             assert img.dtype == np.float32, \
-                'PhotoMetricDistortion needs the input image of dtype np.float32,'\
+                'PhotoMetricDistortion needs the input image of dtype np.float32,' \
                 ' please set "to_float32=True" in "LoadImageFromFile" pipeline'
             # random brightness
             if random.randint(2):
                 delta = random.uniform(-self.brightness_delta,
-                                    self.brightness_delta)
+                                       self.brightness_delta)
                 img += delta
 
             # mode == 0 --> do random contrast first
@@ -184,7 +185,7 @@ class PhotoMetricDistortionMultiViewImage:
             if mode == 1:
                 if random.randint(2):
                     alpha = random.uniform(self.contrast_lower,
-                                        self.contrast_upper)
+                                           self.contrast_upper)
                     img *= alpha
 
             # convert color from BGR to HSV
@@ -193,7 +194,7 @@ class PhotoMetricDistortionMultiViewImage:
             # random saturation
             if random.randint(2):
                 img[..., 1] *= random.uniform(self.saturation_lower,
-                                            self.saturation_upper)
+                                              self.saturation_upper)
 
             # random hue
             if random.randint(2):
@@ -208,7 +209,7 @@ class PhotoMetricDistortionMultiViewImage:
             if mode == 0:
                 if random.randint(2):
                     alpha = random.uniform(self.contrast_lower,
-                                        self.contrast_upper)
+                                           self.contrast_upper)
                     img *= alpha
 
             # randomly swap channels
@@ -228,6 +229,7 @@ class PhotoMetricDistortionMultiViewImage:
         repr_str += f'hue_delta={self.hue_delta})'
         return repr_str
 
+
 @PIPELINES.register_module()
 class CustomPadMultiViewImage:
 
@@ -242,7 +244,7 @@ class CustomPadMultiViewImage:
         if self.size_divisor is not None:
             padded_img = [mmcv.impad_to_multiple(
                 img, self.size_divisor, pad_val=self.pad_val) for img in padded_img]
-        
+
         results['img'] = padded_img
         results['pad_shape'] = [img.shape for img in padded_img]
         results['pad_fixed_size'] = None
@@ -256,14 +258,15 @@ class CustomPadMultiViewImage:
         repr_str += f'pad_val={self.pad_val})'
         return repr_str
 
+
 @PIPELINES.register_module()
 class CustomParameterizeLane:
 
     def __init__(self, method, method_para):
         method_list = ['bezier', 'polygon', 'bezier_Direction_attribute', 'bezier_Endpointfixed']
         self.method = method
-        if not self.method in method_list:
-            raise Exception("Not implemented!")
+        if self.method not in method_list:
+            raise Exception('Not implemented!')
         self.method_para = method_para
 
     def __call__(self, results):
@@ -294,7 +297,8 @@ class CustomParameterizeLane:
                 A[i, j] = self.comb(n_control - 1, j) * np.power(1 - t[i], n_control - 1 - j) * np.power(t[i], j)
         A_BE = A[1:-1, 1:-1]
         _points = points[1:-1]
-        _points = _points - A[1:-1, 0].reshape(-1, 1) @ points[0].reshape(1, -1) - A[1:-1, -1].reshape(-1, 1) @ points[-1].reshape(1, -1)
+        _points = _points - A[1:-1, 0].reshape(-1, 1) @ points[0].reshape(1, -1) - A[1:-1, -1].reshape(-1, 1) @ points[
+            -1].reshape(1, -1)
 
         conts = np.linalg.lstsq(A_BE, _points, rcond=None)
 
@@ -369,7 +373,7 @@ class CustomParameterizeLane:
             sorted_y = np.array(centerline[:, 0])
             points = np.array(list(zip(sorted_x, sorted_y)))
             if key_rep not in ['Bounding Box', 'SME', 'Extreme Points']:
-                raise Exception(f"{key_rep} not existed!")
+                raise Exception(f'{key_rep} not existed!')
             elif key_rep == 'Bounding Box':
                 res = np.array(
                     [points[:, 0].min(), points[:, 1].min(), points[:, 0].max(), points[:, 1].max()]).reshape((2, 2))

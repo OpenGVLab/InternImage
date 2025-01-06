@@ -4,43 +4,28 @@
 # ---------------------------------------------
 
 import mmcv
-from nuscenes.nuscenes import NuScenes
-from PIL import Image
-from nuscenes.utils.geometry_utils import view_points, box_in_image, BoxVisibility, transform_matrix
-from typing import Tuple, List, Iterable
-import matplotlib.pyplot as plt
-import numpy as np
-from PIL import Image
-from matplotlib import rcParams
-from matplotlib.axes import Axes
-from pyquaternion import Quaternion
-from PIL import Image
-from matplotlib import rcParams
-from matplotlib.axes import Axes
-from pyquaternion import Quaternion
-from tqdm import tqdm
-from nuscenes.utils.data_classes import LidarPointCloud, RadarPointCloud, Box
-from nuscenes.utils.geometry_utils import view_points, box_in_image, BoxVisibility, transform_matrix
-from nuscenes.eval.common.data_classes import EvalBoxes, EvalBox
+from nuscenes.eval.common.data_classes import EvalBoxes
 from nuscenes.eval.detection.data_classes import DetectionBox
-from nuscenes.eval.detection.utils import category_to_detection_name
 from nuscenes.eval.detection.render import visualize_sample
-
-
-
+from nuscenes.eval.detection.utils import category_to_detection_name
+from nuscenes.nuscenes import NuScenes
+from nuscenes.utils.geometry_utils import (BoxVisibility, box_in_image,
+                                           view_points)
+from PIL import Image
+from pyquaternion import Quaternion
 
 cams = ['CAM_FRONT',
- 'CAM_FRONT_RIGHT',
- 'CAM_BACK_RIGHT',
- 'CAM_BACK',
- 'CAM_BACK_LEFT',
- 'CAM_FRONT_LEFT']
+        'CAM_FRONT_RIGHT',
+        'CAM_BACK_RIGHT',
+        'CAM_BACK',
+        'CAM_BACK_LEFT',
+        'CAM_FRONT_LEFT']
 
-import numpy as np
 import matplotlib.pyplot as plt
-from nuscenes.utils.data_classes import LidarPointCloud, RadarPointCloud, Box
-from PIL import Image
+import numpy as np
 from matplotlib import rcParams
+from nuscenes.utils.data_classes import Box, LidarPointCloud
+from PIL import Image
 
 
 def render_annotation(
@@ -143,7 +128,6 @@ def render_annotation(
         plt.savefig(out_path)
 
 
-
 def get_sample_data(sample_data_token: str,
                     box_vis_level: BoxVisibility = BoxVisibility.ANY,
                     selected_anntokens=None,
@@ -204,7 +188,6 @@ def get_sample_data(sample_data_token: str,
         box_list.append(box)
 
     return data_path, box_list, cam_intrinsic
-
 
 
 def get_predicted_data(sample_data_token: str,
@@ -270,9 +253,7 @@ def get_predicted_data(sample_data_token: str,
     return data_path, box_list, cam_intrinsic
 
 
-
-
-def lidiar_render(sample_token, data,out_path=None):
+def lidiar_render(sample_token, data, out_path=None):
     bbox_gt_list = []
     bbox_pred_list = []
     anns = nusc.get('sample', sample_token)['anns']
@@ -314,7 +295,7 @@ def lidiar_render(sample_token, data,out_path=None):
     pred_annotations.add_boxes(sample_token, bbox_pred_list)
     print('green is ground truth')
     print('blue is the predited result')
-    visualize_sample(nusc, sample_token, gt_annotations, pred_annotations, savepath=out_path+'_bev')
+    visualize_sample(nusc, sample_token, gt_annotations, pred_annotations, savepath=out_path + '_bev')
 
 
 def get_color(category_name: str):
@@ -323,18 +304,19 @@ def get_color(category_name: str):
     This method works for the general nuScenes categories, as well as the nuScenes detection categories.
     """
     a = ['noise', 'animal', 'human.pedestrian.adult', 'human.pedestrian.child', 'human.pedestrian.construction_worker',
-     'human.pedestrian.personal_mobility', 'human.pedestrian.police_officer', 'human.pedestrian.stroller',
-     'human.pedestrian.wheelchair', 'movable_object.barrier', 'movable_object.debris',
-     'movable_object.pushable_pullable', 'movable_object.trafficcone', 'static_object.bicycle_rack', 'vehicle.bicycle',
-     'vehicle.bus.bendy', 'vehicle.bus.rigid', 'vehicle.car', 'vehicle.construction', 'vehicle.emergency.ambulance',
-     'vehicle.emergency.police', 'vehicle.motorcycle', 'vehicle.trailer', 'vehicle.truck', 'flat.driveable_surface',
-     'flat.other', 'flat.sidewalk', 'flat.terrain', 'static.manmade', 'static.other', 'static.vegetation',
-     'vehicle.ego']
+         'human.pedestrian.personal_mobility', 'human.pedestrian.police_officer', 'human.pedestrian.stroller',
+         'human.pedestrian.wheelchair', 'movable_object.barrier', 'movable_object.debris',
+         'movable_object.pushable_pullable', 'movable_object.trafficcone', 'static_object.bicycle_rack',
+         'vehicle.bicycle',
+         'vehicle.bus.bendy', 'vehicle.bus.rigid', 'vehicle.car', 'vehicle.construction', 'vehicle.emergency.ambulance',
+         'vehicle.emergency.police', 'vehicle.motorcycle', 'vehicle.trailer', 'vehicle.truck', 'flat.driveable_surface',
+         'flat.other', 'flat.sidewalk', 'flat.terrain', 'static.manmade', 'static.other', 'static.vegetation',
+         'vehicle.ego']
     class_names = [
         'car', 'truck', 'construction_vehicle', 'bus', 'trailer', 'barrier',
         'motorcycle', 'bicycle', 'pedestrian', 'traffic_cone'
     ]
-    #print(category_name)
+    # print(category_name)
     if category_name == 'bicycle':
         return nusc.colormap['vehicle.bicycle']
     elif category_name == 'construction_vehicle':
@@ -365,7 +347,7 @@ def render_sample_data(
         verbose: bool = True,
         show_panoptic: bool = False,
         pred_data=None,
-      ) -> None:
+) -> None:
     """
     Render sample data onto axis.
     :param sample_data_token: Sample_data token.
@@ -450,7 +432,7 @@ def render_sample_data(
             ax[j + 2, ind].set_ylim(data.size[1], 0)
 
         else:
-            raise ValueError("Error: Unknown sensor modality!")
+            raise ValueError('Error: Unknown sensor modality!')
 
         ax[j, ind].axis('off')
         ax[j, ind].set_title('PRED: {} {labels_type}'.format(
@@ -463,10 +445,11 @@ def render_sample_data(
         ax[j + 2, ind].set_aspect('equal')
 
     if out_path is not None:
-        plt.savefig(out_path+'_camera', bbox_inches='tight', pad_inches=0, dpi=200)
+        plt.savefig(out_path + '_camera', bbox_inches='tight', pad_inches=0, dpi=200)
     if verbose:
         plt.show()
     plt.close()
+
 
 if __name__ == '__main__':
     nusc = NuScenes(version='v1.0-trainval', dataroot='./data/nuscenes', verbose=True)

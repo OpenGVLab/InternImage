@@ -1,15 +1,11 @@
-import mmcv
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+from mmdet3d.models.builder import build_backbone, build_head, build_neck
 from torch.nn.utils.rnn import pad_sequence
-from torchvision.models.resnet import resnet18, resnet50
+from torchvision.models.resnet import resnet18
 
-from mmdet3d.models.builder import (build_backbone, build_head,
-                                    build_neck)
-
-from .base_mapper import BaseMapper, MAPPERS
+from .base_mapper import MAPPERS, BaseMapper
 
 
 @MAPPERS.register_module()
@@ -31,12 +27,11 @@ class VectorMapNet(BaseMapper):
                  model_name=None, **kwargs):
         super(VectorMapNet, self).__init__()
 
-        
-        #Attribute
+        # Attribute
         self.model_name = model_name
         self.last_epoch = None
         self.only_det = only_det
-  
+
         self.backbone = build_backbone(backbone_cfg)
 
         if neck_cfg is not None:
@@ -53,16 +48,15 @@ class VectorMapNet(BaseMapper):
                 nn.BatchNorm2d(64),
                 nn.ReLU(inplace=True),
                 nn.MaxPool2d(kernel_size=3, stride=2, padding=1,
-                            dilation=1, ceil_mode=False),
+                             dilation=1, ceil_mode=False),
                 trunk.layer1,
                 nn.Conv2d(64, 128, kernel_size=1, bias=False),
             )
-        
-        # BEV 
-        if hasattr(self.backbone,'bev_w'):
+
+        # BEV
+        if hasattr(self.backbone, 'bev_w'):
             self.bev_w = self.backbone.bev_w
             self.bev_h = self.backbone.bev_h
-
 
         self.head = build_head(head_cfg)
 
@@ -79,12 +73,12 @@ class VectorMapNet(BaseMapper):
             img: torch.Tensor of shape [B, N, 3, H, W]
                 N: number of cams
             vectors: list[list[Tuple(lines, length, label)]]
-                - lines: np.array of shape [num_points, 2]. 
+                - lines: np.array of shape [num_points, 2].
                 - length: int
                 - label: int
                 len(vectors) = batch_size
                 len(vectors[_b]) = num of lines in sample _b
-            img_metas: 
+            img_metas:
                 img_metas['lidar2img']: [B, N, 4, 4]
         Out:
             loss, log_vars, num_sample
@@ -92,12 +86,12 @@ class VectorMapNet(BaseMapper):
         #  prepare labels and images
         batch, img, img_metas, valid_idx, points = self.batch_data(
             polys, img, img_metas, img.device, points)
-        
+
         # corner cases use hard code to prevent code fail
         if self.last_epoch is None:
             self.last_epoch = [batch, img, img_metas, valid_idx, points]
 
-        if len(valid_idx)==0:
+        if len(valid_idx) == 0:
             batch, img, img_metas, valid_idx, points = self.last_epoch
         else:
             del self.last_epoch
@@ -110,15 +104,15 @@ class VectorMapNet(BaseMapper):
 
         # Neck
         bev_feats = self.neck(_bev_feats)
-        
+
         preds_dict, losses_dict = \
-            self.head(batch, 
+            self.head(batch,
                       context={
-                        'bev_embeddings': bev_feats, 
-                        'batch_input_shape': _bev_feats.shape[2:], 
-                        'img_shape': img_shape,
-                        'raw_bev_embeddings': _bev_feats},
-                        only_det=self.only_det)
+                          'bev_embeddings': bev_feats,
+                          'batch_input_shape': _bev_feats.shape[2:],
+                          'img_shape': img_shape,
+                          'raw_bev_embeddings': _bev_feats},
+                      only_det=self.only_det)
 
         # format outputs
         loss = 0
@@ -150,13 +144,13 @@ class VectorMapNet(BaseMapper):
         bev_feats = self.neck(_bev_feats)
 
         context = {'bev_embeddings': bev_feats,
-                   'batch_input_shape': _bev_feats.shape[2:], 
-                   'img_shape': img_shape, # XXX
+                   'batch_input_shape': _bev_feats.shape[2:],
+                   'img_shape': img_shape,  # XXX
                    'raw_bev_embeddings': _bev_feats}
 
         preds_dict = self.head(batch={},
                                context=context,
-                               condition_on_det=True, 
+                               condition_on_det=True,
                                gt_condition=False,
                                only_det=self.only_det)
 
@@ -173,7 +167,7 @@ class VectorMapNet(BaseMapper):
         valid_idx = [i for i in range(len(polys)) if len(polys[i])]
         imgs = imgs[valid_idx]
         img_metas = [img_metas[i] for i in valid_idx]
-        
+
         polys = [polys[i] for i in valid_idx]
 
         if points is not None:
@@ -184,16 +178,16 @@ class VectorMapNet(BaseMapper):
             return None, None, None, valid_idx, None
 
         batch = {}
-        batch['det'] = format_det(polys,device)
-        batch['gen'] = format_gen(polys,device)
+        batch['det'] = format_det(polys, device)
+        batch['gen'] = format_gen(polys, device)
 
         return batch, imgs, img_metas, valid_idx, points
 
     def batch_points(self, points):
-    
+
         pad_points = pad_sequence(points, batch_first=True)
 
-        points_mask = torch.zeros_like(pad_points[:,:,0]).bool()
+        points_mask = torch.zeros_like(pad_points[:, :, 0]).bool()
         for i in range(len(points)):
             valid_num = points[i].shape[0]
             points_mask[i][:valid_num] = True
@@ -202,41 +196,38 @@ class VectorMapNet(BaseMapper):
 
 
 def format_det(polys, device):
-    
     batch = {
-        'class_label':[],
-        'batch_idx':[],
+        'class_label': [],
+        'batch_idx': [],
         'bbox': [],
     }
 
     for batch_idx, poly in enumerate(polys):
-
         keypoint_label = torch.from_numpy(poly['det_label']).to(device)
         keypoint = torch.from_numpy(poly['keypoint']).to(device)
-        
+
         batch['class_label'].append(keypoint_label)
         batch['bbox'].append(keypoint)
-    
-    return batch
-        
- 
-def format_gen(polys,device):
 
+    return batch
+
+
+def format_gen(polys, device):
     line_cls = []
     polylines, polyline_masks, polyline_weights = [], [], []
     bbox, line_cls, line_bs_idx = [], [], []
-    
+
     for batch_idx, poly in enumerate(polys):
-    
+
         # convert to cuda tensor
         for k in poly.keys():
-            if isinstance(poly[k],np.ndarray):
+            if isinstance(poly[k], np.ndarray):
                 poly[k] = torch.from_numpy(poly[k]).to(device)
             else:
                 poly[k] = [torch.from_numpy(v).to(device) for v in poly[k]]
-        
+
         line_cls += poly['gen_label']
-        line_bs_idx += [batch_idx]*len(poly['gen_label'])
+        line_bs_idx += [batch_idx] * len(poly['gen_label'])
 
         # condition
         bbox += poly['qkeypoint']
@@ -257,5 +248,5 @@ def format_gen(polys,device):
     batch['polylines'] = pad_sequence(polylines, batch_first=True)
     batch['polyline_masks'] = pad_sequence(polyline_masks, batch_first=True)
     batch['polyline_weights'] = pad_sequence(polyline_weights, batch_first=True)
-    
+
     return batch
