@@ -14,7 +14,6 @@
 #include <cstring>
 
 #include <ATen/ATen.h>
-#include <ATen/OpMathType.h>
 #include <ATen/cuda/CUDAContext.h>
 #include <THC/THCAtomics.cuh>
 
@@ -27,7 +26,7 @@ inline int GET_BLOCKS(const int N, const int num_threads) {
     return (N + num_threads - 1) / num_threads;
 }
 
-#define opmath_t at::opmath_type<scalar_t>
+#define opmath_t scalar_t
 
 template <typename scalar_t>
 __device__ opmath_t dcnv3_im2col_bilinear(const scalar_t *&bottom_data,
