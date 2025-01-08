@@ -15,44 +15,22 @@ git clone https://github.com/OpenGVLab/InternImage.git
 cd InternImage
 ```
 
+- Install Nvidia driver which is compatible with `CUDA>=10.2` with `cudnn>=7` following
+  the [official installation instructions](https://developer.nvidia.com/cuda-downloads?)
+  
+  (Note: CUDA and other Nvidia stufff will be automatically installed by the next step from the conda environment.yml file.)
+
 - Create a conda virtual environment and activate it:
 
 ```bash
-conda create -n internimage python=3.7 -y
+conda env create -f environment.yml
 conda activate internimage
 ```
 
-- Install `CUDA>=10.2` with `cudnn>=7` following
-  the [official installation instructions](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
-- Install `PyTorch>=1.10.0` and `torchvision>=0.9.0` with `CUDA>=10.2`:
-
-For examples, to install torch==1.11 with CUDA==11.3 and nvcc:
-```bash
-conda install pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3 -c pytorch -y
-conda install -c conda-forge cudatoolkit-dev=11.3 -y # to install nvcc
-```
-
-- Install other requirements:
-
-  note: conda opencv will break torchvision as not to support GPU, so we need to install opencv using pip. 	  
-
-```bash
-conda install -c conda-forge termcolor yacs pyyaml scipy pip -y
-pip install opencv-python
-```
-
-- Install `timm` and `mmcv-full` and `mmsegmentation':
-
-```bash
-pip install -U openmim
-mim install mmcv-full==1.5.0
-mim install mmsegmentation==0.27.0
-pip install timm==0.6.11 mmdet==2.28.1
-```
 
 - Compile CUDA operators
 ```bash
-cd ./ops_dcnv3
+cd segmentation/ops_dcnv3
 sh ./make.sh
 # unit test (should see all checking is True)
 python test.py
