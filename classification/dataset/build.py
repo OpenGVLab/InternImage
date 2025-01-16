@@ -12,7 +12,7 @@ import torch.distributed as dist
 from timm.data import Mixup, create_transform
 from torchvision import transforms
 
-from .cached_image_folder import ImageCephDataset
+from .cached_image_folder import CachedImageFolder, ImageCephDataset
 from .samplers import NodeDistributedSampler, SubsetRandomSampler
 
 try:
@@ -214,7 +214,7 @@ def build_dataset(split, config):
                                        on_memory=config.DATA.IMG_ON_MEMORY)
         elif prefix == 'val':
             root = os.path.join(config.DATA.DATA_PATH, 'val')
-            dataset = ImageCephDataset(root, 'val', transform=transform)
+            dataset = CachedImageFolder(root, transform=transform)
         nb_classes = 1000
     elif config.DATA.DATASET == 'imagenet22K':
         if prefix == 'train':

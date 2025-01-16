@@ -24,5 +24,5 @@ PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
     --cfg ${CONFIG} \
     --accumulation-steps 1 \
     --local-rank 0 \
-    --data-path /mnt/lustre/share/images \
+    --data-path data/imagenet \
     --output work_dirs ${@:4}

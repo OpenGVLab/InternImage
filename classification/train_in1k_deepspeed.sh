@@ -23,5 +23,5 @@ PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
     python -u main_deepspeed.py \
     --cfg ${CONFIG} \
     --local-rank 0 \
-    --data-path /mnt/lustre/share/images \
+    --data-path data/imagenet \
     --output work_dirs_deepspeed ${@:4}
