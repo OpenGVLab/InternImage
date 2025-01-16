@@ -12,6 +12,7 @@ import os
 import os.path as osp
 import re
 import time
+import zipfile
 from abc import abstractmethod
 
 import mmcv
@@ -382,8 +383,23 @@ class ParserCephImage(Parser):
         else:
             self.io_backend = 'disk'
             self.class_to_idx = None
-            with open(osp.join(annotation_root, f'{split}.txt'), 'r') as f:
-                self.samples = f.read().splitlines()
+            txt_file = osp.join(annotation_root, f'{split}.txt')
+            zip_file = osp.join(annotation_root, f'{split}.txt.zip')
+
+            if osp.exists(txt_file):
+                with open(txt_file, 'r') as f:
+                    self.samples = f.read().splitlines()
+            elif osp.exists(zip_file):
+                with zipfile.ZipFile(zip_file, 'r') as zf:
+                    file_list = zf.namelist()
+                    if f'{split}.txt' in file_list:
+                        with zf.open(f'{split}.txt') as f:
+                            self.samples = f.read().decode('utf-8').splitlines()
+                    else:
+                        raise FileNotFoundError(f"'{split}.txt' not found in '{zip_file}'")
+            else:
+                raise FileNotFoundError(f"Neither '{split}.txt' nor '{split}.txt.zip' found in '{annotation_root}'")
+
         local_rank = None
         local_size = None
         self._consecutive_errors = 0

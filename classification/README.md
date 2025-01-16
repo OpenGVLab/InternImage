@@ -54,6 +54,9 @@ pip install timm==0.6.11 mmdet==2.28.1
 
 ```bash
 pip install opencv-python termcolor yacs pyyaml scipy
+# Please use a version of numpy lower than 2.0
+pip install numpy==1.26.4
+pip install pydantic==1.10.13
 ```
 
 - Compiling CUDA operators
@@ -72,12 +75,12 @@ python test.py
 
 ## Data Preparation
 
-We use standard ImageNet dataset, you can download it from http://image-net.org/.
-
-We provide the following two ways to load data:
+We provide the following ways to prepare data:
 
 <details open>
   <summary>Standard ImageNet-1K</summary>
+
+We use standard ImageNet dataset, you can download it from http://image-net.org/.
 
 - For standard folder dataset, move validation images to labeled sub-folders. The file structure should look like:
 
@@ -102,7 +105,6 @@ We provide the following two ways to load data:
       │   ├── img6.jpeg
       │   └── ...
       └── ...
-
   ```
 
 </details>
@@ -231,24 +233,33 @@ python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --maste
 
 ## Manage Jobs with Slurm
 
-For example, to train `InternImage` with 8 GPU on a single node for 300 epochs, run:
+For example, to train or evaluate `InternImage` with 8 GPU on a single node, run:
 
 `InternImage-T`:
 
 ```bash
-GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_t_1k_224.yaml --resume internimage_t_1k_224.pth --eval
+# Train for 300 epochs
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_t_1k_224.yaml
+# Evaluate on ImageNet-1K
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_t_1k_224.yaml --resume pretrained/internimage_t_1k_224.pth --eval
 ```
 
 `InternImage-S`:
 
 ```bash
-GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_s_1k_224.yaml --resume internimage_s_1k_224.pth --eval
+# Train for 300 epochs
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_s_1k_224.yaml
+# Evaluate on ImageNet-1K
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_s_1k_224.yaml --resume pretrained/internimage_s_1k_224.pth --eval
 ```
 
 `InternImage-XL`:
 
 ```bash
-GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_xl_22kto1k_384.pth --resume internimage_xl_22kto1k_384.pth --eval
+# Train for 300 epochs
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_xl_22kto1k_384.pth
+# Evaluate on ImageNet-1K
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_xl_22kto1k_384.pth --resume pretrained/internimage_xl_22kto1k_384.pth --eval
 ```
 
 <!--
@@ -275,7 +286,7 @@ python -m torch.distributed.launch --nproc_per_node 8 --master_port 12345  main.
 
 ## Training with DeepSpeed
 
-We support utilizing [Deepspeed](https://github.com/microsoft/DeepSpeed) to reduce memory costs for training large-scale models, e.g. InternImage-H with over 1 billion parameters.
+We support utilizing [DeepSpeed](https://github.com/microsoft/DeepSpeed) to reduce memory costs for training large-scale models, e.g. InternImage-H with over 1 billion parameters.
 To use it, first install the requirements as
 
 ```bash
@@ -286,23 +297,23 @@ Then you could launch the training in a slurm system with 8 GPUs as follows (tin
 The default zero stage is 1 and it could config via command line args `--zero-stage`.
 
 ```
-GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh INTERN2 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4
-GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh INTERN2 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 --eval --resume ckpt.pth
-GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh INTERN2 train configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 --eval --resume deepspeed_ckpt_dir
-GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh INTERN2 train configs/internimage_h_22kto1k_640.yaml --batch-size 16 --accumulation-steps 4 --pretrained ckpt/internimage_h_jointto22k_384.pth
-GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh INTERN2 train configs/internimage_h_22kto1k_640.yaml --batch-size 16 --accumulation-steps 4 --pretrained ckpt/internimage_h_jointto22k_384.pth --zero-stage 3
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh <partition> <job-name> configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh <partition> <job-name> configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 --eval --resume ckpt.pth
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh <partition> <job-name> configs/internimage_t_1k_224.yaml --batch-size 128 --accumulation-steps 4 --eval --resume deepspeed_ckpt_dir
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh <partition> <job-name> configs/internimage_h_22kto1k_640.yaml --batch-size 16 --accumulation-steps 4 --pretrained pretrained/internimage_h_jointto22k_384.pth
+GPUS=8 GPUS_PER_NODE=8 sh train_in1k_deepspeed.sh <partition> <job-name> configs/internimage_h_22kto1k_640.yaml --batch-size 16 --accumulation-steps 4 --pretrained pretrained/internimage_h_jointto22k_384.pth --zero-stage 3
 ```
 
-🤗 **Huggingface Accelerate Integration of DeepSpeed**
+🤗 **HuggingFace Accelerate Integration of DeepSpeed**
 
-Optionally, you could use our [Huggingface Accelerate](https://github.com/huggingface/accelerate) integration to use DeepSpeed.
+Optionally, you could use our [HuggingFace Accelerate](https://github.com/huggingface/accelerate) integration to use DeepSpeed.
 
 ```bash
 pip install accelerate==0.18.0
 ```
 
 ```bash
-accelerate launch --config_file configs/accelerate/dist_8gpus_zero3_wo_loss_scale.yaml main_accelerate.py --cfg configs/internimage_h_22kto1k_640.yaml --data-path data/imagenet --batch-size 16 --pretrained ckpt/internimage_h_jointto22k_384.pth --accumulation-steps 4
+accelerate launch --config_file configs/accelerate/dist_8gpus_zero3_wo_loss_scale.yaml main_accelerate.py --cfg configs/internimage_h_22kto1k_640.yaml --data-path data/imagenet --batch-size 16 --pretrained pretrained/internimage_h_jointto22k_384.pth --accumulation-steps 4
 accelerate launch --config_file configs/accelerate/dist_8gpus_zero3_offload.yaml main_accelerate.py --cfg configs/internimage_t_1k_224.yaml --data-path data/imagenet --batch-size 128 --accumulation-steps 4 --output output_zero3_offload
 accelerate launch --config_file configs/accelerate/dist_8gpus_zero1.yaml main_accelerate.py --cfg configs/internimage_t_1k_224.yaml --data-path data/imagenet --batch-size 128 --accumulation-steps 4
 ```
