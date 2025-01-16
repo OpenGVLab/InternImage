@@ -74,7 +74,8 @@ def parse_option():
                         type=str,
                         help='dataset name',
                         default=None)
-    parser.add_argument('--data-path', type=str, help='path to dataset')
+    parser.add_argument('--data-path', type=str, help='path to dataset',
+                        default='data/imagenet')
     parser.add_argument('--zip',
                         action='store_true',
                         help='use zipped dataset instead of folder dataset')
