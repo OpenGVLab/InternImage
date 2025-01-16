@@ -357,6 +357,12 @@ python extract_feature.py --cfg configs/internimage_t_1k_224.yaml --img b.png --
 
 ## Export
 
+Install `mmdeploy` at first:
+
+```shell
+pip
+```
+
 To export `InternImage-T` from PyTorch to ONNX, run:
 
 ```shell
@@ -366,5 +372,20 @@ python export.py --model_name internimage_t_1k_224 --ckpt_dir /path/to/ckpt/dir 
 To export `InternImage-T` from PyTorch to TensorRT, run:
 
 ```shell
+git clone https://github.com/open-mmlab/mmdeploy.git
+cd mmdeploy && git checkout v0.13.0
+export MMDEPLOY_DIR=$(pwd)
+# prepare our custom ops, you can find it at InternImage/tensorrt/modulated_deform_conv_v3
+cp -r ../../tensorrt/modulated_deform_conv_v3 csrc/mmdeploy/backend_ops/tensorrt/
+
+# build custom ops
+mkdir -p build && cd build
+cmake -DCMAKE_CXX_COMPILER=g++ -DMMDEPLOY_TARGET_BACKENDS=trt -DTENSORRT_DIR=${TENSORRT_DIR} -DCUDNN_DIR=${CUDNN_DIR} ..
+make -j$(nproc) && make install
+
+# install the mmdeploy after building custom ops
+pip install -e .
+cd ../
+
 python export.py --model_name internimage_t_1k_224 --ckpt_dir /path/to/ckpt/dir --trt
 ```
