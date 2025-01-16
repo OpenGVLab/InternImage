@@ -19,7 +19,7 @@ def get_args():
     parser.add_argument('--model_name', type=str,
                         default='internimage_t_1k_224')
     parser.add_argument('--ckpt_dir', type=str,
-                        default='/mnt/petrelfs/share_data/huangzhenhang/code/internimage/checkpoint_dir/new/cls')
+                        default='pretrained/')
     parser.add_argument('--onnx', default=False, action='store_true')
     parser.add_argument('--trt', default=False, action='store_true')
 

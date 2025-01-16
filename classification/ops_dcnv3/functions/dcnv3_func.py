@@ -100,7 +100,7 @@ class DCNv3Function(Function):
             group_channels_i=int(group_channels),
             offset_scale_f=float(offset_scale),
             im2col_step_i=int(im2col_step),
-            remove_center=int(remove_center),
+            remove_center_i=int(remove_center),
         )
 
 
