@@ -257,9 +257,9 @@ GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_s_1k_224.yaml
 
 ```bash
 # Train for 300 epochs
-GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_xl_22kto1k_384.pth
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_xl_22kto1k_384.yaml
 # Evaluate on ImageNet-1K
-GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_xl_22kto1k_384.pth --resume pretrained/internimage_xl_22kto1k_384.pth --eval
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_xl_22kto1k_384.yaml --resume pretrained/internimage_xl_22kto1k_384.pth --eval
 ```
 
 <!--

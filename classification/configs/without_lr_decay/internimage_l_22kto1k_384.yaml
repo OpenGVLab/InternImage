@@ -18,6 +18,7 @@ MODEL:
     OFFSET_SCALE: 2.0
     MLP_RATIO: 4.0
     POST_NORM: True
+  PRETRAINED: 'pretrained/internimage_l_22k_192to384.pth'
 TRAIN:
   EMA:
     ENABLE: true

@@ -23,6 +23,7 @@ MODEL:
     LEVEL2_POST_NORM_BLOCK_IDS: [5, 11, 17, 23, 29, 35, 41, 47]
     CENTER_FEATURE_SCALE: True
     USE_CLIP_PROJECTOR: True
+  PRETRAINED: 'pretrained/internimage_g_pretrainto22k_384.pth'
 TRAIN:
   EMA:
     ENABLE: true
