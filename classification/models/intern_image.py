@@ -691,7 +691,7 @@ class InternImage(nn.Module):
             m._reset_parameters()
 
     @torch.jit.ignore
-    def lr_decay_keywards(self, decay_ratio=0.87):
+    def lr_decay_keywords(self, decay_ratio=0.87):
         lr_ratios = {}
 
         # blocks
@@ -701,7 +701,7 @@ class InternImage(nn.Module):
             for j in range(self.depths[layer_num]):
                 block_num = self.depths[layer_num] - j - 1
                 tag = 'levels.{}.blocks.{}.'.format(layer_num, block_num)
-                decay = 1.0 * (decay_ratio**idx)
+                decay = 1.0 * (decay_ratio ** idx)
                 lr_ratios[tag] = decay
                 idx += 1
         # patch_embed (before stage-1)

@@ -129,11 +129,11 @@ def set_weight_decay_and_lr(
 
         if lr_layer_decay:
             print('layer-wise lr decay is used !')
-            assert hasattr(model, 'lr_decay_keywards')
-            lr_ratio_keywards = model.lr_decay_keywards(lr_layer_decay_ratio)
+            assert hasattr(model, 'lr_decay_keywords')
+            lr_ratio_keywords = model.lr_decay_keywords(lr_layer_decay_ratio)
 
             # 2. check lr
-            ratio = check_keywords_in_dict(name, lr_ratio_keywards)
+            ratio = check_keywords_in_dict(name, lr_ratio_keywords)
             if ratio is not None:
                 lr = ratio * base_lr
             else:
