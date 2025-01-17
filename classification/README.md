@@ -167,6 +167,27 @@ We use standard ImageNet dataset, you can download it from http://image-net.org/
 
 </details>
 
+<details>
+  <summary>iNaturalist 2018</summary>
+
+- For the iNaturalist 2018, please download the dataset from the [official repository](https://github.com/visipedia/inat_comp/blob/master/2018/README.md).
+  The file structure should look like:
+
+  ```bash
+    $ tree inat2018/
+    inat2018/
+    ├── categories.json
+    ├── test2018
+    ├── test2018.json
+    ├── train2018.json
+    ├── train2018_locations.json
+    ├── val2018
+    ├── val2018.json
+    └── val2018_locations.json
+  ```
+
+</details>
+
 ## Released Models
 
 <details open>
@@ -199,6 +220,19 @@ We use standard ImageNet dataset, you can download it from http://image-net.org/
 | InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M  | 163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_xl_22kto1k_384.yaml) |
 | InternImage-H  |  Joint 427M  |  640x640   | 89.6  | 1.08B  | 1478G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](configs/without_lr_decay/internimage_h_22kto1k_640.yaml)  |
 | InternImage-G  |      -       |  512x512   | 90.1  |   3B   | 2700G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](configs/without_lr_decay/internimage_g_22kto1k_512.yaml)  |
+
+</div>
+
+</details>
+
+<details open>
+<summary> iNaturalist 2018 Image Classification </summary>
+<br>
+<div>
+
+|     name      |  pretrain  | resolution | acc@1 | #param |                                    download                                     |
+| :-----------: | :--------: | :--------: | :---: | :----: | :-----------------------------------------------------------------------------: |
+| InternImage-H | Joint 427M |  384x384   | 92.6  |  1.1B  | [ckpt](<>) \| [cfg](configs/inaturalist2018/internimage_h_22ktoinat18_384.yaml) |
 
 </div>
 

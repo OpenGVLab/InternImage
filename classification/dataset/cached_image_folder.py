@@ -340,6 +340,55 @@ class ImageCephDataset(data.Dataset):
         return self.parser.filenames(basename, absolute)
 
 
+class INat18ImageCephDataset(data.Dataset):
+
+    def __init__(self,
+                 root,
+                 split,
+                 parser=None,
+                 transform=None,
+                 target_transform=None,
+                 on_memory=False):
+        if split == 'train':
+            annotation_root = osp.join(root, 'train2018.json')
+        elif split == 'val':
+            annotation_root = osp.join(root, 'val2018.json')
+        elif split == 'test':
+            annotation_root = osp.join(root, 'test2018.json')
+        if parser is None or isinstance(parser, str):
+            parser = INat18ParserCephImage(root=root,
+                                           split=split,
+                                           annotation_root=annotation_root,
+                                           on_memory=on_memory)
+        self.parser = parser
+        self.transform = transform
+        self.target_transform = target_transform
+        self._consecutive_errors = 0
+
+    def __getitem__(self, index):
+        img, temporal_info, spatial_info, target = self.parser[index]
+        self._consecutive_errors = 0
+        if self.transform is not None:
+            img = self.transform(img)
+        if target is None:
+            target = -1
+        elif self.target_transform is not None:
+            target = self.target_transform(target)
+        temporal_info = torch.tensor(temporal_info).to(torch.float32)
+        spatial_info = torch.tensor(spatial_info).to(torch.float32)
+
+        return [img, temporal_info, spatial_info], target
+
+    def __len__(self):
+        return len(self.parser)
+
+    def filename(self, index, basename=False, absolute=False):
+        return self.parser.filename(index, basename, absolute)
+
+    def filenames(self, basename=False, absolute=False):
+        return self.parser.filenames(basename, absolute)
+
+
 class Parser:
 
     def __init__(self):
@@ -372,7 +421,7 @@ class ParserCephImage(Parser):
         self.file_client = None
         self.kwargs = kwargs
 
-        self.root = root  # dataset:s3://imagenet22k
+        self.root = root
         if '22k' in root:
             self.io_backend = 'petrel'
             with open(osp.join(annotation_root, '22k_class_to_idx.json'),
@@ -497,7 +546,7 @@ class ParserCephImage(Parser):
             else:
                 target = int(target)
         except:
-            print('aaaaaaaaaaaa', filepath, target)
+            print(filepath, target)
             exit()
 
         return img, target
@@ -509,6 +558,87 @@ class ParserCephImage(Parser):
         filename, _ = self.samples[index].split(' ')
         filename = osp.join(self.root, filename)
 
+        return filename
+
+
+class INat18ParserCephImage(Parser):
+
+    def __init__(self,
+                 root,
+                 split,
+                 annotation_root,
+                 on_memory=False,
+                 **kwargs):
+        super().__init__()
+
+        self.file_client = None
+        self.kwargs = kwargs
+        self.split = split
+        self.root = root
+
+        self.io_backend = 'disk'
+        data = mmcv.load(annotation_root)
+
+        self.samples = data['annotations']
+        self.file_names = [each['file_name'] for each in data['images']]
+        self.meta_data = mmcv.load(
+            annotation_root.replace('2018.json', '2018_locations.json'))
+
+        self.class_to_idx = {}
+        for i, each in enumerate(data['categories']):
+            self.class_to_idx[each['id']] = i
+        self.on_memory = on_memory
+        self._consecutive_errors = 0
+        # TODO: support on_memory function
+
+    def __getitem__(self, index):
+        if self.file_client is None:
+            self.file_client = FileClient(self.io_backend, **self.kwargs)
+        anns = self.samples[index]
+        filename = self.file_names[index]
+        img_id = anns['image_id']
+        target = anns['category_id']
+
+        # load meta information from json file
+        meta = self.meta_data[index]
+        date = meta['date']
+        latitude = meta['lat']
+        longitude = meta['lon']
+        location_uncertainty = meta['loc_uncert']
+        temporal_info = get_temporal_info(date, miss_hour=True)
+        spatial_info = get_spatial_info(latitude, longitude)
+
+        filepath = osp.join(self.root, filename)
+        try:
+            if self.on_memory:
+                img_bytes = self.holder[filepath]
+            else:
+                img_bytes = self.file_client.get(filepath)
+            img = mmcv.imfrombytes(img_bytes)[:, :, ::-1]
+
+        except Exception as e:
+            _logger.warning(
+                f'Skipped sample (index {index}, file {filepath}). {str(e)}')
+            self._consecutive_errors += 1
+            if self._consecutive_errors < _ERROR_RETRY:
+                return self.__getitem__((index + 1) % len(self))
+            else:
+                raise e
+        self._consecutive_errors = 0
+
+        img = Image.fromarray(img)
+        if self.class_to_idx is not None:
+            target = self.class_to_idx[target]
+        else:
+            target = int(target)
+        return img, temporal_info, spatial_info, target
+
+    def __len__(self):
+        return len(self.samples)
+
+    def _filename(self, index, basename=False, absolute=False):
+        filename, _ = self.samples[index].split(' ')
+        filename = osp.join(self.root, filename)
         return filename
 
 

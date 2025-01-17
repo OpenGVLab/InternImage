@@ -12,7 +12,9 @@ import torch.distributed as dist
 from timm.data import Mixup, create_transform
 from torchvision import transforms
 
-from .cached_image_folder import CachedImageFolder, ImageCephDataset
+from .cached_image_folder import (CachedImageFolder, ImageCephDataset,
+                                  INat18ImageCephDataset,
+                                  INat18ParserCephImage)
 from .samplers import NodeDistributedSampler, SubsetRandomSampler
 
 try:
@@ -229,6 +231,15 @@ def build_dataset(split, config):
             root = os.path.join(config.DATA.DATA_PATH, 'val')
             dataset = ImageCephDataset(root, 'val', transform=transform)
             nb_classes = 1000
+    elif config.DATA.DATASET == 'inat18':
+        if prefix == 'train' and not config.EVAL_MODE:
+            root = config.DATA.DATA_PATH
+            dataset = INat18ImageCephDataset(
+                root, 'train', transform=transform, on_memory=config.DATA.IMG_ON_MEMORY)
+        elif prefix == 'val':
+            root = config.DATA.DATA_PATH
+            dataset = INat18ImageCephDataset(root, 'val', transform=transform)
+        nb_classes = 8142
     else:
         raise NotImplementedError(
             f'build_dataset does support {config.DATA.DATASET}')

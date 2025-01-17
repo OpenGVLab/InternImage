@@ -74,8 +74,7 @@ def parse_option():
                         type=str,
                         help='dataset name',
                         default=None)
-    parser.add_argument('--data-path', type=str, help='path to dataset',
-                        default='data/imagenet')
+    parser.add_argument('--data-path', type=str, help='path to dataset')
     parser.add_argument('--zip',
                         action='store_true',
                         help='use zipped dataset instead of folder dataset')
@@ -146,7 +145,10 @@ def throughput(data_loader, model, logger):
     model.eval()
 
     for idx, (images, _) in enumerate(data_loader):
-        images = images.cuda(non_blocking=True)
+        if type(images) == list:
+            images = [item.cuda(non_blocking=True) for item in images]
+        else:
+            images = images.cuda(non_blocking=True)
         batch_size = images.shape[0]
         for i in range(50):
             model(images)
@@ -403,7 +405,10 @@ def train_one_epoch(config,
     amp_type = torch.float16 if config.AMP_TYPE == 'float16' else torch.bfloat16
     for idx, (samples, targets) in enumerate(data_loader):
         iter_begin_time = time.time()
-        samples = samples.cuda(non_blocking=True)
+        if type(samples) == list:
+            samples = [item.cuda(non_blocking=True) for item in samples]
+        else:
+            samples = samples.cuda(non_blocking=True)
         targets = targets.cuda(non_blocking=True)
 
         if mixup_fn is not None:
@@ -528,7 +533,10 @@ def validate(config, data_loader, model, epoch=None):
 
     end = time.time()
     for idx, (images, target) in enumerate(data_loader):
-        images = images.cuda(non_blocking=True)
+        if type(images) == list:
+            images = [item.cuda(non_blocking=True) for item in images]
+        else:
+            images = images.cuda(non_blocking=True)
         target = target.cuda(non_blocking=True)
         output = model(images)
 

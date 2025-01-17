@@ -1,15 +1,14 @@
 DATA:
   IMG_SIZE: 384
-  DATASET: inat18
   IMG_ON_MEMORY: False
-  DATA_PATH: "data/inat2018/"
+  DATASET: inat18
 AUG:
   MIXUP: 0.0
   CUTMIX: 0.0
+  REPROB: 0.0
 MODEL:
-  PRETRAINED: './pretrained/internimage_h_jointto22k_384.pth'
-  TYPE: intern_image_with_meta
-  DROP_PATH_RATE: 0.2
+  TYPE: intern_image_meta_former
+  DROP_PATH_RATE: 0.6
   LABEL_SMOOTHING: 0.3
   INTERN_IMAGE:
     CORE_OP: 'DCNv3'
@@ -26,22 +25,22 @@ MODEL:
     LEVEL2_POST_NORM_BLOCK_IDS: [5, 11, 17, 23, 29]
     CENTER_FEATURE_SCALE: True
     USE_CLIP_PROJECTOR: True
+  PRETRAINED: 'pretrained/internimage_h_jointto22k_384.pth'
 TRAIN:
   EMA:
-    ENABLE: false
-    DECAY: 0.9998
+    ENABLE: true
+    DECAY: 0.9999
   EPOCHS: 100
   WARMUP_EPOCHS: 0
-  WEIGHT_DECAY: 1e-8
-  BASE_LR: 3e-05 # 512
-  WARMUP_LR: 3e-08
-  MIN_LR: 3e-07
+  WEIGHT_DECAY: 0.05
+  BASE_LR: 2e-05 # 512
+  WARMUP_LR: .0
+  MIN_LR: .0
   LR_LAYER_DECAY: true
-  LR_LAYER_DECAY_RATIO: 0.8
+  LR_LAYER_DECAY_RATIO: 0.9
+  USE_CHECKPOINT: true
   RAND_INIT_FT_HEAD: true
-  USE_CHECKPOINT: false
   OPTIMIZER:
-    USE_ZERO: True
     DCN_LR_MUL: 0.1
 AMP_OPT_LEVEL: O0
 EVAL_FREQ: 1
