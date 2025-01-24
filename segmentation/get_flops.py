@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+from functools import partial
 
 import mmcv_custom  # noqa: F401,F403
 import mmseg_custom  # noqa: F401,F403

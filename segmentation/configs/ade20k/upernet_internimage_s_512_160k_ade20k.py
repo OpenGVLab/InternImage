@@ -23,6 +23,7 @@ model = dict(
         offset_scale=1.0,
         post_norm=True,
         with_cp=False,
+        out_indices=(0, 1, 2, 3),
         init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
     decode_head=dict(num_classes=150, in_channels=[80, 160, 320, 640]),
     auxiliary_head=dict(num_classes=150, in_channels=320),

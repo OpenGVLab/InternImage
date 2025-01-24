@@ -21,3 +21,9 @@ We first pretrain our models on the Mapillary Vistas dataset, then finetune them
 | :------------: | :--------: | :--: | :----------: | :--------: | :-----: | :---: | :------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------: |
 | InternImage-L  |  512x1024  | 80k  | 0.37s / iter |     9h     |  220M   | 1580G | [config](./segformer_internimage_l_512x1024_80k_mapillary.py)  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/segformer_internimage_l_512x1024_80k_mapillary.pth)  |
 | InternImage-XL |  512x1024  | 80k  | 0.43s / iter |    10h     |  330M   | 2364G | [config](./segformer_internimage_xl_512x1024_80k_mapillary.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/segformer_internimage_xl_512x1024_80k_mapillary.pth) |
+
+### Mask2Former + InternImage
+
+|   backbone    | resolution | schd | #params | FLOPs |                             Config                             |                                                       Download                                                        |
+| :-----------: | :--------: | :--: | :-----: | :---: | :------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------: |
+| InternImage-H |  896x896   | 80k  |  1094M  | 7878G | [config](./mask2former_internimage_h_896x896_80k_mapillary.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_896x896_80k_mapillary.pth) |

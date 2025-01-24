@@ -462,7 +462,10 @@ class Mask2FormerHead(BaseDecodeHead):
                 decoder layer. Each with shape (batch_size, num_queries, \
                  h, w).
         """
-        batch_size = len(img_metas)
+        try:
+            batch_size = len(img_metas)
+        except:
+            batch_size = 1
         mask_features, multi_scale_memorys = self.pixel_decoder(feats)
         # multi_scale_memorys (from low resolution to high resolution)
         decoder_inputs = []
@@ -570,7 +573,7 @@ class Mask2FormerHead(BaseDecodeHead):
         """
         all_cls_scores, all_mask_preds = self(inputs, img_metas)
         cls_score, mask_pred = all_cls_scores[-1], all_mask_preds[-1]
-        ori_h, ori_w, _ = img_metas[0]['ori_shape']
+        # ori_h, ori_w, _ = img_metas[0]['ori_shape']
 
         # semantic inference
         cls_score = F.softmax(cls_score, dim=-1)[..., :-1]
