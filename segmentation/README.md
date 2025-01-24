@@ -151,9 +151,35 @@ Prepare datasets according to the [guidelines](https://github.com/open-mmlab/mms
 <br>
 <div>
 
-|   method    |   backbone    | resolution |  mIoU (ss)  | #params | FLOPs |                                            Config                                            |                                                                                                                           Download                                                                                                                           |
-| :---------: | :-----------: | :--------: | :---------: | :-----: | :---: | :------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|   method    |   backbone    | resolution |  mIoU (ss)  | #params | FLOPs |                                           Config                                            |                                                                                                                           Download                                                                                                                           |
+| :---------: | :-----------: | :--------: | :---------: | :-----: | :---: | :-----------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | Mask2Former | InternImage-H |  512x512   | 59.2 / 59.6 |  1.28B  | 1528G | [config](./configs/coco_stuff10k/mask2former_internimage_h_512_40k_cocostuff164k_to_10k.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_512_40k_cocostuff164k_to_10k.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/mask2former_internimage_h_512_40k_cocostuff164k_to_10k.log.json) |
+
+</div>
+
+</details>
+
+<details>
+<summary> Dataset: Pascal-Context-59 </summary>
+<br>
+<div>
+
+|   method    |   backbone    | resolution | mIoU (ss/ms) | #param | FLOPs |                                          Config                                           |                                                                                                                        Download                                                                                                                        |
+| :---------: | :-----------: | :--------: | :----------: | :----: | :---: | :---------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| Mask2Former | InternImage-H |  480x480   | 69.7 / 70.3  | 1.07B  | 867G  | [config](./configs/pascal_context/mask2former_internimage_h_480_40k_pascal_context_59.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_480_40k_pascal_context_59.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/mask2former_internimage_h_480_40k_pascal_context_59.log.json) |
+
+</div>
+
+</details>
+
+<details>
+<summary> Dataset: NYU-Depth-V2 </summary>
+<br>
+<div>
+
+|   method    |   backbone    | resolution | mIoU (ss/ms) | #param | FLOPs |                                  Config                                   |                                                                                                          Download                                                                                                          |
+| :---------: | :-----------: | :--------: | :----------: | :----: | :---: | :-----------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| Mask2Former | InternImage-H |  480x480   | 67.1 / 68.1  | 1.07B  | 867G  | [config](./configs/nyu_depth_v2/mask2former_internimage_h_480_40k_nyu.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_480_40k_nyu.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/mask2former_internimage_h_480_40k_nyu.log.json) |
 
 </div>
 

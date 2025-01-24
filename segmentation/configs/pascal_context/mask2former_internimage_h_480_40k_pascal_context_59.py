@@ -4,10 +4,11 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 _base_ = [
-    '../_base_/models/mask2former_beit.py', '../_base_/datasets/coco-stuff164k.py',
-    '../_base_/default_runtime.py', '../_base_/schedules/schedule_80k.py'
+    '../_base_/models/mask2former_beit.py', '../_base_/datasets/pascal_context_59.py',
+    '../_base_/default_runtime.py', '../_base_/schedules/schedule_40k.py'
 ]
-num_classes = 171
+num_classes = 59
+crop_size = (480, 480)
 pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth'
 model = dict(
     type='EncoderDecoderMask2Former',
@@ -34,10 +35,10 @@ model = dict(
         init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
     decode_head=dict(
         in_channels=[320, 640, 1280, 2560],
-        feat_channels=1024,
-        out_channels=1024,
+        feat_channels=256,
+        out_channels=256,
         num_classes=num_classes,
-        num_queries=200,
+        num_queries=100,
         pixel_decoder=dict(
             type='MSDeformAttnPixelDecoder',
             num_outs=3,
@@ -50,8 +51,8 @@ model = dict(
                     type='BaseTransformerLayer',
                     attn_cfgs=dict(
                         type='MultiScaleDeformableAttention',
-                        embed_dims=1024,
-                        num_heads=32,
+                        embed_dims=256,
+                        num_heads=8,
                         num_levels=3,
                         num_points=4,
                         im2col_step=64,
@@ -61,8 +62,8 @@ model = dict(
                         init_cfg=None),
                     ffn_cfgs=dict(
                         type='FFN',
-                        embed_dims=1024,
-                        feedforward_channels=4096,
+                        embed_dims=256,
+                        feedforward_channels=1024,
                         num_fcs=2,
                         ffn_drop=0.0,
                         with_cp=False,  # set with_cp=True to save memory
@@ -70,10 +71,10 @@ model = dict(
                     operation_order=('self_attn', 'norm', 'ffn', 'norm')),
                 init_cfg=None),
             positional_encoding=dict(
-                type='SinePositionalEncoding', num_feats=512, normalize=True),
+                type='SinePositionalEncoding', num_feats=128, normalize=True),
             init_cfg=None),
         positional_encoding=dict(
-            type='SinePositionalEncoding', num_feats=512, normalize=True),
+            type='SinePositionalEncoding', num_feats=128, normalize=True),
         transformer_decoder=dict(
             type='DetrTransformerDecoder',
             return_intermediate=True,
@@ -82,22 +83,22 @@ model = dict(
                 type='DetrTransformerDecoderLayer',
                 attn_cfgs=dict(
                     type='MultiheadAttention',
-                    embed_dims=1024,
-                    num_heads=32,
+                    embed_dims=256,
+                    num_heads=8,
                     attn_drop=0.0,
                     proj_drop=0.0,
                     dropout_layer=None,
                     batch_first=False),
                 ffn_cfgs=dict(
-                    embed_dims=1024,
-                    feedforward_channels=4096,
+                    embed_dims=256,
+                    feedforward_channels=2048,
                     num_fcs=2,
                     act_cfg=dict(type='ReLU', inplace=True),
                     ffn_drop=0.0,
                     dropout_layer=None,
                     with_cp=False,  # set with_cp=True to save memory
                     add_identity=True),
-                feedforward_channels=4096,
+                feedforward_channels=2048,
                 operation_order=('cross_attn', 'norm', 'self_attn', 'norm',
                                  'ffn', 'norm')),
             init_cfg=None),
@@ -111,11 +112,10 @@ model = dict(
     test_cfg=dict(mode='whole'))
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-crop_size = (896, 896)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations'),
-    dict(type='Resize', img_scale=(3584, 896), ratio_range=(0.5, 2.0)),
+    dict(type='LoadAnnotations', reduce_zero_label=True),
+    dict(type='Resize', img_scale=(520, 520), ratio_range=(0.5, 2.0)),
     dict(type='RandomCrop', crop_size=crop_size, cat_max_ratio=0.75),
     dict(type='RandomFlip', prob=0.5),
     dict(type='PhotoMetricDistortion'),
@@ -129,7 +129,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(3584, 896),
+        img_scale=(4096, 520),
         # img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
         flip=False,
         transforms=[
@@ -142,7 +142,7 @@ test_pipeline = [
         ])
 ]
 optimizer = dict(
-    _delete_=True, type='AdamW', lr=0.00002, betas=(0.9, 0.999), weight_decay=0.05,
+    _delete_=True, type='AdamW', lr=2e-5, betas=(0.9, 0.999), weight_decay=0.05,
     constructor='CustomLayerDecayOptimizerConstructor',
     paramwise_cfg=dict(num_layers=50, layer_decay_rate=0.95,
                        depths=[6, 6, 32, 6], offset_lr_scale=1.0))
@@ -158,5 +158,5 @@ data = dict(samples_per_gpu=1,
             test=dict(pipeline=test_pipeline))
 runner = dict(type='IterBasedRunner')
 checkpoint_config = dict(by_epoch=False, interval=1000, max_keep_ckpts=1)
-evaluation = dict(interval=8000, metric='mIoU', save_best='mIoU')
+evaluation = dict(interval=2000, metric='mIoU', save_best='mIoU')
 # fp16 = dict(loss_scale=dict(init_scale=512))
