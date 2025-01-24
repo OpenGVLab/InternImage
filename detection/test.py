@@ -113,7 +113,6 @@ def parse_args():
 
 
 def main():
-    print('!!!!!!!!!!!!!!!!!!1', flush=True)
     args = parse_args()
 
     assert args.out or args.eval or args.format_only or args.show \
@@ -169,7 +168,6 @@ def main():
     else:
         cfg.gpu_ids = range(1)
 
-    print('!!!!!!!!!!!!!!!!!!2', flush=True)
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
         distributed = False
@@ -182,7 +180,6 @@ def main():
     else:
         distributed = True
         init_dist(args.launcher, **cfg.dist_params)
-    print('!!!!!!!!!!!!!!!!!!3', flush=True)
 
     rank, _ = get_dist_info()
     # allows not to create
