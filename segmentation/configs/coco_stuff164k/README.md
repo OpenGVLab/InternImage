@@ -4,7 +4,7 @@
 
 ## Introduction
 
-The Common Objects in COntext-stuff (COCO-stuff) dataset is a dataset for scene understanding tasks like semantic segmentation, object detection and image captioning. It is constructed by annotating the original COCO dataset, which originally annotated things while neglecting stuff annotations.  There are 164k images in COCO-Stuff-164K dataset that span over 172 categories including 80 things, 91 stuff, and 1 unlabeled class.
+The Common Objects in COntext-stuff (COCO-stuff) dataset is a dataset for scene understanding tasks like semantic segmentation, object detection and image captioning. It is constructed by annotating the original COCO dataset, which originally annotated things while neglecting stuff annotations.  There are 164k images in COCO-Stuff-164K dataset that span over 172 categories including 80 things, 91 stuff, and 1 unlabeled class.
 
 ## Model Zoo
 

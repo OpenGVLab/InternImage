@@ -1,15 +1,13 @@
 <p>
 	<a href="./README_CN.md">[中文版本]</a>
 </p>
-We currently receive a bunch of issues, our team will check and solve them one by one, please stay tuned.
 
-# INTERN-2.5: Multimodal Multitask General Large Model
+# InternImage: Large-Scale Vision Foundation Model
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-coco)](https://paperswithcode.com/sota/object-detection-on-coco?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-coco-minival)](https://paperswithcode.com/sota/object-detection-on-coco-minival?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-lvis-v1-0-minival)](https://paperswithcode.com/sota/object-detection-on-lvis-v1-0-minival?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-lvis-v1-0-val)](https://paperswithcode.com/sota/object-detection-on-lvis-v1-0-val?p=internimage-exploring-large-scale-vision)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-pascal-voc-2007)](https://paperswithcode.com/sota/object-detection-on-pascal-voc-2007?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-pascal-voc-2012)](https://paperswithcode.com/sota/object-detection-on-pascal-voc-2012?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-openimages-v6)](https://paperswithcode.com/sota/object-detection-on-openimages-v6?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/object-detection-on-crowdhuman-full-body)](https://paperswithcode.com/sota/object-detection-on-crowdhuman-full-body?p=internimage-exploring-large-scale-vision)
@@ -18,7 +16,6 @@ We currently receive a bunch of issues, our team will check and solve them one b
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-cityscapes)](https://paperswithcode.com/sota/semantic-segmentation-on-cityscapes?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-cityscapes-val)](https://paperswithcode.com/sota/semantic-segmentation-on-cityscapes-val?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-pascal-context)](https://paperswithcode.com/sota/semantic-segmentation-on-pascal-context?p=internimage-exploring-large-scale-vision)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/semantic-segmentation-on-coco-stuff-test)](https://paperswithcode.com/sota/semantic-segmentation-on-coco-stuff-test?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-inaturalist-2018)](https://paperswithcode.com/sota/image-classification-on-inaturalist-2018?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places365)](https://paperswithcode.com/sota/image-classification-on-places365?p=internimage-exploring-large-scale-vision)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/internimage-exploring-large-scale-vision/image-classification-on-places205)](https://paperswithcode.com/sota/image-classification-on-places205?p=internimage-exploring-large-scale-vision)
@@ -37,43 +34,20 @@ The official implementation of
 - 🏆 **Achieved `90.1% Top1` accuracy in ImageNet, the most accurate among open-source models**
 - 🏆 **Achieved `65.5 mAP` on the COCO benchmark dataset for object detection, the only model that exceeded `65.0 mAP`**
 
-## Related Projects
-
-### Foundation Models
-
-- [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver): A Pre-training unified architecture for generic perception for zero-shot and few-shot tasks
-- [Uni-Perceiver v2](https://arxiv.org/abs/2211.09808): A generalist model for large-scale vision and vision-language tasks
-- [M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining): One-stage pre-training paradigm via maximizing multi-modal mutual information
-- [InternVL](https://github.com/OpenGVLab/InternVL): The largest open-source vision/vision-language foundation model (14B) to date
-
-### Autonomous Driving
-
-- [BEVFormer](https://github.com/fundamentalvision/BEVFormer): A cutting-edge baseline for camera-based 3D detection
-- [BEVFormer v2](https://arxiv.org/abs/2211.10439):  Adapting modern image backbones to Bird's-Eye-View recognition via perspective supervision
-
-## Application in Challenges
-
-- [2022 Waymo 3D Camera-Only Detection Challenge](https://waymo.com/open/challenges/2022/3d-camera-only-detection/): BEVFormer++ **Ranks 1st** based on InternImage
-- [nuScenes 3D detection task](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Camera): BEVFormer v2 achieves SOTA performance of 64.8 NDS on nuScenes Camera Only
-- [CVPR 2023 Workshop End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23): InternImage supports the baseline of the [3D Occupancy Prediction Challenge](https://opendrivelab.com/AD23Challenge.html#Track3) and [OpenLane Topology Challenge](https://opendrivelab.com/AD23Challenge.html#Track1)
-
 ## News
 
 - `Jan 22, 2024`: 🚀 Support [DCNv4](https://github.com/OpenGVLab/DCNv4) in InternImage!
-- `Mar 14, 2023`: 🚀 "INTERN-2.5" is released！
 - `Feb 28, 2023`: 🚀 InternImage is accepted to CVPR 2023!
 - `Nov 18, 2022`: 🚀 InternImage-XL merged into [BEVFormer v2](https://arxiv.org/abs/2211.10439) achieves state-of-the-art performance of `63.4 NDS` on nuScenes Camera Only.
-- `Nov 10, 2022`: 🚀 InternImage-H achieves a new record `65.4 mAP` on COCO detection test-dev and `62.9 mIoU` on
-  ADE20K, outperforming previous models by a large margin.
+- `Nov 10, 2022`: 🚀 InternImage-H achieves a new record `65.4 mAP` on COCO detection test-dev and `62.9 mIoU` on ADE20K, outperforming previous models by a large margin.
 
 ## History
 
 - [ ] Models/APIs for other downstream tasks
 - [ ] Support [CVPR 2023 Workshop on End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23), see [here](https://github.com/OpenGVLab/InternImage/tree/master/autonomous_driving)
-- [ ] Support Segment Anything
 - [x] Support extracting intermediate features, see [here](classification/extract_feature.py)
 - [x] Low-cost training with [DeepSpeed](https://github.com/microsoft/DeepSpeed), see [here](https://github.com/OpenGVLab/InternImage/tree/master/classification)
-- [x] Compiling-free .whl package of DCNv3 operator, see [here](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
+- [x] Compiling-free `.whl` package of DCNv3 operator, see [here](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
 - [x] InternImage-H(1B)/G(3B)
 - [x] TensorRT inference for classification/detection/segmentation models
 - [x] Classification code of the InternImage series
@@ -84,25 +58,25 @@ The official implementation of
 
 ## Introduction
 
-"INTERN-2.5" is a powerful multimodal multitask general model jointly released by SenseTime and Shanghai AI Laboratory. It consists of large-scale vision foundation model "InternImage", pre-training method "M3I-Pretraining", generic decoder "Uni-Perceiver" series, and generic encoder for autonomous driving perception "BEVFormer" series.
+InternImage is an advanced vision foundation model developed by researchers from Shanghai AI Laboratory, Tsinghua University, and other institutions. Unlike models based on Transformers, InternImage employs DCNv3 as its core operator. This approach equips the model with dynamic and effective receptive fields required for downstream tasks like object detection and segmentation, while enabling adaptive spatial aggregation.
+
+<div align=center>
+<img src='./docs/figs/arch.png' width=400>
+</div>
+
+Some other projects related to InternImage include the pretraining algorithm "M3I-Pretraining," the general-purpose decoder series "Uni-Perceiver," and the autonomous driving perception encoder series "BEVFormer."
 
 <div align=left>
 <img src='./docs/figs/intern_pipeline_en.png' width=900>
 </div>
 
-## Applications
+## Performance
 
-### 🌅 Image Modality Tasks
+- InternImage achieved an impressive Top-1 accuracy of 90.1% on the ImageNet benchmark dataset using only publicly available data for image classification. Apart from two undisclosed models trained with additional datasets by Google and Microsoft, InternImage is the only open-source model that achieves a Top-1 accuracy of over 90.0%, and it is also the largest model in scale worldwide.
+- InternImage outperformed all other models worldwide on the COCO object detection benchmark dataset with a remarkable mAP of 65.5, making it the only model that surpasses 65 mAP in the world.
+- InternImage also demonstrated world's best performance on 16 other important visual benchmark datasets, covering a wide range of tasks such as classification, detection, and segmentation, making it the top-performing model across multiple domains.
 
-"INTERN-2.5" achieved an impressive Top-1 accuracy of 90.1% on the ImageNet benchmark dataset using only publicly available data for image classification. Apart from two undisclosed models trained with additional datasets by Google and Microsoft, "INTERN-2.5" is the only open-source model that achieves a Top-1 accuracy of over 90.0%, and it is also the largest model in scale worldwide.
-
-"INTERN-2.5" outperformed all other models worldwide on the COCO object detection benchmark dataset with a remarkable mAP of 65.5, making it the only model that surpasses 65 mAP in the world.
-
-"INTERN-2.5" also demonstrated world's best performance on 16 other important visual benchmark datasets, covering a wide range of tasks such as classification, detection, and segmentation, making it the top-performing model across multiple domains.
-
-**Performance**
-
-- Classification
+**Classification**
 
 <table border="1" width="90%">
 	<tr align="center">
@@ -112,15 +86,15 @@ The official implementation of
         <th>ImageNet</th><th>Places365</th><th>Places 205</th><th>iNaturalist 2018</th>
     </tr>
     <tr align="center">
-        <th>90.1</th><th>61.2</th><th>71.7</th><th>92.3</th>
+        <th>90.1</th><th>61.2</th><th>71.7</th><th>92.6</th>
     </tr>
 </table>
 
-- Detection
+**Detection**
 
 <table border="1" width="90%">
 	<tr align="center">
-        <th colspan="4"> Conventional Object Detection</th><th colspan="3">Long-Tail Object Detection </th><th colspan="1">Autonomous Driving Object Detection</th><th colspan="1">Dense Object Detection</th>
+        <th colspan="4"> General Object Detection </th><th colspan="3"> Long-Tail Object Detection </th><th colspan="1"> Autonomous Driving Object Detection </th><th colspan="1"> Dense Object Detection </th>
     </tr>
     <tr align="center">
         <th>COCO</th><th>VOC 2007</th><th>VOC 2012</th><th>OpenImage</th><th>LVIS minival</th><th>LVIS val</th><th>BDD100K</th><th>nuScenes</th><th>CrowdHuman</th>
@@ -130,7 +104,7 @@ The official implementation of
     </tr>
 </table>
 
-- Segmentation
+**Segmentation**
 
 <table border="1" width="90%">
 	<tr align="center">
@@ -140,70 +114,48 @@ The official implementation of
         <th>ADE20K</th><th>COCO Stuff-10K</th><th>Pascal Context</th><th>CityScapes</th><th>NYU Depth V2</th>
     </tr>
     <tr align="center">
-        <th>62.9</th><th>59.6</th><th>70.3</th><th>86.1</th><th>69.7</th>
+        <th>62.9</th><th>59.6</th><th>70.3</th><th>87.0</th><th>68.1</th>
     </tr>
 </table>
-<br>
-
-### 🌁 📖 Image and Text Cross-Modal Tasks
-
-**Image-Text Retrieval**: "INTERN-2.5" can quickly locate and retrieve the most semantically relevant images based on textual content requirements. This capability can be applied to both videos and image collections and can be further combined with object detection boxes to enable a variety of applications, helping users quickly and easily find the required image resources. For example, it can return the relevant images specified by the text in the album.
-
-**Image-To-Text**: "INTERN-2.5" has a strong understanding capability in various aspects of visual-to-text tasks such as image captioning, visual question answering, visual reasoning, and optical character recognition. For example, in the context of autonomous driving, it can enhance the scene perception and understanding capabilities, assist the vehicle in judging traffic signal status, road signs, and other information, and provide effective perception information support for vehicle decision-making and planning.
-
-**Performance**
-
-<table border="1" width="90%">
-	<tr align="center">
-        <th colspan="1">Image Captioning</th><th colspan="2">Fine-tuning Image-Text Retrieval</th><th colspan="1">Zero-shot Image-Text Retrieval</th>
-    </tr>
-    <tr align="center">
-        <th>COCO Caption</th><th>COCO Caption</th><th>Flickr30k</th><th>Flickr30k</th>
-    </tr>
-    <tr align="center">
-        <th>148.2</th><th>76.4</th><th>94.8</th><th>89.1</th>
-    </tr>
-</table>
-<br>
 
 ## Released Models
 
-<details>
-<summary> Open-source Visual Pretrained Models </summary>
+<details open>
+<summary> Open-Source Visual Pretrained Models </summary>
 <br>
 <div>
 
-|      name      |   pretrain   | pre-training  resolution | #param |                                               download                                                |
-| :------------: | :----------: | :----------------------: | :----: | :---------------------------------------------------------------------------------------------------: |
-| InternImage-L  | ImageNet-22K |         384x384          |  223M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)    |
-| InternImage-XL | ImageNet-22K |         384x384          |  335M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)   |
-| InternImage-H  |  Joint 427M  |         384x384          | 1.08B  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)   |
-| InternImage-G  |      -       |         384x384          |   3B   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth) |
+|      name      |   pretrain   | resolution | #param |                                               download                                                |
+| :------------: | :----------: | :--------: | :----: | :---------------------------------------------------------------------------------------------------: |
+| InternImage-L  | ImageNet-22K |  384x384   |  223M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)    |
+| InternImage-XL | ImageNet-22K |  384x384   |  335M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)   |
+| InternImage-H  |  Joint 427M  |  384x384   | 1.08B  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)   |
+| InternImage-G  |  Joint 427M  |  384x384   |   3B   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth) |
 
 </div>
 
 </details>
 
-<details>
+<details open>
 <summary> ImageNet-1K Image Classification </summary>
 <br>
 <div>
 
-|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |                                                                                      download                                                                                      |
-| :------------: | :----------: | :--------: | :---: | :----: | :---: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |  30M   |  5G   |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](classification/configs/without_lr_decay/internimage_t_1k_224.yaml)       |
-| InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |  50M   |  8G   |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](classification/configs/without_lr_decay/internimage_s_1k_224.yaml)       |
-| InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |  97M   |  16G  |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](classification/configs/without_lr_decay/internimage_b_1k_224.yaml)       |
-| InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M  | 108G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](classification/configs/without_lr_decay/internimage_l_22kto1k_384.yaml)  |
-| InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M  | 163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](classification/configs/without_lr_decay/internimage_xl_22kto1k_384.yaml) |
-| InternImage-H  |  Joint 427M  |  640x640   | 89.6  | 1.08B  | 1478G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](classification/configs/without_lr_decay/internimage_h_22kto1k_640.yaml)  |
-| InternImage-G  |      -       |  512x512   | 90.1  |   3B   | 2700G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](classification/configs/without_lr_decay/internimage_g_22kto1k_512.yaml)  |
+|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |                                                                              download                                                                               |
+| :------------: | :----------: | :--------: | :---: | :----: | :---: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |  30M   |  5G   |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_t_1k_224.yaml)       |
+| InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |  50M   |  8G   |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_s_1k_224.yaml)       |
+| InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |  97M   |  16G  |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_b_1k_224.yaml)       |
+| InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M  | 108G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_l_22kto1k_384.yaml)  |
+| InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M  | 163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_xl_22kto1k_384.yaml) |
+| InternImage-H  |  Joint 427M  |  640x640   | 89.6  | 1.08B  | 1478G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](configs/without_lr_decay/internimage_h_22kto1k_640.yaml)  |
+| InternImage-G  |  Joint 427M  |  512x512   | 90.1  |   3B   | 2700G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](configs/without_lr_decay/internimage_g_22kto1k_512.yaml)  |
 
 </div>
 
 </details>
 
-<details>
+<details open>
 <summary> COCO Object Detection and Instance Segmentation </summary>
 <br>
 <div>
@@ -230,7 +182,7 @@ The official implementation of
 
 </details>
 
-<details>
+<details open>
 <summary> ADE20K Semantic Segmentation </summary>
 <br>
 <div>
@@ -287,13 +239,33 @@ cd ${MMDEPLOY_DIR}
 pip install -e .
 ```
 
-For more details on building custom ops, please refering to [this document](https://github.com/open-mmlab/mmdeploy/blob/master/docs/en/01-how-to-build/linux-x86_64.md).
+For more details on building custom ops, please referring to [this document](https://github.com/open-mmlab/mmdeploy/blob/master/docs/en/01-how-to-build/linux-x86_64.md).
 
 </div>
 
 </details>
 
-## Citations
+## Related Projects
+
+### Foundation Models
+
+- [Uni-Perceiver](https://github.com/fundamentalvision/Uni-Perceiver): A Pre-training unified architecture for generic perception for zero-shot and few-shot tasks
+- [Uni-Perceiver v2](https://arxiv.org/abs/2211.09808): A generalist model for large-scale vision and vision-language tasks
+- [M3I-Pretraining](https://github.com/OpenGVLab/M3I-Pretraining): One-stage pre-training paradigm via maximizing multi-modal mutual information
+- [InternVL](https://github.com/OpenGVLab/InternVL): A leading multimodal large language model excelling in tasks such as OCR, multimodal reasoning, and dialogue
+
+### Autonomous Driving
+
+- [BEVFormer](https://github.com/fundamentalvision/BEVFormer): A cutting-edge baseline for camera-based 3D detection
+- [BEVFormer v2](https://arxiv.org/abs/2211.10439): Adapting modern image backbones to Bird's-Eye-View recognition via perspective supervision
+
+## Application in Challenges
+
+- [2022 Waymo 3D Camera-Only Detection Challenge](https://waymo.com/open/challenges/2022/3d-camera-only-detection/): BEVFormer++ ranks 1st based on InternImage
+- [nuScenes 3D detection](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Camera): BEVFormer v2 achieves SOTA performance of 64.8 NDS on nuScenes Camera Only
+- [CVPR 2023 Workshop End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23): InternImage supports the baseline of the [3D Occupancy Prediction Challenge](https://opendrivelab.com/AD23Challenge.html#Track3) and [OpenLane Topology Challenge](https://opendrivelab.com/AD23Challenge.html#Track1)
+
+## Citation
 
 If this work is helpful for your research, please consider citing the following BibTeX entry.
 
@@ -303,49 +275,5 @@ If this work is helpful for your research, please consider citing the following 
   author={Wang, Wenhai and Dai, Jifeng and Chen, Zhe and Huang, Zhenhang and Li, Zhiqi and Zhu, Xizhou and Hu, Xiaowei and Lu, Tong and Lu, Lewei and Li, Hongsheng and others},
   journal={arXiv preprint arXiv:2211.05778},
   year={2022}
-}
-
-@inproceedings{zhu2022uni,
-  title={Uni-perceiver: Pre-training unified architecture for generic perception for zero-shot and few-shot tasks},
-  author={Zhu, Xizhou and Zhu, Jinguo and Li, Hao and Wu, Xiaoshi and Li, Hongsheng and Wang, Xiaohua and Dai, Jifeng},
-  booktitle={CVPR},
-  pages={16804--16815},
-  year={2022}
-}
-
-@article{zhu2022uni,
-  title={Uni-perceiver-moe: Learning sparse generalist models with conditional moes},
-  author={Zhu, Jinguo and Zhu, Xizhou and Wang, Wenhai and Wang, Xiaohua and Li, Hongsheng and Wang, Xiaogang and Dai, Jifeng},
-  journal={arXiv preprint arXiv:2206.04674},
-  year={2022}
-}
-
-@article{li2022uni,
-  title={Uni-Perceiver v2: A Generalist Model for Large-Scale Vision and Vision-Language Tasks},
-  author={Li, Hao and Zhu, Jinguo and Jiang, Xiaohu and Zhu, Xizhou and Li, Hongsheng and Yuan, Chun and Wang, Xiaohua and Qiao, Yu and Wang, Xiaogang and Wang, Wenhai and others},
-  journal={arXiv preprint arXiv:2211.09808},
-  year={2022}
-}
-
-@article{yang2022bevformer,
-  title={BEVFormer v2: Adapting Modern Image Backbones to Bird's-Eye-View Recognition via Perspective Supervision},
-  author={Yang, Chenyu and Chen, Yuntao and Tian, Hao and Tao, Chenxin and Zhu, Xizhou and Zhang, Zhaoxiang and Huang, Gao and Li, Hongyang and Qiao, Yu and Lu, Lewei and others},
-  journal={arXiv preprint arXiv:2211.10439},
-  year={2022}
-}
-
-@article{su2022towards,
-  title={Towards All-in-one Pre-training via Maximizing Multi-modal Mutual Information},
-  author={Su, Weijie and Zhu, Xizhou and Tao, Chenxin and Lu, Lewei and Li, Bin and Huang, Gao and Qiao, Yu and Wang, Xiaogang and Zhou, Jie and Dai, Jifeng},
-  journal={arXiv preprint arXiv:2211.09807},
-  year={2022}
-}
-
-@inproceedings{li2022bevformer,
-  title={Bevformer: Learning bird’s-eye-view representation from multi-camera images via spatiotemporal transformers},
-  author={Li, Zhiqi and Wang, Wenhai and Li, Hongyang and Xie, Enze and Sima, Chonghao and Lu, Tong and Qiao, Yu and Dai, Jifeng},
-  booktitle={ECCV},
-  pages={1--18},
-  year={2022},
 }
 ```

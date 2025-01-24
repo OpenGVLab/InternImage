@@ -10,7 +10,7 @@ This folder contains the implementation of the InternImage for image classificat
 - [Evaluation](#evaluation)
 - [Training from Scratch on ImageNet-1K](#training-from-scratch-on-imagenet-1k)
 - [Manage Jobs with Slurm](#manage-jobs-with-slurm)
-- [Training with Deepspeed](#training-with-deepspeed)
+- [Training with DeepSpeed](#training-with-deepspeed)
 - [Extracting Intermediate Features](#extracting-intermediate-features)
 - [Export](#export)
 
@@ -47,6 +47,7 @@ pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113  -f https://download.p
 ```bash
 pip install -U openmim
 mim install mmcv-full==1.5.0
+mim install mmsegmentation==0.27.0
 pip install timm==0.6.11 mmdet==2.28.1
 ```
 
@@ -59,7 +60,7 @@ pip install numpy==1.26.4
 pip install pydantic==1.10.13
 ```
 
-- Compiling CUDA operators
+- Compile CUDA operators
 
 Before compiling, please use the `nvcc -V` command to check whether your `nvcc` version matches the CUDA version of PyTorch.
 
@@ -79,8 +80,9 @@ We provide the following ways to prepare data:
 
 <details open>
   <summary>Standard ImageNet-1K</summary>
+<br>
 
-We use standard ImageNet dataset, you can download it from http://image-net.org/.
+- We use standard ImageNet dataset, you can download it from http://image-net.org/.
 
 - For standard folder dataset, move validation images to labeled sub-folders. The file structure should look like:
 
@@ -195,12 +197,12 @@ We use standard ImageNet dataset, you can download it from http://image-net.org/
 <br>
 <div>
 
-|      name      |   pretrain   | pre-training  resolution | #param |                                               download                                                |
-| :------------: | :----------: | :----------------------: | :----: | :---------------------------------------------------------------------------------------------------: |
-| InternImage-L  | ImageNet-22K |         384x384          |  223M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)    |
-| InternImage-XL | ImageNet-22K |         384x384          |  335M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)   |
-| InternImage-H  |  Joint 427M  |         384x384          | 1.08B  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)   |
-| InternImage-G  |      -       |         384x384          |   3B   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth) |
+|      name      |   pretrain   | resolution | #param |                                               download                                                |
+| :------------: | :----------: | :--------: | :----: | :---------------------------------------------------------------------------------------------------: |
+| InternImage-L  | ImageNet-22K |  384x384   |  223M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)    |
+| InternImage-XL | ImageNet-22K |  384x384   |  335M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)   |
+| InternImage-H  |  Joint 427M  |  384x384   | 1.08B  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)   |
+| InternImage-G  |  Joint 427M  |  384x384   |   3B   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth) |
 
 </div>
 
@@ -211,15 +213,15 @@ We use standard ImageNet dataset, you can download it from http://image-net.org/
 <br>
 <div>
 
-|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |                                                                              download                                                                               |
-| :------------: | :----------: | :--------: | :---: | :----: | :---: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |  30M   |  5G   |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_t_1k_224.yaml)       |
-| InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |  50M   |  8G   |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_s_1k_224.yaml)       |
-| InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |  97M   |  16G  |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_b_1k_224.yaml)       |
-| InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M  | 108G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_l_22kto1k_384.yaml)  |
-| InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M  | 163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_xl_22kto1k_384.yaml) |
-| InternImage-H  |  Joint 427M  |  640x640   | 89.6  | 1.08B  | 1478G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](configs/without_lr_decay/internimage_h_22kto1k_640.yaml)  |
-| InternImage-G  |      -       |  512x512   | 90.1  |   3B   | 2700G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](configs/without_lr_decay/internimage_g_22kto1k_512.yaml)  |
+|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |                                                                                                                     download                                                                                                                     |
+| :------------: | :----------: | :--------: | :---: | :----: | :---: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |  30M   |  5G   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_t_1k_224.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_t_1k_224.log) |
+| InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |  50M   |  8G   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_s_1k_224.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_s_1k_224.log) |
+| InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |  97M   |  16G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_b_1k_224.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_b_1k_224.log) |
+| InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M  | 108G  |                                        [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_l_22kto1k_384.yaml)                                         |
+| InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M  | 163G  |                                       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_xl_22kto1k_384.yaml)                                        |
+| InternImage-H  |  Joint 427M  |  640x640   | 89.6  | 1.08B  | 1478G |                                        [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](configs/without_lr_decay/internimage_h_22kto1k_640.yaml)                                         |
+| InternImage-G  |  Joint 427M  |  512x512   | 90.1  |   3B   | 2700G |                                        [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](configs/without_lr_decay/internimage_g_22kto1k_512.yaml)                                         |
 
 </div>
 
@@ -230,9 +232,9 @@ We use standard ImageNet dataset, you can download it from http://image-net.org/
 <br>
 <div>
 
-|     name      |  pretrain  | resolution | acc@1 | #param |                                    download                                     |
-| :-----------: | :--------: | :--------: | :---: | :----: | :-----------------------------------------------------------------------------: |
-| InternImage-H | Joint 427M |  384x384   | 92.6  |  1.1B  | [ckpt](<>) \| [cfg](configs/inaturalist2018/internimage_h_22ktoinat18_384.yaml) |
+|     name      |  pretrain  | resolution | acc@1 | #param |                                                                                                                                  download                                                                                                                                  |
+| :-----------: | :--------: | :--------: | :---: | :----: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| InternImage-H | Joint 427M |  384x384   | 92.6  |  1.1B  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22ktoinat18_384.pth) \| [cfg](configs/inaturalist2018/internimage_h_22ktoinat18_384.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_h_22ktoinat18_384.log) |
 
 </div>
 
@@ -267,56 +269,104 @@ python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --maste
 
 ## Manage Jobs with Slurm
 
-For example, to train or evaluate `InternImage` with 8 GPU on a single node, run:
+For example, to train or evaluate `InternImage` with slurm cluster, run:
 
-`InternImage-T`:
+<details open>
+<summary> InternImage-T (IN-1K) </summary>
+<br>
 
 ```bash
-# Train for 300 epochs
-GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_t_1k_224.yaml
-# Evaluate on ImageNet-1K
+# Train for 300 epochs with 8 GPUs
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_t_1k_224.yaml --batch-size 512
+# Train for 300 epochs with 32 GPUs
+GPUS=32 sh train_in1k.sh <partition> <job-name> configs/internimage_t_1k_224.yaml --batch-size 128
+# Evaluate on ImageNet-1K with 8 GPUs
 GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_t_1k_224.yaml --resume pretrained/internimage_t_1k_224.pth --eval
 ```
 
-`InternImage-S`:
+</details>
+
+<details>
+<summary> InternImage-S (IN-1K) </summary>
+<br>
 
 ```bash
-# Train for 300 epochs
-GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_s_1k_224.yaml
-# Evaluate on ImageNet-1K
+# Train for 300 epochs with 8 GPUs
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_s_1k_224.yaml --batch-size 512
+# Train for 300 epochs with 32 GPUs
+GPUS=32 sh train_in1k.sh <partition> <job-name> configs/internimage_s_1k_224.yaml --batch-size 128
+# Evaluate on ImageNet-1K with 8 GPUs
 GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_s_1k_224.yaml --resume pretrained/internimage_s_1k_224.pth --eval
 ```
 
-`InternImage-XL`:
+</details>
+
+<details>
+<summary> InternImage-B (IN-1K) </summary>
+<br>
 
 ```bash
-# Train for 300 epochs
-GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_xl_22kto1k_384.yaml
-# Evaluate on ImageNet-1K
+# Train for 300 epochs with 8 GPUs
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_b_1k_224.yaml --batch-size 512
+# Train for 300 epochs with 32 GPUs
+GPUS=32 sh train_in1k.sh <partition> <job-name> configs/internimage_b_1k_224.yaml --batch-size 128
+# Evaluate on ImageNet-1K with 8 GPUs
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_b_1k_224.yaml --resume pretrained/internimage_b_1k_224.pth --eval
+```
+
+</details>
+
+<details>
+<summary> InternImage-L (IN-22K to IN-1K) </summary>
+<br>
+
+```bash
+# Train for 20 epochs with 32 GPUs
+GPUS=32 sh train_in1k.sh <partition> <job-name> configs/internimage_l_22kto1k_384.yaml --batch-size 16
+# Evaluate on ImageNet-1K with 8 GPUs
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_l_22kto1k_384.yaml --resume pretrained/internimage_l_22kto1k_384.pth --eval
+```
+
+</details>
+
+<details>
+<summary> InternImage-XL (IN-22K to IN-1K) </summary>
+<br>
+
+```bash
+# Train for 20 epochs with 32 GPUs
+GPUS=32 sh train_in1k.sh <partition> <job-name> configs/internimage_xl_22kto1k_384.yaml --batch-size 16
+# Evaluate on ImageNet-1K with 8 GPUs
 GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_xl_22kto1k_384.yaml --resume pretrained/internimage_xl_22kto1k_384.pth --eval
 ```
 
-<!--
-### Test pretrained model on ImageNet-22K
+</details>
 
-For example, to evaluate the `InternImage-L-22k`:
+<details>
+<summary> InternImage-H (IN-22K to IN-1K) </summary>
+<br>
 
 ```bash
-python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> --master_port 12345  main.py \
---cfg configs/internimage_xl_22k_192to384.yaml --data-path <imagenet-path> [--batch-size <batch-size-per-gpu> --output <output-directory>] \
---resume internimage_xl_22k_192to384.pth --eval
-``` -->
+# Train for 20 epochs with 32 GPUs
+GPUS=32 sh train_in1k.sh <partition> <job-name> configs/internimage_h_22kto1k_640.yaml --batch-size 16
+# Evaluate on ImageNet-1K with 8 GPUs
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_h_22kto1k_640.yaml --resume pretrained/internimage_h_22kto1k_640.pth --eval
+```
 
-<!-- ### Fine-tuning from a ImageNet-22K pretrained model
+</details>
 
-For example, to fine-tune a `InternImage-XL-22k` model pretrained on ImageNet-22K:
+<details>
+<summary> InternImage-G (IN-22K to IN-1K) </summary>
+<br>
 
-```bashs
-GPUS=8 sh train_in1k.sh <partition> <job-name> configs/intern_image_.yaml --pretrained intern_image_b.pth --eval
-python -m torch.distributed.launch --nproc_per_node 8 --master_port 12345  main.py \
---cfg configs/.yaml --pretrained swin_base_patch4_window7_224_22k.pth \
---data-path <imagenet-path> --batch-size 64 --accumulation-steps 2 [--use-checkpoint]
-``` -->
+```bash
+# Train for 20 epochs with 64 GPUs
+GPUS=64 sh train_in1k.sh <partition> <job-name> configs/internimage_g_22kto1k_512.yaml --batch-size 8
+# Evaluate on ImageNet-1K with 8 GPUs
+GPUS=8 sh train_in1k.sh <partition> <job-name> configs/internimage_g_22kto1k_512.yaml --resume pretrained/internimage_g_22kto1k_512.pth --eval
+```
+
+</details>
 
 ## Training with DeepSpeed
 
@@ -394,7 +444,7 @@ python extract_feature.py --cfg configs/internimage_t_1k_224.yaml --img b.png --
 Install `mmdeploy` at first:
 
 ```shell
-pip
+pip install mmdeploy==0.14.0
 ```
 
 To export `InternImage-T` from PyTorch to ONNX, run:
