@@ -138,9 +138,9 @@ Prepare datasets according to the [guidelines](https://github.com/open-mmlab/mms
 <br>
 <div>
 
-|   method    |   backbone    | resolution | mIoU (ss) | #params | FLOPs |                                        Config                                         |                                                                                                                    Download                                                                                                                    |
-| :---------: | :-----------: | :--------: | :-------: | :-----: | :---: | :-----------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| Mask2Former | InternImage-H |  896x896   |   52.6    |  1.31B  | 4635G | [config](./configs/coco_stuff164k/mask2former_internimage_h_896_80k_cocostuff164k.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_896_80k_cocostuff164k.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/mask2former_internimage_h_896_80k_cocostuff164k.log.json) |
+|   method    |   backbone    | resolution | mIoU (ss/ms) | #params | FLOPs |                                        Config                                         |                                                                                                                    Download                                                                                                                    |
+| :---------: | :-----------: | :--------: | :----------: | :-----: | :---: | :-----------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| Mask2Former | InternImage-H |  896x896   | 52.6 / 52.8  |  1.31B  | 4635G | [config](./configs/coco_stuff164k/mask2former_internimage_h_896_80k_cocostuff164k.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_896_80k_cocostuff164k.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/mask2former_internimage_h_896_80k_cocostuff164k.log.json) |
 
 </div>
 
@@ -180,6 +180,23 @@ Prepare datasets according to the [guidelines](https://github.com/open-mmlab/mms
 |   method    |   backbone    | resolution | mIoU (ss/ms) | #param | FLOPs |                                  Config                                   |                                                                                                          Download                                                                                                          |
 | :---------: | :-----------: | :--------: | :----------: | :----: | :---: | :-----------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | Mask2Former | InternImage-H |  480x480   | 67.1 / 68.1  | 1.07B  | 867G  | [config](./configs/nyu_depth_v2/mask2former_internimage_h_480_40k_nyu.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_480_40k_nyu.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/mask2former_internimage_h_480_40k_nyu.log.json) |
+
+</div>
+
+</details>
+
+<details>
+<summary> Dataset: Mapillary </summary>
+<br>
+<div>
+
+|   method    |    backbone    | resolution | #param | FLOPs |                                      Config                                      |                                                       Download                                                        |
+| :---------: | :------------: | :--------: | :----: | :---: | :------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------: |
+|   UperNet   | InternImage-L  |  512x1024  |  256M  | 3234G |  [config](./configs/mapillary/upernet_internimage_l_512x1024_80k_mapillary.py)   |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_l_512x1024_80k_mapillary.pth)   |
+|   UperNet   | InternImage-XL |  512x1024  |  368M  | 4022G |  [config](./configs/mapillary/upernet_internimage_xl_512x1024_80k_mapillary.py)  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_xl_512x1024_80k_mapillary.pth)  |
+|  SegFormer  | InternImage-L  |  512x1024  |  220M  | 1580G | [config](./configs/mapillary/segformer_internimage_l_512x1024_80k_mapillary.py)  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/segformer_internimage_l_512x1024_80k_mapillary.pth)  |
+|  SegFormer  | InternImage-XL |  512x1024  |  330M  | 2364G | [config](./configs/mapillary/segformer_internimage_xl_512x1024_80k_mapillary.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/segformer_internimage_xl_512x1024_80k_mapillary.pth) |
+| Mask2Former | InternImage-H  |  896x896   | 1094M  | 7878G | [config](./configs/mapillary/mask2former_internimage_h_896x896_80k_mapillary.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/mask2former_internimage_h_896x896_80k_mapillary.pth) |
 
 </div>
 
