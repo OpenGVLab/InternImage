@@ -67,6 +67,7 @@ pip install opencv-python termcolor yacs pyyaml scipy
 # Please use a version of numpy lower than 2.0
 pip install numpy==1.26.4
 pip install pydantic==1.10.13
+pip install yapf==0.40.1
 ```
 
 - Compile CUDA operators
