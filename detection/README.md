@@ -109,6 +109,33 @@ Prepare datasets according to the guidelines in [MMDetection v2.28.1](https://gi
 |  Cascade   | InternImage-XL |  3x  |  56.2   |   48.8   |  387M  | 1782G |         [config](./configs/coco/cascade_internimage_xl_fpn_3x_coco.py)         |                 [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_3x_coco.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_3x_coco.log.json)                 |
 |    DINO    | InternImage-T  |  1x  |  53.9   |    -     |  49M   |   -   |  [config](./configs/coco/dino_4scale_internimage_t_1x_coco_layer_wise_lr.py)   |                    [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_t_1x_coco.json)                    |
 |    DINO    | InternImage-L  |  1x  |  57.6   |    -     |  241M  |   -   | [config](./configs/coco/dino_4scale_internimage_l_1x_coco_0.1x_backbone_lr.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_l_1x_coco_0.1x_backbone_lr.pth) \| [log](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_internimage_l_1x_coco_0.1x_backbone_lr.log.json) |
+|    DINO    | InternImage-H  |  -   |  65.0   |    -     | 2.18B  |   -   |   [config](./configs/coco/dino_4scale_cbinternimage_h_objects365_coco_ss.py)   |                                                                    [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_cbinternimage_h_objects365_coco.pth)                                                                     |
+
+</div>
+
+</details>
+
+<details open>
+<summary> Dataset: LVIS </summary>
+<br>
+<div>
+
+| method |   backbone    | minival (ss) | val (ss/ms) | #param |                                       Config                                       |                                                     Download                                                      |
+| :----: | :-----------: | :----------: | :---------: | :----: | :--------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------: |
+|  DINO  | InternImage-H |     65.8     | 62.3 / 63.2 | 2.18B  | [config](./configs/lvis/dino_4scale_cbinternimage_h_objects365_lvis_minival_ss.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_cbinternimage_h_objects365_lvis.pth) |
+
+</div>
+
+</details>
+
+<details open>
+<summary> Dataset: OpenImages </summary>
+<br>
+<div>
+
+| method |   backbone    | mAP (ss) | #param |                                         Config                                         |                                                        Download                                                         |
+| :----: | :-----------: | :------: | :----: | :------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------: |
+|  DINO  | InternImage-H |   74.1   | 2.18B  | [config](./configs/openimages/dino_4scale_cbinternimage_h_objects365_openimages_ss.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_cbinternimage_h_objects365_openimages.pth) |
 
 </div>
 
