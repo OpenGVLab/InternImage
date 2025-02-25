@@ -115,7 +115,7 @@ Prepare datasets according to the guidelines in [MMDetection v2.28.1](https://gi
 
 </details>
 
-<details open>
+<details>
 <summary> Dataset: LVIS </summary>
 <br>
 <div>
@@ -128,7 +128,7 @@ Prepare datasets according to the guidelines in [MMDetection v2.28.1](https://gi
 
 </details>
 
-<details open>
+<details>
 <summary> Dataset: OpenImages </summary>
 <br>
 <div>
@@ -136,6 +136,19 @@ Prepare datasets according to the guidelines in [MMDetection v2.28.1](https://gi
 | method |   backbone    | mAP (ss) | #param |                                         Config                                         |                                                        Download                                                         |
 | :----: | :-----------: | :------: | :----: | :------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------: |
 |  DINO  | InternImage-H |   74.1   | 2.18B  | [config](./configs/openimages/dino_4scale_cbinternimage_h_objects365_openimages_ss.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_cbinternimage_h_objects365_openimages.pth) |
+
+</div>
+
+</details>
+
+<details>
+<summary> Dataset: VOC 2007 & 2012 </summary>
+<br>
+<div>
+
+| method |   backbone    | VOC 2007 | VOC 2012 | #param |                                 Config                                  |                                                       Download                                                       |
+| :----: | :-----------: | :------: | :------: | :----: | :---------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: |
+|  DINO  | InternImage-H |   94.0   |   97.2   | 2.18B  | [config](./configs/voc/dino_4scale_cbinternimage_h_objects365_voc07.py) | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_cbinternimage_h_objects365_voc0712.pth) |
 
 </div>
 
