@@ -35,7 +35,7 @@ data = dict(
     train=dict(
         type=dataset_type,
         ann_file=data_root + 'annotations/oidv6-train-annotations-bbox.csv',
-        img_prefix=data_root + 'OpenImages/train/',
+        img_prefix=data_root + 'train/',
         label_file=data_root + 'annotations/class-descriptions-boxable.csv',
         hierarchy_file=data_root +
                        'annotations/bbox_labels_600_hierarchy.json',
@@ -43,7 +43,7 @@ data = dict(
     val=dict(
         type=dataset_type,
         ann_file=data_root + 'annotations/validation-annotations-bbox.csv',
-        img_prefix=data_root + 'OpenImages/validation/',
+        img_prefix=data_root + 'validation/',
         label_file=data_root + 'annotations/class-descriptions-boxable.csv',
         hierarchy_file=data_root +
         'annotations/bbox_labels_600_hierarchy.json',
@@ -54,7 +54,7 @@ data = dict(
     test=dict(
         type=dataset_type,
         ann_file=data_root + 'annotations/validation-annotations-bbox.csv',
-        img_prefix=data_root + 'OpenImages/validation/',
+        img_prefix=data_root + 'validation/',
         label_file=data_root + 'annotations/class-descriptions-boxable.csv',
         hierarchy_file=data_root +
         'annotations/bbox_labels_600_hierarchy.json',
