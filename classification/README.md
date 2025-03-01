@@ -197,12 +197,12 @@ We provide the following ways to prepare data:
 <br>
 <div>
 
-|      name      |   pretrain   | resolution | #param |                                               download                                                |
-| :------------: | :----------: | :--------: | :----: | :---------------------------------------------------------------------------------------------------: |
-| InternImage-L  | ImageNet-22K |  384x384   |  223M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)    |
-| InternImage-XL | ImageNet-22K |  384x384   |  335M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)   |
-| InternImage-H  |  Joint 427M  |  384x384   | 1.08B  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)   |
-| InternImage-G  |  Joint 427M  |  384x384   |   3B   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth) |
+|      name      |       pretrain       | resolution | #param |                                               download                                                |
+| :------------: | :------------------: | :--------: | :----: | :---------------------------------------------------------------------------------------------------: |
+| InternImage-L  |        IN-22K        |  384x384   |  223M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)    |
+| InternImage-XL |        IN-22K        |  384x384   |  335M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)   |
+| InternImage-H  | Joint 427M -> IN-22K |  384x384   | 1.08B  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)   |
+| InternImage-G  | Joint 427M -> IN-22K |  384x384   |   3B   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth) |
 
 </div>
 
@@ -213,15 +213,15 @@ We provide the following ways to prepare data:
 <br>
 <div>
 
-|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |                                                                                                                     download                                                                                                                     |
-| :------------: | :----------: | :--------: | :---: | :----: | :---: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |  30M   |  5G   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_t_1k_224.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_t_1k_224.log) |
-| InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |  50M   |  8G   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_s_1k_224.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_s_1k_224.log) |
-| InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |  97M   |  16G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_b_1k_224.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_b_1k_224.log) |
-| InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M  | 108G  |                                        [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_l_22kto1k_384.yaml)                                         |
-| InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M  | 163G  |                                       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_xl_22kto1k_384.yaml)                                        |
-| InternImage-H  |  Joint 427M  |  640x640   | 89.6  | 1.08B  | 1478G |                                        [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](configs/without_lr_decay/internimage_h_22kto1k_640.yaml)                                         |
-| InternImage-G  |  Joint 427M  |  512x512   | 90.1  |   3B   | 2700G |                                        [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](configs/without_lr_decay/internimage_g_22kto1k_512.yaml)                                         |
+|      name      |       pretrain       | resolution | acc@1 | #param | FLOPs |                                                                                                                     download                                                                                                                     |
+| :------------: | :------------------: | :--------: | :---: | :----: | :---: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| InternImage-T  |        IN-1K         |  224x224   | 83.5  |  30M   |  5G   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_t_1k_224.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_t_1k_224.log) |
+| InternImage-S  |        IN-1K         |  224x224   | 84.2  |  50M   |  8G   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_s_1k_224.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_s_1k_224.log) |
+| InternImage-B  |        IN-1K         |  224x224   | 84.9  |  97M   |  16G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_b_1k_224.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_b_1k_224.log) |
+| InternImage-L  |        IN-22K        |  384x384   | 87.7  |  223M  | 108G  |                                        [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_l_22kto1k_384.yaml)                                         |
+| InternImage-XL |        IN-22K        |  384x384   | 88.0  |  335M  | 163G  |                                       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_xl_22kto1k_384.yaml)                                        |
+| InternImage-H  | Joint 427M -> IN-22K |  640x640   | 89.6  | 1.08B  | 1478G |                                        [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](configs/without_lr_decay/internimage_h_22kto1k_640.yaml)                                         |
+| InternImage-G  | Joint 427M -> IN-22K |  512x512   | 90.1  |   3B   | 2700G |                                        [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](configs/without_lr_decay/internimage_g_22kto1k_512.yaml)                                         |
 
 </div>
 
@@ -232,9 +232,9 @@ We provide the following ways to prepare data:
 <br>
 <div>
 
-|     name      |  pretrain  | resolution | acc@1 | #param |                                                                                                                                  download                                                                                                                                  |
-| :-----------: | :--------: | :--------: | :---: | :----: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| InternImage-H | Joint 427M |  384x384   | 92.6  |  1.1B  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22ktoinat18_384.pth) \| [cfg](configs/inaturalist2018/internimage_h_22ktoinat18_384.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_h_22ktoinat18_384.log) |
+|     name      |       pretrain       | resolution | acc@1 | #param |                                                                                                                                  download                                                                                                                                  |
+| :-----------: | :------------------: | :--------: | :---: | :----: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| InternImage-H | Joint 427M -> IN-22K |  384x384   | 92.6  |  1.1B  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22ktoinat18_384.pth) \| [cfg](configs/inaturalist2018/internimage_h_22ktoinat18_384.yaml) \| [log](https://huggingface.co/OpenGVLab/InternImage/raw/main/internimage_h_22ktoinat18_384.log) |
 
 </div>
 
