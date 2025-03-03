@@ -173,10 +173,10 @@ Some other projects related to InternImage include the pretraining algorithm "M3
 | InternImage-XL |  Cascade   |  1x  |  55.3   |   48.1   |  387M  | 1782G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_1x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_xl_fpn_1x_coco.py)  |
 | InternImage-XL |  Cascade   |  3x  |  56.2   |   48.8   |  387M  | 1782G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/cascade_internimage_xl_fpn_3x_coco.pth) \| [cfg](detection/configs/coco/cascade_internimage_xl_fpn_3x_coco.py)  |
 
-|   backbone    |   method   | box mAP (val/test) | #param | FLOPs | download |
-| :-----------: | :--------: | :----------------: | :----: | :---: | :------: |
-| InternImage-H | DINO (TTA) |    65.0 / 65.4     | 2.18B  | TODO  |   TODO   |
-| InternImage-G | DINO (TTA) |    65.3 / 65.5     |   3B   | TODO  |   TODO   |
+|     backbone     |   method   | box mAP (val/test) | #param | FLOPs |                                                                                                                         download                                                                                                                          |
+| :--------------: | :--------: | :----------------: | :----: | :---: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| CB-InternImage-H | DINO (TTA) |    65.0 / 65.4     | 2.18B  |   -   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_cbinternimage_h_objects365_coco.pth) \| [cfg](https://github.com/OpenGVLab/InternImage/blob/master/detection/configs/coco/dino_4scale_cbinternimage_h_objects365_coco_ss.py) |
+| CB-InternImage-G | DINO (TTA) |    65.3 / 65.5     |   3B   |   -   |                                                                                                                           TODO                                                                                                                            |
 
 </div>
 
