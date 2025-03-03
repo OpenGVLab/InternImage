@@ -1,0 +1,53 @@
+{
+  "_name_or_path": "OpenGVLab/internimage_h_22kto1k_640",
+  "act_layer": "GELU",
+  "architectures": [
+    "InternImageModel"
+  ],
+  "auto_map": {
+    "AutoConfig": "configuration_internimage.InternImageConfig",
+    "AutoModel": "modeling_internimage.InternImageModel",
+    "AutoModelForImageClassification": "modeling_internimage.InternImageModelForImageClassification"
+  },
+  "center_feature_scale": true,
+  "channels": 320,
+  "cls_scale": 1.5,
+  "core_op": "DCNv3",
+  "depths": [
+    6,
+    6,
+    32,
+    6
+  ],
+  "drop_path_rate": 0.0,
+  "drop_path_type": "linear",
+  "drop_rate": 0.0,
+  "dw_kernel_size": 5,
+  "groups": [
+    10,
+    20,
+    40,
+    80
+  ],
+  "layer_scale": null,
+  "level2_post_norm": true,
+  "level2_post_norm_block_ids": [
+    5,
+    11,
+    17,
+    23,
+    29
+  ],
+  "mlp_ratio": 4.0,
+  "model_type": "internimage",
+  "norm_layer": "LN",
+  "num_classes": 1000,
+  "offset_scale": 1.0,
+  "post_norm": false,
+  "remove_center": false,
+  "res_post_norm": true,
+  "torch_dtype": "float32",
+  "transformers_version": "4.37.2",
+  "use_clip_projector": true,
+  "with_cp": false
+}

@@ -6,3 +6,4 @@ segmentation/convertor/
 checkpoint_dir/
 demo/
 pretrained/
+upload.py
