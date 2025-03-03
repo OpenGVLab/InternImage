@@ -4,11 +4,14 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 
+import torch
+
 # -*- coding: utf-8 -*-
 from .custom_layer_decay_optimizer_constructor import \
     CustomLayerDecayOptimizerConstructor
+from .efficient_ffn import EfficientFFN
 
-__all__ = ['CustomLayerDecayOptimizerConstructor']
+__all__ = ['CustomLayerDecayOptimizerConstructor', 'EfficientFFN']
 
 if torch.__version__.startswith('1.11'):
 

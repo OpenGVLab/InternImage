@@ -7,40 +7,39 @@ _base_ = [
     '../_base_/datasets/coco_detection.py',
     '../_base_/default_runtime.py'
 ]
-load_from = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_cbinternimage_h_objects365_80classes.pth'
 model = dict(
-    type='CBDINO',
+    type='DINO',
     backbone=dict(
-        type='CBInternImage',
+        type='InternImage',
         core_op='DCNv3',
-        channels=320,
-        depths=[6, 6, 32, 6],
-        groups=[10, 20, 40, 80],
+        channels=512,
+        depths=[2, 2, 48, 4],
+        groups=[16, 32, 64, 128],
         mlp_ratio=4.,
         drop_path_rate=0.5,
         norm_layer='LN',
         layer_scale=None,
         offset_scale=1.0,
-        post_norm=False,
+        post_norm=True,
         dw_kernel_size=5,  # for InternImage-H/G
-        res_post_norm=True,  # for InternImage-H/G
+        res_post_norm=False,  # for InternImage-H/G
         level2_post_norm=True,  # for InternImage-H/G
-        level2_post_norm_block_ids=[5, 11, 17, 23, 29],  # for InternImage-H/G
+        level2_post_norm_block_ids=[5, 11, 17, 23, 29, 35, 41, 47],  # for InternImage-H/G
         center_feature_scale=True,  # for InternImage-H/G
         with_cp=True,
-        out_indices=[(0, 1, 2, 3), (1, 2, 3)],
-        init_cfg=None,
+        out_indices=(1, 2, 3),
+        init_cfg=None # dict(type='Pretrained', checkpoint=pretrained)
     ),
-    neck=[dict(
-        type='CBChannelMapper',
-        in_channels=[640, 1280, 2560],
+    neck=dict(
+        type='ChannelMapper',
+        in_channels=[1024, 2048, 4096],
         kernel_size=1,
         out_channels=256,
         act_cfg=None,
         norm_cfg=dict(type='GN', num_groups=32),
-        num_outs=4)],
+        num_outs=4),
     bbox_head=dict(
-        type='CBDINOHead',
+        type='DINOHead',
         num_query=900,
         num_classes=80,
         in_channels=2048,  # TODO
@@ -65,7 +64,7 @@ model = dict(
                         dropout=0.0),  # 0.1 for DeformDETR
                     feedforward_channels=2048,  # 1024 for DeformDETR
                     ffn_cfgs=dict(
-                        type='FFN',
+                        type='EfficientFFN',
                         embed_dims=256,
                         feedforward_channels=2048,
                         num_fcs=2,
@@ -94,7 +93,7 @@ model = dict(
                     ],
                     feedforward_channels=2048,  # 1024 for DeformDETR
                     ffn_cfgs=dict(
-                        type='FFN',
+                        type='EfficientFFN',
                         embed_dims=256,
                         feedforward_channels=2048,
                         num_fcs=2,
@@ -170,8 +169,8 @@ data = dict(
 optimizer = dict(
     type='AdamW', lr=0.0001, weight_decay=0.0001,
     constructor='CustomLayerDecayOptimizerConstructor',
-    paramwise_cfg=dict(num_layers=50, layer_decay_rate=0.94,
-                       depths=[6, 6, 32, 6], offset_lr_scale=1e-3))
+    paramwise_cfg=dict(num_layers=56, layer_decay_rate=0.94,
+                       depths=[2, 2, 48, 4], offset_lr_scale=1e-3))
 optimizer_config = dict(grad_clip=dict(max_norm=0.1, norm_type=2))
 # learning policy
 lr_config = dict(

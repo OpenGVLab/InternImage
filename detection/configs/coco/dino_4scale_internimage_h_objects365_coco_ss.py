@@ -7,11 +7,10 @@ _base_ = [
     '../_base_/datasets/coco_detection.py',
     '../_base_/default_runtime.py'
 ]
-load_from = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_cbinternimage_h_objects365_80classes.pth'
 model = dict(
-    type='CBDINO',
+    type='DINO',
     backbone=dict(
-        type='CBInternImage',
+        type='InternImage',
         core_op='DCNv3',
         channels=320,
         depths=[6, 6, 32, 6],
@@ -28,19 +27,19 @@ model = dict(
         level2_post_norm_block_ids=[5, 11, 17, 23, 29],  # for InternImage-H/G
         center_feature_scale=True,  # for InternImage-H/G
         with_cp=True,
-        out_indices=[(0, 1, 2, 3), (1, 2, 3)],
-        init_cfg=None,
+        out_indices=(1, 2, 3),
+        init_cfg=None # dict(type='Pretrained', checkpoint=pretrained)
     ),
-    neck=[dict(
-        type='CBChannelMapper',
+    neck=dict(
+        type='ChannelMapper',
         in_channels=[640, 1280, 2560],
         kernel_size=1,
         out_channels=256,
         act_cfg=None,
         norm_cfg=dict(type='GN', num_groups=32),
-        num_outs=4)],
+        num_outs=4),
     bbox_head=dict(
-        type='CBDINOHead',
+        type='DINOHead',
         num_query=900,
         num_classes=80,
         in_channels=2048,  # TODO
