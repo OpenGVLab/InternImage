@@ -2,7 +2,7 @@ _base_ = [
     '../_base_/datasets/voc0712.py',
     '../_base_/default_runtime.py'
 ]
-load_from = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_cbinternimage_h_objects365_80classes.pth'
+load_from = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/dino_4scale_cbinternimage_h_objects365_20classes.pth'
 model = dict(
     type='CBDINO',
     backbone=dict(
