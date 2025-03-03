@@ -3,6 +3,7 @@
 __pycache__/
 classification/convertor/
 segmentation/convertor/
+detection/convertor/
 checkpoint_dir/
 demo/
 pretrained/

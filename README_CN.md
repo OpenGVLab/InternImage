@@ -124,12 +124,12 @@ InternImage 是一个由上海人工智能实验室、清华大学等机构的�
 <br>
 <div>
 
-|      name      |   pretrain   | resolution | #param |                                               download                                                |
-| :------------: | :----------: | :--------: | :----: | :---------------------------------------------------------------------------------------------------: |
-| InternImage-L  | ImageNet-22K |  384x384   |  223M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)    |
-| InternImage-XL | ImageNet-22K |  384x384   |  335M  |   [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)   |
-| InternImage-H  |  Joint 427M  |  384x384   | 1.08B  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)   |
-| InternImage-G  |  Joint 427M  |  384x384   |   3B   | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth) |
+|      name      |   pretrain   | resolution | #param |                                                                                  download                                                                                   |
+| :------------: | :----------: | :--------: | :----: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| InternImage-L  | ImageNet-22K |  384x384   |  223M  |     [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22k_192to384.pth)    \| [hf](https://huggingface.co/OpenGVLab/internimage_l_22k_384)      |
+| InternImage-XL | ImageNet-22K |  384x384   |  335M  |     [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22k_192to384.pth)   \| [hf](https://huggingface.co/OpenGVLab/internimage_xl_22k_384)     |
+| InternImage-H  |  Joint 427M  |  384x384   | 1.08B  | [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_jointto22k_384.pth)   \| [hf](https://huggingface.co/OpenGVLab/internimage_h_jointto22k_384)  |
+| InternImage-G  |  Joint 427M  |  384x384   |   3B   | [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_pretrainto22k_384.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_g_jointto22k_384) |
 
 </div>
 
@@ -140,15 +140,15 @@ InternImage 是一个由上海人工智能实验室、清华大学等机构的�
 <br>
 <div>
 
-|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |                                                                              download                                                                               |
-| :------------: | :----------: | :--------: | :---: | :----: | :---: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |  30M   |  5G   |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_t_1k_224.yaml)       |
-| InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |  50M   |  8G   |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_s_1k_224.yaml)       |
-| InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |  97M   |  16G  |       [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [cfg](configs/without_lr_decay/internimage_b_1k_224.yaml)       |
-| InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M  | 108G  |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_l_22kto1k_384.yaml)  |
-| InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M  | 163G  | [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [cfg](configs/without_lr_decay/internimage_xl_22kto1k_384.yaml) |
-| InternImage-H  |  Joint 427M  |  640x640   | 89.6  | 1.08B  | 1478G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [cfg](configs/without_lr_decay/internimage_h_22kto1k_640.yaml)  |
-| InternImage-G  |  Joint 427M  |  512x512   | 90.1  |   3B   | 2700G |  [ckpt](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [cfg](configs/without_lr_decay/internimage_g_22kto1k_512.yaml)  |
+|      name      |   pretrain   | resolution | acc@1 | #param | FLOPs |                                                                                                                download                                                                                                                 |
+| :------------: | :----------: | :--------: | :---: | :----: | :---: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| InternImage-T  | ImageNet-1K  |  224x224   | 83.5  |  30M   |  5G   |          [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_t_1k_224) \| [cfg](configs/without_lr_decay/internimage_t_1k_224.yaml)          |
+| InternImage-S  | ImageNet-1K  |  224x224   | 84.2  |  50M   |  8G   |          [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_s_1k_224) \| [cfg](configs/without_lr_decay/internimage_s_1k_224.yaml)          |
+| InternImage-B  | ImageNet-1K  |  224x224   | 84.9  |  97M   |  16G  |          [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_b_1k_224) \| [cfg](configs/without_lr_decay/internimage_b_1k_224.yaml)          |
+| InternImage-L  | ImageNet-22K |  384x384   | 87.7  |  223M  | 108G  |  [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_l_22kto1k_384) \| [cfg](configs/without_lr_decay/internimage_l_22kto1k_384.yaml)   |
+| InternImage-XL | ImageNet-22K |  384x384   | 88.0  |  335M  | 163G  | [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_xl_22kto1k_384) \| [cfg](configs/without_lr_decay/internimage_xl_22kto1k_384.yaml) |
+| InternImage-H  |  Joint 427M  |  640x640   | 89.6  | 1.08B  | 1478G |  [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_h_22kto1k_640) \| [cfg](configs/without_lr_decay/internimage_h_22kto1k_640.yaml)   |
+| InternImage-G  |  Joint 427M  |  512x512   | 90.1  |   3B   | 2700G |  [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_g_22kto1k_512) \| [cfg](configs/without_lr_decay/internimage_g_22kto1k_512.yaml)   |
 
 </div>
 
@@ -269,10 +269,11 @@ pip install -e .
 若这个工作对您的研究有帮助，请参考如下 BibTeX 对我们的工作进行引用。
 
 ```bibtex
-@article{wang2022internimage,
-  title={InternImage: Exploring Large-Scale Vision Foundation Models with Deformable Convolutions},
+@inproceedings{wang2023internimage,
+  title={Internimage: Exploring large-scale vision foundation models with deformable convolutions},
   author={Wang, Wenhai and Dai, Jifeng and Chen, Zhe and Huang, Zhenhang and Li, Zhiqi and Zhu, Xizhou and Hu, Xiaowei and Lu, Tong and Lu, Lewei and Li, Hongsheng and others},
-  journal={arXiv preprint arXiv:2211.05778},
-  year={2022}
+  booktitle={Proceedings of the IEEE/CVF conference on computer vision and pattern recognition},
+  pages={14408--14419},
+  year={2023}
 }
 ```
