@@ -80,7 +80,6 @@ We provide the following ways to prepare data:
 
 <details open>
   <summary>Standard ImageNet-1K</summary>
-<br>
 
 - We use standard ImageNet dataset, you can download it from http://image-net.org/.
 

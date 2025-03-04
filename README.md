@@ -43,8 +43,8 @@ The official implementation of
 
 ## History
 
-- [ ] Models/APIs for other downstream tasks
-- [ ] Support [CVPR 2023 Workshop on End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23), see [here](https://github.com/OpenGVLab/InternImage/tree/master/autonomous_driving)
+- [x] Models for other downstream tasks
+- [x] Support [CVPR 2023 Workshop on End-to-End Autonomous Driving](https://opendrivelab.com/e2ead/cvpr23), see [here](https://github.com/OpenGVLab/InternImage/tree/master/autonomous_driving)
 - [x] Support extracting intermediate features, see [here](classification/extract_feature.py)
 - [x] Low-cost training with [DeepSpeed](https://github.com/microsoft/DeepSpeed), see [here](https://github.com/OpenGVLab/InternImage/tree/master/classification)
 - [x] Compiling-free `.whl` package of DCNv3 operator, see [here](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
@@ -141,15 +141,15 @@ Some other projects related to InternImage include the pretraining algorithm "M3
 <br>
 <div>
 
-|      name      |       pretrain       | resolution | acc@1 | #param | FLOPs |                                                                                                                download                                                                                                                 |
-| :------------: | :------------------: | :--------: | :---: | :----: | :---: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| InternImage-T  |        IN-1K         |  224x224   | 83.5  |  30M   |  5G   |          [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_t_1k_224) \| [cfg](configs/without_lr_decay/internimage_t_1k_224.yaml)          |
-| InternImage-S  |        IN-1K         |  224x224   | 84.2  |  50M   |  8G   |          [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_s_1k_224) \| [cfg](configs/without_lr_decay/internimage_s_1k_224.yaml)          |
-| InternImage-B  |        IN-1K         |  224x224   | 84.9  |  97M   |  16G  |          [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_b_1k_224) \| [cfg](configs/without_lr_decay/internimage_b_1k_224.yaml)          |
-| InternImage-L  |        IN-22K        |  384x384   | 87.7  |  223M  | 108G  |  [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_l_22kto1k_384) \| [cfg](configs/without_lr_decay/internimage_l_22kto1k_384.yaml)   |
-| InternImage-XL |        IN-22K        |  384x384   | 88.0  |  335M  | 163G  | [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_xl_22kto1k_384) \| [cfg](configs/without_lr_decay/internimage_xl_22kto1k_384.yaml) |
-| InternImage-H  | Joint 427M -> IN-22K |  640x640   | 89.6  | 1.08B  | 1478G |  [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_h_22kto1k_640) \| [cfg](configs/without_lr_decay/internimage_h_22kto1k_640.yaml)   |
-| InternImage-G  | Joint 427M -> IN-22K |  512x512   | 90.1  |   3B   | 2700G |  [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_g_22kto1k_512) \| [cfg](configs/without_lr_decay/internimage_g_22kto1k_512.yaml)   |
+|      name      |       pretrain       | resolution | acc@1 | #param | FLOPs |                                                                                                                        download                                                                                                                        |
+| :------------: | :------------------: | :--------: | :---: | :----: | :---: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| InternImage-T  |        IN-1K         |  224x224   | 83.5  |  30M   |  5G   |          [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_t_1k_224.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_t_1k_224) \| [cfg](classification/configs/without_lr_decay/internimage_t_1k_224.yaml)          |
+| InternImage-S  |        IN-1K         |  224x224   | 84.2  |  50M   |  8G   |          [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_s_1k_224) \| [cfg](classification/configs/without_lr_decay/internimage_s_1k_224.yaml)          |
+| InternImage-B  |        IN-1K         |  224x224   | 84.9  |  97M   |  16G  |          [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_b_1k_224.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_b_1k_224) \| [cfg](classification/configs/without_lr_decay/internimage_b_1k_224.yaml)          |
+| InternImage-L  |        IN-22K        |  384x384   | 87.7  |  223M  | 108G  |  [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_l_22kto1k_384.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_l_22kto1k_384) \| [cfg](classification/configs/without_lr_decay/internimage_l_22kto1k_384.yaml)   |
+| InternImage-XL |        IN-22K        |  384x384   | 88.0  |  335M  | 163G  | [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_xl_22kto1k_384.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_xl_22kto1k_384) \| [cfg](classification/configs/without_lr_decay/internimage_xl_22kto1k_384.yaml) |
+| InternImage-H  | Joint 427M -> IN-22K |  640x640   | 89.6  | 1.08B  | 1478G |  [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_h_22kto1k_640.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_h_22kto1k_640) \| [cfg](classification/configs/without_lr_decay/internimage_h_22kto1k_640.yaml)   |
+| InternImage-G  | Joint 427M -> IN-22K |  512x512   | 90.1  |   3B   | 2700G |  [pth](https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_g_22kto1k_512.pth) \| [hf](https://huggingface.co/OpenGVLab/internimage_g_22kto1k_512) \| [cfg](classification/configs/without_lr_decay/internimage_g_22kto1k_512.yaml)   |
 
 </div>
 
