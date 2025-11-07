@@ -34,7 +34,10 @@ at::Tensor dcnv3_forward(const at::Tensor &input, const at::Tensor &offset,
         AT_ERROR("Not compiled with GPU support");
 #endif
     }
-    AT_ERROR("Not implemented on the CPU");
+    return dcnv3_cpu_forward(input, offset, mask, kernel_h, kernel_w,
+                              stride_h, stride_w, pad_h, pad_w, dilation_h,
+                              dilation_w, group, group_channels,
+                              offset_scale, im2col_step, remove_center);
 }
 
 std::vector<at::Tensor>
@@ -55,5 +58,8 @@ dcnv3_backward(const at::Tensor &input, const at::Tensor &offset,
         AT_ERROR("Not compiled with GPU support");
 #endif
     }
-    AT_ERROR("Not implemented on the CPU");
+    return dcnv3_cpu_backward(input, offset, mask, kernel_h, kernel_w,
+                              stride_h, stride_w, pad_h, pad_w, dilation_h,
+                              dilation_w, group, group_channels,
+                              offset_scale, grad_output, im2col_step, remove_center);
 }

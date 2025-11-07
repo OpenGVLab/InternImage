@@ -24,7 +24,7 @@ def get_extensions():
 
     sources = main_file + source_cpu
     extension = CppExtension
-    extra_compile_args = {'cxx': []}
+    extra_compile_args = {'cxx': ['-O2']}
     define_macros = []
 
     if torch.cuda.is_available() and CUDA_HOME is not None:
@@ -37,8 +37,9 @@ def get_extensions():
             # "-D__CUDA_NO_HALF_CONVERSIONS__",
             # "-D__CUDA_NO_HALF2_OPERATORS__",
         ]
+        print("CUDA is available, building with CUDA support")
     else:
-        raise NotImplementedError('Cuda is not availabel')
+        print("CUDA is not available, building CPU-only version")
 
     sources = [os.path.join(extensions_dir, s) for s in sources]
     include_dirs = [extensions_dir]
@@ -56,7 +57,7 @@ def get_extensions():
 
 setup(
     name='DCNv3',
-    version='1.0',
+    version='1.1',
     author='InternImage',
     url='https://github.com/OpenGVLab/InternImage',
     description=
