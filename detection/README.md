@@ -51,7 +51,7 @@ conda install -c conda-forge termcolor yacs pyyaml scipy pip -y
 pip install opencv-python
 ```
 
-- Install `timm`, `mmcv-full` and \`mmsegmentation':
+- Install `timm`, `mmcv-full` and `mmsegmentation`:
 
 ```bash
 pip install -U openmim
